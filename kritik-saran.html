@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kritik & Saran | Sejuk Teknik AC</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
+    <style>
+      :root {
+        --primary: #0066cc;
+        --primary-light: #e6f2ff;
+        --secondary: #ff7a00;
+        --dark: #2d3748;
+        --light: #f8fafc;
+        --gray: #718096;
+        --white: #ffffff;
+        --success: #38a169;
+        --error: #e53e3e;
+        --warning: #ffc107;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: "Poppins", sans-serif;
+        background: linear-gradient(135deg, #f0f9ff, #ffffff);
+        color: var(--dark);
+        line-height: 1.6;
+        padding: 20px;
+        min-height: 100vh;
+      }
+
+      .container {
+        max-width: 1000px;
+        margin: 0 auto;
+      }
+
+      header {
+        text-align: center;
+        margin-bottom: 2rem;
+      }
+
+      h1 {
+        color: var(--primary);
+        font-size: 2.2rem;
+        font-weight: 600;
+        position: relative;
+        display: inline-block;
+        margin-bottom: 1rem;
+      }
+
+      h1::after {
+        content: "";
+        position: absolute;
+        width: 80px;
+        height: 4px;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: linear-gradient(90deg, var(--primary), var(--secondary));
+        border-radius: 2px;
+      }
+
+      .description {
+        color: var(--gray);
+        max-width: 600px;
+        margin: 0 auto 1.5rem;
+      }
+
+      .card {
+        background: var(--white);
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        padding: 2.5rem;
+        margin-bottom: 2rem;
+      }
+
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: var(--dark);
+      }
+
+      .required::after {
+        content: " *";
+        color: var(--error);
+      }
+
+      input,
+      textarea,
+      select {
+        width: 100%;
+        padding: 0.8rem 1rem;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background-color: var(--light);
+        font-family: "Poppins", sans-serif;
+      }
+
+      input:focus,
+      textarea:focus,
+      select:focus {
+        border-color: var(--primary);
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+      }
+
+      textarea {
+        min-height: 150px;
+        resize: vertical;
+      }
+
+      .rating-container {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .rating-star {
+        font-size: 2rem;
+        color: #cbd5e0;
+        cursor: pointer;
+        transition: color 0.2s;
+      }
+
+      .rating-star:hover,
+      .rating-star.active {
+        color: var(--warning);
+      }
+
+      .submit-btn {
+        background-color: var(--primary);
+        color: var(--white);
+        padding: 0.8rem 2rem;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        width: 100%;
+        box-shadow: 0 4px 6px rgba(0, 102, 204, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+      }
+
+      .submit-btn:hover {
+        background-color: #0052a3;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 8px rgba(0, 102, 204, 0.15);
+      }
+
+      .thank-you-message {
+        display: none;
+        text-align: center;
+        padding: 2rem;
+        background-color: var(--primary-light);
+        border-radius: 16px;
+        margin-top: 2rem;
+      }
+
+      .thank-you-message i {
+        font-size: 3rem;
+        color: var(--success);
+        margin-bottom: 1rem;
+      }
+
+      .thank-you-message h2 {
+        color: var(--primary);
+        margin-bottom: 1rem;
+      }
+
+      .thank-you-message p {
+        color: var(--gray);
+        max-width: 500px;
+        margin: 0 auto;
+      }
+
+      /* Review Section */
+      .reviews-container {
+        margin-top: 3rem;
+      }
+
+      .reviews-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+      }
+
+      .reviews-title {
+        font-size: 1.5rem;
+        color: var(--primary);
+      }
+
+      .review-sort {
+        padding: 0.5rem;
+        border-radius: 6px;
+        border: 1px solid #e2e8f0;
+      }
+
+      .review-card {
+        background: var(--white);
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .review-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+      }
+
+      .review-name {
+        font-weight: 600;
+        color: var(--dark);
+      }
+
+      .review-date {
+        color: var(--gray);
+        font-size: 0.9rem;
+      }
+
+      .review-rating {
+        color: var(--warning);
+        margin-bottom: 0.5rem;
+      }
+
+      .review-service {
+        display: inline-block;
+        background-color: var(--primary-light);
+        color: var(--primary);
+        padding: 0.3rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .review-content {
+        color: var(--dark);
+        margin-top: 0.5rem;
+      }
+
+      .no-reviews {
+        text-align: center;
+        color: var(--gray);
+        padding: 2rem;
+        background-color: var(--light);
+        border-radius: 12px;
+      }
+
+      .loading-spinner {
+        display: none;
+        text-align: center;
+        padding: 1rem;
+      }
+
+      .spinner {
+        border: 4px solid rgba(0, 0, 0, 0.1);
+        border-radius: 50%;
+        border-top: 4px solid var(--primary);
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+        margin: 0 auto;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      @media (max-width: 768px) {
+        body {
+          padding: 15px;
+        }
+
+        .card {
+          padding: 1.5rem;
+        }
+
+        h1 {
+          font-size: 1.8rem;
+        }
+
+        .rating-star {
+          font-size: 1.8rem;
+        }
+
+        .reviews-header {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 1rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>Kritik & Saran</h1>
+        <p class="description">
+          Masukan Anda sangat berharga bagi kami untuk meningkatkan kualitas
+          pelayanan. Silakan sampaikan pengalaman Anda menggunakan layanan Sejuk
+          Teknik AC.
+        </p>
+      </header>
+
+      <div class="card">
+        <form id="feedback-form">
+          <div class="form-group">
+            <label for="nama" class="required">Nama Lengkap</label>
+            <input type="text" id="nama" required />
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" />
+          </div>
+
+          <div class="form-group">
+            <label for="nohp">Nomor WhatsApp (Opsional)</label>
+            <input type="tel" id="nohp" />
+          </div>
+
+          <div class="form-group">
+            <label for="layanan">Jenis Layanan yang Digunakan</label>
+            <select id="layanan">
+              <option value="">-- Pilih Layanan --</option>
+              <option value="Cuci AC">Cuci AC</option>
+              <option value="Service AC">Service AC</option>
+              <option value="Instalasi AC">Instalasi AC</option>
+              <option value="Bongkar Pasang AC">Bongkar Pasang AC</option>
+              <option value="Sewa AC">Sewa AC</option>
+              <option value="Lainnya">Lainnya</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="required">Rating Pelayanan</label>
+            <div class="rating-container">
+              <i class="fas fa-star rating-star" data-rating="1"></i>
+              <i class="fas fa-star rating-star" data-rating="2"></i>
+              <i class="fas fa-star rating-star" data-rating="3"></i>
+              <i class="fas fa-star rating-star" data-rating="4"></i>
+              <i class="fas fa-star rating-star" data-rating="5"></i>
+            </div>
+            <input type="hidden" id="rating-value" value="0" required />
+          </div>
+
+          <div class="form-group">
+            <label for="kritik" class="required">Kritik & Saran</label>
+            <textarea
+              id="kritik"
+              placeholder="Berikan masukan Anda untuk perbaikan layanan kami..."
+              required
+            ></textarea>
+          </div>
+
+          <button type="button" class="submit-btn" onclick="submitFeedback()">
+            <i class="fas fa-paper-plane"></i> Kirim Feedback
+          </button>
+        </form>
+      </div>
+
+      <div class="thank-you-message" id="thank-you">
+        <i class="fas fa-check-circle"></i>
+        <h2>Terima Kasih Atas Masukan Anda!</h2>
+        <p>
+          Kami sangat menghargai waktu yang Anda luangkan untuk memberikan
+          feedback. Kritik dan saran Anda akan kami gunakan untuk meningkatkan
+          kualitas layanan kami.
+        </p>
+      </div>
+
+      <div class="reviews-container">
+        <div class="reviews-header">
+          <h2 class="reviews-title">Ulasan Pelanggan</h2>
+          <select class="review-sort" id="review-sort" onchange="loadReviews()">
+            <option value="newest">Terbaru</option>
+            <option value="oldest">Terlama</option>
+            <option value="highest">Rating Tertinggi</option>
+            <option value="lowest">Rating Terendah</option>
+          </select>
+        </div>
+
+        <div class="loading-spinner" id="loading-spinner">
+          <div class="spinner"></div>
+          <p>Memuat ulasan...</p>
+        </div>
+
+        <div id="reviews-list">
+          <div class="no-reviews">
+            <i
+              class="fas fa-comment-alt"
+              style="font-size: 2rem; margin-bottom: 1rem"
+            ></i>
+            <p>Belum ada ulasan yang ditampilkan</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Konfigurasi Firebase (Ganti dengan konfigurasi Anda)
+      const firebaseConfig = {
+        apiKey: "AIzaSyDEXAMPLEEXAMPLEEXAMPLE",
+        authDomain: "sejukteknik-ac.firebaseapp.com",
+        projectId: "sejukteknik-ac",
+        storageBucket: "sejukteknik-ac.appspot.com",
+        messagingSenderId: "123456789012",
+        appId: "1:123456789012:web:abc123def456EXAMPLE",
+      };
+
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+      const db = firebase.firestore();
+
+      let selectedRating = 0;
+
+      // Rating star selection
+      const stars = document.querySelectorAll(".rating-star");
+      stars.forEach((star) => {
+        star.addEventListener("click", function () {
+          const rating = parseInt(this.getAttribute("data-rating"));
+          selectedRating = rating;
+          document.getElementById("rating-value").value = rating;
+
+          stars.forEach((s, index) => {
+            if (index < rating) {
+              s.classList.add("active");
+            } else {
+              s.classList.remove("active");
+            }
+          });
+        });
+
+        star.addEventListener("mouseover", function () {
+          const rating = parseInt(this.getAttribute("data-rating"));
+
+          stars.forEach((s, index) => {
+            if (index < rating) {
+              s.style.color = "#FFC107";
+            }
+          });
+        });
+
+        star.addEventListener("mouseout", function () {
+          stars.forEach((s, index) => {
+            if (index >= selectedRating) {
+              s.style.color = "#CBD5E0";
+            }
+          });
+        });
+      });
+
+      async function submitFeedback() {
+        const nama = document.getElementById("nama").value.trim();
+        const nohp = document.getElementById("nohp").value.trim();
+        const kritik = document.getElementById("kritik").value.trim();
+        const rating = document.getElementById("rating-value").value;
+
+        if (!nama || !kritik || rating === "0") {
+          alert("Mohon lengkapi semua field yang wajib diisi.");
+          return;
+        }
+
+        const email = document.getElementById("email").value.trim();
+        const layanan = document.getElementById("layanan").value;
+
+        try {
+          // Tampilkan loading
+          document.getElementById("loading-spinner").style.display = "block";
+
+          // Simpan ke Firestore
+          await db.collection("reviews").add({
+            name: nama.split(" ")[0] + "***", // Menyamarkan nama
+            service: layanan || "Tidak disebutkan",
+            rating: parseInt(rating),
+            review: kritik,
+            date: firebase.firestore.FieldValue.serverTimestamp(),
+            approved: true, // Langsung tampilkan (untuk demo)
+            // Di production, sebaiknya set approved: false dan perlu moderasi
+          });
+
+          // Tampilkan pesan terima kasih
+          document.getElementById("feedback-form").style.display = "none";
+          document.getElementById("thank-you").style.display = "block";
+
+          // Reset form
+          document.getElementById("feedback-form").reset();
+          stars.forEach((star) => star.classList.remove("active"));
+          selectedRating = 0;
+          document.getElementById("rating-value").value = "0";
+
+          // Muat ulang ulasan
+          await loadReviews();
+        } catch (error) {
+          console.error("Error saving review:", error);
+          alert("Terjadi kesalahan saat mengirim ulasan. Silakan coba lagi.");
+        } finally {
+          document.getElementById("loading-spinner").style.display = "none";
+        }
+      }
+
+      // Fungsi untuk memuat ulasan
+      async function loadReviews() {
+        const sortBy = document.getElementById("review-sort").value;
+        let query = db
+          .collection("reviews")
+          .where("approved", "==", true)
+          .limit(20);
+
+        // Atur pengurutan berdasarkan pilihan
+        switch (sortBy) {
+          case "newest":
+            query = query.orderBy("date", "desc");
+            break;
+          case "oldest":
+            query = query.orderBy("date", "asc");
+            break;
+          case "highest":
+            query = query.orderBy("rating", "desc");
+            break;
+          case "lowest":
+            query = query.orderBy("rating", "asc");
+            break;
+        }
+
+        try {
+          document.getElementById("loading-spinner").style.display = "block";
+          const querySnapshot = await query.get();
+
+          const reviewsList = document.getElementById("reviews-list");
+
+          if (querySnapshot.empty) {
+            reviewsList.innerHTML = `
+                        <div class="no-reviews">
+                            <i class="fas fa-comment-alt" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                            <p>Belum ada ulasan yang ditampilkan</p>
+                        </div>
+                    `;
+            return;
+          }
+
+          reviewsList.innerHTML = "";
+
+          querySnapshot.forEach((doc) => {
+            const review = doc.data();
+            const date = review.date ? review.date.toDate() : new Date();
+            const dateString = date.toLocaleDateString("id-ID", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            });
+
+            const reviewCard = document.createElement("div");
+            reviewCard.className = "review-card";
+            reviewCard.innerHTML = `
+                        <div class="review-header">
+                            <span class="review-name">${review.name}</span>
+                            <span class="review-date">${dateString}</span>
+                        </div>
+                        ${
+                          review.service
+                            ? `<span class="review-service">${review.service}</span>`
+                            : ""
+                        }
+                        <div class="review-rating">
+                            ${"★".repeat(review.rating)}${"☆".repeat(
+              5 - review.rating
+            )}
+                        </div>
+                        <div class="review-content">
+                            ${review.review}
+                        </div>
+                    `;
+
+            reviewsList.appendChild(reviewCard);
+          });
+        } catch (error) {
+          console.error("Error loading reviews:", error);
+          alert("Terjadi kesalahan saat memuat ulasan.");
+        } finally {
+          document.getElementById("loading-spinner").style.display = "none";
+        }
+      }
+
+      // Muat ulasan saat halaman dimuat
+      document.addEventListener("DOMContentLoaded", loadReviews);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sejuk Teknik AC | Solusi AC Terbaik</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        background: #f2f2f2;
+        color: #333;
+        scroll-behavior: smooth;
+      }
+
+      header {
+        background-color: #0077cc;
+        color: white;
+        padding: 25px 15px;
+        text-align: center;
+      }
+
+      header h1 {
+        font-size: 3em;
+      }
+
+      nav {
+        background-color: #005fa3;
+        text-align: center;
+        padding: 12px;
+      }
+
+      nav a {
+        color: white;
+        text-decoration: none;
+        margin: 0 15px;
+        font-weight: bold;
+        display: inline-block;
+        transform: scale(1);
+        transition: transform 0.3s ease, color 0.3s;
+      }
+
+      nav a:hover {
+        transform: scale(1.15);
+        color: #ffdd57;
+      }
+
+      .hero {
+        position: relative;
+        color: white;
+        padding: 80px 20px 40px;
+        text-align: center;
+        overflow: hidden;
+        z-index: 1;
+      }
+
+      .hero::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #0077cc, #00c3ff, #0077cc);
+        background-size: 300% 300%;
+        animation: gradakan 12s ease infinite;
+        z-index: 0;
+        opacity: 1;
+      }
+
+      .hero h1,
+      .hero p,
+      .visi-misi {
+        position: relative;
+        z-index: 1;
+      }
+
+      .hero h1 {
+        font-size: 2.5em;
+        animation: fadeInDown 1s ease-out;
+      }
+
+      .visi-misi {
+        max-width: 800px;
+        margin: 20px auto 0;
+        text-align: center;
+      }
+
+      .visi-misi p {
+        color: #e0f2ff;
+      }
+
+      .content {
+        padding: 40px 20px;
+        text-align: center;
+      }
+
+      .cards {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 25px;
+        margin-top: 30px;
+      }
+
+      .card {
+        background: white;
+        width: 300px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        padding: 25px 20px;
+        transition: transform 0.3s, opacity 0.5s;
+        opacity: 0;
+        transform: translateY(30px);
+      }
+
+      .card.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .populer h3::after {
+        content: "  ⭐ Populer";
+        background: linear-gradient(
+          90deg,
+          red,
+          orange,
+          yellow,
+          green,
+          blue,
+          indigo,
+          violet
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        display: inline-block;
+        animation: rainbow 3s infinite linear;
+      }
+
+      .goyang {
+        animation: shake 1s ease-in-out infinite alternate;
+      }
+
+      .card h3 {
+        margin-top: 0;
+        color: #0077cc;
+      }
+
+      .card p {
+        font-size: 14px;
+        color: #555;
+      }
+
+      .btn {
+        margin-top: 15px;
+        display: inline-block;
+        background-color: #0077cc;
+        color: white;
+        padding: 10px 18px;
+        border-radius: 6px;
+        text-decoration: none;
+        transition: background 0.3s;
+      }
+
+      .btn:hover {
+        background-color: #005fa3;
+      }
+
+      footer {
+        background-color: #333;
+        color: white;
+        text-align: center;
+        padding: 30px 20px;
+      }
+
+      @media (max-width: 768px) {
+        .cards {
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .card {
+          width: 90%;
+        }
+      }
+
+      @keyframes fadeInDown {
+        0% {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes shake {
+        0% {
+          transform: rotate(0deg);
+        }
+        25% {
+          transform: rotate(-3deg);
+        }
+        50% {
+          transform: rotate(3deg);
+        }
+        75% {
+          transform: rotate(-2deg);
+        }
+        100% {
+          transform: rotate(2deg);
+        }
+      }
+
+      @keyframes rainbow {
+        0% {
+          filter: hue-rotate(0deg);
+        }
+        100% {
+          filter: hue-rotate(360deg);
+        }
+      }
+
+      @keyframes gradakan {
+        0% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Sejuk Teknik AC</h1>
+      <p>Solusi AC & Kelistrikan Profesional</p>
+    </header>
+
+    <nav>
+      <a href="index.html">Beranda</a>
+      <a href="layanan.html">Layanan</a>
+      <a href="tentang.html">Tentang</a>
+      <a href="kontak.html">Kontak</a>
+      <a href="faq.html">FAQ</a>
+      <a href="kritik-saran.html">Kritik & Saran</a>
+      <a href="https://maps.app.goo.gl/uTFSMLiKuWcCRUMa6" target="_blank"
+        >Titik Toko</a
+      >
+    </nav>
+
+    <section class="hero">
+      <h1>Layanan AC & Electrical</h1>
+      <p>Pilih layanan sesuai kebutuhan Anda!</p>
+      <div class="visi-misi">
+        <p>
+          Menjadi solusi terbaik di bidang AC dan listrik dengan layanan
+          profesional, cepat, dan terpercaya.
+        </p>
+        <p>
+          Memberikan layanan berkualitas tinggi, menjaga kepuasan pelanggan,
+          serta meningkatkan keahlian tim teknisi secara berkelanjutan.
+        </p>
+      </div>
+    </section>
+
+    <section id="layanan" class="content">
+      <h2>Layanan Kami</h2>
+      <div class="cards">
+        <div class="card populer goyang">
+          <h3>Service / Cuci AC</h3>
+          <p>
+            Cuci AC berkala agar tetap dingin dan hemat listrik. Mulai Rp70.000
+          </p>
+          <a href="cuci-ac.html" class="btn">Cuci AC Sekarang</a>
+        </div>
+
+        <div class="card">
+          <h3>Instalasi AC</h3>
+          <p>
+            Pemasangan unit AC dengan teknisi berpengalaman dan alat lengkap.
+          </p>
+          <a href="instalasi-ac.html" class="btn">Pasang Sekarang</a>
+        </div>
+
+        <div class="card">
+          <h3>Repair / Perbaikan AC</h3>
+          <p>Perbaikan AC tidak dingin, bocor, atau kerusakan komponen.</p>
+          <a href="repair-ac.html" class="btn">Perbaiki Sekarang</a>
+        </div>
+
+        <div class="card">
+          <h3>Bongkar Pasang AC</h3>
+          <p>Pindahkan AC ke lokasi baru dengan aman dan rapi.</p>
+          <a href="bongkar-pasang.html" class="btn">Pesan Sekarang</a>
+        </div>
+
+        <div class="card">
+          <h3>Kontrak Perawatan AC</h3>
+          <p>Jasa maintenance rutin untuk kantor, sekolah, atau gedung.</p>
+          <a href="kontrak-ac.html" class="btn">Ajukan Sekarang</a>
+        </div>
+
+        <div class="card populer goyang">
+          <h3>Sewa AC</h3>
+          <p>Sewa AC Split untuk rumah/toko dan gedung mulai Rp190.000.</p>
+          <a href="sewa-ac.html" class="btn">Sewa Sekarang</a>
+        </div>
+
+        <div class="card">
+          <h3>Panel Kontrol Motor</h3>
+          <p>Pembuatan panel kontrol motor listrik 3 phase dan 1 phase.</p>
+          <a href="panel-motor.html" class="btn">Buat Sekarang</a>
+        </div>
+
+        <div class="card">
+          <h3>Panel Distribusi & Lampu</h3>
+          <p>Pemasangan panel distribusi listrik dan panel lampu gedung.</p>
+          <a href="panel-distribusi.html" class="btn">Pesan Sekarang</a>
+        </div>
+
+        <div class="card">
+          <h3>Gulung Dinamo</h3>
+          <p>Servis gulung ulang dinamo motor listrik dengan garansi.</p>
+          <a href="gulung-dinamo.html" class="btn">Servis Sekarang</a>
+        </div>
+      </div>
+    </section>
+
+    <footer id="kontak">
+      <h3>Kontak Kami</h3>
+      <p>
+        Klik tombol di bawah ini untuk langsung menghubungi kami via WhatsApp.
+      </p>
+      <a class="btn" href="https://wa.me/6285817818216" target="_blank"
+        >Hubungi via WhatsApp</a
+      >
+      <p style="margin-top: 20px">
+        &copy; 2025 Sejuk Teknik AC. Semua hak dilindungi.
+      </p>
+    </footer>
+
+    <script>
+      const cards = document.querySelectorAll(".card");
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("visible");
+            }
+          });
+        },
+        { threshold: 0.2 }
+      );
+
+      cards.forEach((card) => observer.observe(card));
+    </script>
+  </body>
+</html>

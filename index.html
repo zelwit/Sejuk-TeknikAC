@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sejuk Teknik AC | Solusi AC Terbaik</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family: "Rubik", sans-serif;
+        background: #f6f9fc;
+        color: #333;
+      }
+      header {
+        background: linear-gradient(135deg, #0077cc, #00c3ff);
+        color: white;
+        padding: 40px 20px;
+        text-align: center;
+      }
+      header h1 {
+        margin: 0;
+        font-size: 2.8em;
+        font-weight: 600;
+      }
+      header p {
+        font-size: 1.2em;
+        margin-top: 10px;
+      }
+      nav {
+        background: #004f88;
+        text-align: center;
+        padding: 12px 0;
+      }
+      nav a {
+        color: white;
+        margin: 0 15px;
+        text-decoration: none;
+        font-weight: bold;
+        transition: color 0.3s;
+      }
+      nav a:hover {
+        color: #ffdd57;
+      }
+
+      .hero {
+        background: linear-gradient(145deg, #00aaff, #0077cc);
+        color: white;
+        text-align: center;
+        padding: 60px 20px;
+        animation: fadeIn 1s ease-out;
+      }
+      .hero h1 {
+        font-size: 2.5em;
+        margin-bottom: 10px;
+      }
+      .hero p {
+        font-size: 1.1em;
+      }
+
+      .visi-misi {
+        margin: 30px auto 0;
+        max-width: 750px;
+        text-align: center;
+      }
+
+      .visi-misi p {
+        color: #eaf6ff;
+        font-size: 1.1em;
+        line-height: 1.6;
+      }
+
+      .content {
+        padding: 50px 20px;
+        text-align: center;
+      }
+
+      .content h2 {
+        font-size: 2em;
+        margin-bottom: 30px;
+      }
+
+      .cards {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 25px;
+      }
+
+      .card {
+        background: white;
+        width: 300px;
+        padding: 25px;
+        border-radius: 14px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+        transition: transform 0.3s, opacity 0.5s;
+        opacity: 0;
+        transform: translateY(30px);
+      }
+
+      .card.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .card h3 {
+        margin-top: 0;
+        color: #0077cc;
+      }
+
+      .btn {
+        margin-top: 20px;
+        display: inline-block;
+        background-color: #0077cc;
+        color: white;
+        padding: 12px 24px;
+        border-radius: 6px;
+        text-decoration: none;
+        transition: background 0.3s;
+      }
+
+      .btn:hover {
+        background-color: #005fa3;
+      }
+
+      footer {
+        background: #333;
+        color: white;
+        text-align: center;
+        padding: 30px 20px;
+        margin-top: 40px;
+      }
+
+      @media (max-width: 768px) {
+        .cards {
+          flex-direction: column;
+        }
+        .card {
+          width: 90%;
+        }
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Sejuk Teknik AC</h1>
+      <p>Solusi AC dan Kelistrikan Profesional</p>
+    </header>
+
+    <nav>
+      <a href="index.html">Beranda</a>
+      <a href="layanan.html">Layanan</a>
+      <a href="tentang.html">Tentang</a>
+      <a href="kontak.html">Kontak</a>
+      <a href="faq.html">FAQ</a>
+      <a href="kritik-saran.html">Kritik & Saran</a>
+      <a href="https://maps.app.goo.gl/uTFSMLiKuWcCRUMa6" target="_blank"
+        >Titik Toko</a
+      >
+    </nav>
+
+    <section class="hero">
+      <h1>Selamat Datang di Sejuk Teknik AC</h1>
+      <p>Layanan terpercaya & profesional untuk rumah dan tempat usaha Anda</p>
+      <div class="visi-misi">
+        <p>
+          Kami siap memberikan solusi terbaik dalam pemasangan, perawatan, dan
+          service AC serta instalasi kelistrikan, didukung teknisi berpengalaman
+          dan harga transparan.
+        </p>
+      </div>
+    </section>
+
+    <section class="content">
+      <h2>Mengapa Memilih Kami?</h2>
+      <div class="cards">
+        <div class="card">
+          <h3>🔧 Teknisi Handal</h3>
+          <p>
+            Teknisi kami berpengalaman lebih dari 5 tahun dan bersertifikat.
+          </p>
+        </div>
+        <div class="card">
+          <h3>💰 Harga Transparan</h3>
+          <p>
+            Tidak ada biaya tersembunyi. Semua harga jelas sejak awal pemesanan.
+          </p>
+        </div>
+        <div class="card">
+          <h3>⚡ Pelayanan Cepat</h3>
+          <p>Respons cepat via WhatsApp & pengerjaan efisien.</p>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <h3>Hubungi Kami</h3>
+      <p>
+        Butuh bantuan cepat? Klik tombol di bawah untuk terhubung via WhatsApp.
+      </p>
+      <a class="btn" href="https://wa.me/6285817818216" target="_blank"
+        >Chat WhatsApp</a
+      >
+      <p style="margin-top: 20px">
+        &copy; 2025 Sejuk Teknik AC. All rights reserved.
+      </p>
+    </footer>
+
+    <script>
+      const cards = document.querySelectorAll(".card");
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("visible");
+            }
+          });
+        },
+        { threshold: 0.2 }
+      );
+      cards.forEach((card) => observer.observe(card));
+    </script>
+  </body>
+</html>

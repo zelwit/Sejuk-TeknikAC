@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Form Sewa AC | Sejuk Teknik AC</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Poppins", sans-serif;
+        background: linear-gradient(to bottom right, #e0f7fa, #ffffff);
+        color: #333;
+        padding: 20px;
+      }
+
+      h1 {
+        text-align: center;
+        color: #0077cc;
+        animation: fadeInDown 0.6s ease-out;
+      }
+
+      @keyframes fadeInDown {
+        from {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      form {
+        max-width: 700px;
+        margin: 30px auto;
+        background: white;
+        padding: 30px;
+        border-radius: 16px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        animation: fadeInUp 0.6s ease-out;
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      label {
+        display: block;
+        margin-bottom: 6px;
+        font-weight: 600;
+      }
+
+      input,
+      textarea,
+      select {
+        width: 100%;
+        padding: 12px;
+        margin-bottom: 20px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        font-size: 16px;
+        transition: border-color 0.3s;
+      }
+
+      input:focus,
+      select:focus,
+      textarea:focus {
+        border-color: #0077cc;
+        outline: none;
+      }
+
+      input[type="file"] {
+        padding: 6px;
+      }
+
+      button {
+        background-color: #0077cc;
+        color: white;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 10px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+
+      button:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+      }
+
+      button:hover:not(:disabled) {
+        background-color: #005fa3;
+      }
+
+      .info-box {
+        max-width: 700px;
+        margin: 30px auto;
+        background: #fffbe6;
+        padding: 20px;
+        border-left: 6px solid #ffc107;
+        border-radius: 12px;
+      }
+
+      .info-box h3 {
+        margin-top: 0;
+        color: #b36b00;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Form Pemesanan Sewa AC</h1>
+
+    <form id="form-pesanan">
+      <label for="nama">Nama Lengkap</label>
+      <input type="text" id="nama" required />
+
+      <label for="alamat_ktp">Alamat Sesuai KTP</label>
+      <input type="text" id="alamat_ktp" required />
+
+      <label for="alamat_pasang">Alamat Pemasangan</label>
+      <input type="text" id="alamat_pasang" required />
+
+      <label for="foto_ktp">Foto KTP</label>
+      <input type="file" id="foto_ktp" accept="image/*" required />
+
+      <label for="foto_selfie">Foto Selfie dengan Memegang KTP</label>
+      <input type="file" id="foto_selfie" accept="image/*" required />
+
+      <label for="kontak_darurat">Kontak Darurat</label>
+      <input type="text" id="kontak_darurat" required />
+
+      <label for="kontak_pemilik">Kontak Pemilik Kost/Kontrakan</label>
+      <input type="text" id="kontak_pemilik" required />
+
+      <label for="luas">Luas Ruangan (m²)</label>
+      <input type="number" id="luas" required />
+
+      <label for="kapasitas">Kapasitas AC yang Diinginkan</label>
+      <select id="kapasitas" required>
+        <option value="">-- Pilih Kapasitas --</option>
+        <option value="1/2 PK">1/2 PK</option>
+        <option value="3/4 PK">3/4 PK</option>
+        <option value="1 PK">1 PK</option>
+        <option value="1.5 PK">1.5 PK</option>
+        <option value="2 PK">2 PK</option>
+      </select>
+
+      <button type="button" id="submitBtn" onclick="kirimKeWhatsApp()" disabled>
+        Kirim Pemesanan
+      </button>
+    </form>
+
+    <div class="info-box">
+      <h3>Biaya Awal Pemasangan AC 1/2pk - 1pk (Baru / Second)</h3>
+      <p>
+        <strong>AC Second</strong><br />Total: Rp540.000,-<br />Rincian:<br />-
+        Instalasi: Rp350.000,-<br />- Sewa AC Pertama: Rp190.000,- (unit second)
+      </p>
+      <p>
+        <strong>AC Baru</strong><br />Total: Rp600.000,-<br />Rincian:<br />-
+        Instalasi: Rp350.000,-<br />- Sewa AC Pertama: Rp250.000,- (unit baru)
+      </p>
+
+      <h3>Biaya Awal Pemasangan AC 1.5pk - 2pk (Baru / Second)</h3>
+      <p>
+        <strong>AC Second</strong><br />Total: Rp850.000,-<br />Rincian:<br />-
+        Instalasi: Rp500.000,-<br />- Sewa AC Pertama: Rp350.000,- (unit second)
+      </p>
+      <p>
+        <strong>AC Baru</strong><br />Total: Rp950.000,-<br />Rincian:<br />-
+        Instalasi: Rp500.000,-<br />- Sewa AC Pertama: Rp450.000,- (unit baru)
+      </p>
+    </div>
+
+    <script>
+      const form = document.getElementById("form-pesanan");
+      const button = document.getElementById("submitBtn");
+
+      form.addEventListener("input", () => {
+        const isValid = form.checkValidity();
+        button.disabled = !isValid;
+      });
+
+      function kirimKeWhatsApp() {
+        const nama = document.getElementById("nama").value;
+        const alamatKTP = document.getElementById("alamat_ktp").value;
+        const alamatPasang = document.getElementById("alamat_pasang").value;
+        const kontakDarurat = document.getElementById("kontak_darurat").value;
+        const kontakPemilik = document.getElementById("kontak_pemilik").value;
+        const luas = document.getElementById("luas").value;
+        const kapasitas = document.getElementById("kapasitas").value;
+
+        const pesan =
+          `*Form Pemesanan Sewa AC*\n\n` +
+          `*Nama:* ${nama}\n` +
+          `*Alamat sesuai KTP:* ${alamatKTP}\n` +
+          `*Alamat Pemasangan:* ${alamatPasang}\n` +
+          `*Kontak Darurat:* ${kontakDarurat}\n` +
+          `*Kontak Pemilik Kost/Kontrakan:* ${kontakPemilik}\n` +
+          `*Luas Ruangan:* ${luas} m²\n` +
+          `*Kapasitas AC:* ${kapasitas}\n\n` +
+          `*Catatan:* Silakan kirim foto KTP & selfie secara manual di chat ini.`;
+
+        const encoded = encodeURIComponent(pesan);
+        const waLink = `https://wa.me/6285817818216?text=${encoded}`;
+        window.open(waLink, "_blank");
+      }
+    </script>
+  </body>
+</html>

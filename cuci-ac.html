@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Layanan Cuci / Service AC | Sejuk Teknik</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Poppins", sans-serif;
+        background: #f2f7fa;
+        margin: 0;
+        padding: 20px;
+      }
+
+      h1 {
+        text-align: center;
+        color: #0077cc;
+      }
+
+      .card {
+        max-width: 600px;
+        margin: 30px auto;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        padding: 30px;
+      }
+
+      .options {
+        display: flex;
+        justify-content: space-around;
+        margin-bottom: 20px;
+      }
+
+      .options button {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 8px;
+        font-weight: bold;
+        font-size: 16px;
+        background: #0077cc;
+        color: white;
+        cursor: pointer;
+        transition: background 0.3s, transform 0.2s;
+      }
+
+      .options button:hover {
+        background: #005fa3;
+        transform: scale(1.05);
+      }
+
+      form {
+        display: none;
+        margin-top: 20px;
+        animation: fadeIn 0.5s ease forwards;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      label {
+        display: block;
+        margin-bottom: 6px;
+        font-weight: 600;
+      }
+
+      input,
+      textarea,
+      select {
+        width: 100%;
+        padding: 12px;
+        margin-bottom: 20px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font-size: 16px;
+      }
+
+      #keluhan-area,
+      #freon-area {
+        display: none;
+      }
+
+      button.submit {
+        background-color: #0077cc;
+        color: white;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        cursor: pointer;
+      }
+
+      button.submit:hover {
+        background-color: #005fa3;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Layanan Cuci / Service AC</h1>
+
+    <div class="card">
+      <div class="options">
+        <button onclick="pilih('cuci')">Cuci AC</button>
+        <button onclick="pilih('service')">Service AC</button>
+      </div>
+
+      <form id="form-layanan">
+        <label for="nama">Nama Lengkap</label>
+        <input type="text" id="nama" required />
+
+        <label for="alamat">Alamat Lengkap</label>
+        <input type="text" id="alamat" required />
+
+        <label for="nohp">No WhatsApp</label>
+        <input type="tel" id="nohp" required />
+
+        <label for="jenis">Jenis AC</label>
+        <select id="jenis" required>
+          <option value="">-- Pilih Jenis --</option>
+          <option value="1/2 PK">1/2 PK</option>
+          <option value="3/4 PK">3/4 PK</option>
+          <option value="1 PK">1 PK</option>
+          <option value="1.5 PK">1.5 PK</option>
+          <option value="2 PK">2 PK</option>
+        </select>
+
+        <div id="keluhan-area">
+          <label for="keluhan">Keluhan / Masalah</label>
+          <textarea id="keluhan" rows="4"></textarea>
+        </div>
+
+        <div id="freon-area">
+          <label for="freon">Jenis Freon</label>
+          <select id="freon">
+            <option value="">-- Pilih Freon --</option>
+            <option value="R22">R22</option>
+            <option value="R32">R32</option>
+            <option value="R410A">R410A</option>
+          </select>
+        </div>
+
+        <button type="button" class="submit" onclick="kirim()">
+          Kirim Pemesanan
+        </button>
+      </form>
+    </div>
+
+    <script>
+      let jenisLayanan = "";
+
+      function pilih(tipe) {
+        jenisLayanan = tipe;
+        const form = document.getElementById("form-layanan");
+        const keluhan = document.getElementById("keluhan-area");
+        const freon = document.getElementById("freon-area");
+
+        form.style.display = "block";
+        keluhan.style.display = tipe === "service" ? "block" : "none";
+        freon.style.display = tipe === "service" ? "block" : "none";
+      }
+
+      function kirim() {
+        const nama = document.getElementById("nama").value.trim();
+        const alamat = document.getElementById("alamat").value.trim();
+        const nohp = document.getElementById("nohp").value.trim();
+        const jenis = document.getElementById("jenis").value;
+        const keluhan = document.getElementById("keluhan").value.trim();
+        const freon = document.getElementById("freon").value;
+
+        if (
+          !nama ||
+          !alamat ||
+          !nohp ||
+          !jenis ||
+          (jenisLayanan === "service" && (!keluhan || !freon))
+        ) {
+          alert("Mohon lengkapi semua data terlebih dahulu.");
+          return;
+        }
+
+        const pesan =
+          `*Form Pemesanan ${
+            jenisLayanan === "cuci" ? "Cuci AC" : "Service AC"
+          }*\n\n` +
+          `*Nama:* ${nama}\n` +
+          `*Alamat:* ${alamat}\n` +
+          `*No HP:* ${nohp}\n` +
+          `*Jenis AC:* ${jenis}\n` +
+          (jenisLayanan === "service"
+            ? `*Keluhan:* ${keluhan}\n*Freon:* ${freon}\n`
+            : "");
+
+        const waLink = `https://wa.me/6285817818216?text=${encodeURIComponent(
+          pesan
+        )}`;
+        window.open(waLink, "_blank");
+      }
+    </script>
+  </body>
+</html>

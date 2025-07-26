@@ -3,59 +3,113 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Layanan Cuci / Service AC | Sejuk Teknik</title>
+    <title>Layanan Cuci/Service AC | Sejuk Teknik</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
     <style>
+      :root {
+        --primary: #0066cc;
+        --primary-light: #e6f2ff;
+        --secondary: #ff7a00;
+        --dark: #2d3748;
+        --light: #f8fafc;
+        --gray: #718096;
+        --white: #ffffff;
+        --success: #38a169;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
       body {
         font-family: "Poppins", sans-serif;
-        background: #f2f7fa;
-        margin: 0;
+        background: linear-gradient(135deg, #f0f9ff, #ffffff);
+        color: var(--dark);
+        line-height: 1.6;
         padding: 20px;
+        min-height: 100vh;
+      }
+
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
       }
 
       h1 {
         text-align: center;
-        color: #0077cc;
+        color: var(--primary);
+        margin: 2rem 0;
+        font-size: 2.2rem;
+        font-weight: 600;
+        position: relative;
+      }
+
+      h1::after {
+        content: "";
+        position: absolute;
+        width: 80px;
+        height: 4px;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: linear-gradient(90deg, var(--primary), var(--secondary));
+        border-radius: 2px;
       }
 
       .card {
-        max-width: 600px;
-        margin: 30px auto;
-        background: white;
-        border-radius: 12px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        padding: 30px;
+        background: var(--white);
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        padding: 2.5rem;
+        margin: 2rem auto;
       }
 
       .options {
         display: flex;
-        justify-content: space-around;
-        margin-bottom: 20px;
+        justify-content: center;
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
       }
 
       .options button {
-        padding: 12px 24px;
+        padding: 1rem 2rem;
         border: none;
         border-radius: 8px;
-        font-weight: bold;
-        font-size: 16px;
-        background: #0077cc;
-        color: white;
+        font-weight: 600;
+        font-size: 1rem;
+        background: var(--primary);
+        color: var(--white);
         cursor: pointer;
-        transition: background 0.3s, transform 0.2s;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        box-shadow: 0 4px 6px rgba(0, 102, 204, 0.1);
       }
 
       .options button:hover {
-        background: #005fa3;
-        transform: scale(1.05);
+        background: #0052a3;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 8px rgba(0, 102, 204, 0.15);
+      }
+
+      .options button i {
+        font-size: 1.2rem;
       }
 
       form {
         display: none;
-        margin-top: 20px;
         animation: fadeIn 0.5s ease forwards;
       }
 
@@ -70,21 +124,45 @@
         }
       }
 
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+
       label {
         display: block;
-        margin-bottom: 6px;
-        font-weight: 600;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: var(--dark);
+      }
+
+      .required::after {
+        content: " *";
+        color: #e53e3e;
       }
 
       input,
       textarea,
       select {
         width: 100%;
-        padding: 12px;
-        margin-bottom: 20px;
-        border: 1px solid #ccc;
+        padding: 0.8rem 1rem;
+        border: 1px solid #e2e8f0;
         border-radius: 8px;
-        font-size: 16px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background-color: var(--light);
+      }
+
+      input:focus,
+      select:focus,
+      textarea:focus {
+        border-color: var(--primary);
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+      }
+
+      textarea {
+        min-height: 120px;
+        resize: vertical;
       }
 
       #keluhan-area,
@@ -92,69 +170,176 @@
         display: none;
       }
 
-      button.submit {
-        background-color: #0077cc;
-        color: white;
-        padding: 12px 20px;
+      .submit-btn {
+        background-color: var(--primary);
+        color: var(--white);
+        padding: 0.8rem 2rem;
         border: none;
         border-radius: 8px;
-        font-size: 16px;
+        font-size: 1rem;
+        font-weight: 500;
         cursor: pointer;
+        transition: all 0.3s ease;
+        width: 100%;
+        box-shadow: 0 4px 6px rgba(0, 102, 204, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
       }
 
-      button.submit:hover {
-        background-color: #005fa3;
+      .submit-btn:hover {
+        background-color: #0052a3;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 8px rgba(0, 102, 204, 0.15);
+      }
+
+      .submit-btn i {
+        font-size: 1.2rem;
+      }
+
+      .price-info {
+        background-color: var(--primary-light);
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-top: 2rem;
+      }
+
+      .price-info h3 {
+        color: var(--primary);
+        margin-bottom: 1rem;
+        font-size: 1.1rem;
+      }
+
+      .price-info ul {
+        list-style-type: none;
+      }
+
+      .price-info li {
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+      }
+
+      .price-info li i {
+        color: var(--success);
+        margin-right: 0.5rem;
+      }
+
+      @media (max-width: 768px) {
+        body {
+          padding: 15px;
+        }
+
+        .card {
+          padding: 1.5rem;
+        }
+
+        h1 {
+          font-size: 1.8rem;
+          margin: 1.5rem 0;
+        }
+
+        .options {
+          flex-direction: column;
+          gap: 1rem;
+        }
+
+        .options button {
+          width: 100%;
+          justify-content: center;
+        }
       }
     </style>
   </head>
   <body>
-    <h1>Layanan Cuci / Service AC</h1>
+    <div class="container">
+      <h1>Layanan Cuci / Service AC</h1>
 
-    <div class="card">
-      <div class="options">
-        <button onclick="pilih('cuci')">Cuci AC</button>
-        <button onclick="pilih('service')">Service AC</button>
+      <div class="card">
+        <div class="options">
+          <button onclick="pilih('cuci')">
+            <i class="fas fa-snowflake"></i> Cuci AC
+          </button>
+          <button onclick="pilih('service')">
+            <i class="fas fa-tools"></i> Service AC
+          </button>
+        </div>
+
+        <form id="form-layanan">
+          <div class="form-group">
+            <label for="nama" class="required">Nama Lengkap</label>
+            <input type="text" id="nama" required />
+          </div>
+
+          <div class="form-group">
+            <label for="alamat" class="required">Alamat Lengkap</label>
+            <input type="text" id="alamat" required />
+          </div>
+
+          <div class="form-group">
+            <label for="nohp" class="required">No WhatsApp</label>
+            <input type="tel" id="nohp" required />
+          </div>
+
+          <div class="form-group">
+            <label for="jenis" class="required">Jenis AC</label>
+            <select id="jenis" required>
+              <option value="">-- Pilih Jenis --</option>
+              <option value="1/2 PK">1/2 PK</option>
+              <option value="3/4 PK">3/4 PK</option>
+              <option value="1 PK">1 PK</option>
+              <option value="1.5 PK">1.5 PK</option>
+              <option value="2 PK">2 PK</option>
+            </select>
+          </div>
+
+          <div id="keluhan-area">
+            <div class="form-group">
+              <label for="keluhan" class="required">Keluhan / Masalah</label>
+              <textarea id="keluhan" rows="4" required></textarea>
+            </div>
+          </div>
+
+          <div id="freon-area">
+            <div class="form-group">
+              <label for="freon" class="required">Jenis Freon</label>
+              <select id="freon" required>
+                <option value="">-- Pilih Freon --</option>
+                <option value="R22">R22</option>
+                <option value="R32">R32</option>
+                <option value="R410A">R410A</option>
+              </select>
+            </div>
+          </div>
+
+          <button type="button" class="submit-btn" onclick="kirim()">
+            <i class="fab fa-whatsapp"></i> Kirim Pemesanan
+          </button>
+        </form>
+
+        <div class="price-info">
+          <h3><i class="fas fa-info-circle"></i> Informasi Harga</h3>
+          <ul>
+            <li>
+              <i class="fas fa-check-circle"></i> Cuci AC Standar: Rp70.000 -
+              Rp120.000
+            </li>
+            <li>
+              <i class="fas fa-check-circle"></i> Service Ringan: Rp150.000 -
+              Rp300.000
+            </li>
+            <li>
+              <i class="fas fa-check-circle"></i> Tambah Freon: Rp100.000 -
+              Rp250.000
+            </li>
+            <li>
+              <i class="fas fa-check-circle"></i> Perbaikan Komponen: Mulai
+              Rp200.000
+            </li>
+          </ul>
+        </div>
       </div>
-
-      <form id="form-layanan">
-        <label for="nama">Nama Lengkap</label>
-        <input type="text" id="nama" required />
-
-        <label for="alamat">Alamat Lengkap</label>
-        <input type="text" id="alamat" required />
-
-        <label for="nohp">No WhatsApp</label>
-        <input type="tel" id="nohp" required />
-
-        <label for="jenis">Jenis AC</label>
-        <select id="jenis" required>
-          <option value="">-- Pilih Jenis --</option>
-          <option value="1/2 PK">1/2 PK</option>
-          <option value="3/4 PK">3/4 PK</option>
-          <option value="1 PK">1 PK</option>
-          <option value="1.5 PK">1.5 PK</option>
-          <option value="2 PK">2 PK</option>
-        </select>
-
-        <div id="keluhan-area">
-          <label for="keluhan">Keluhan / Masalah</label>
-          <textarea id="keluhan" rows="4"></textarea>
-        </div>
-
-        <div id="freon-area">
-          <label for="freon">Jenis Freon</label>
-          <select id="freon">
-            <option value="">-- Pilih Freon --</option>
-            <option value="R22">R22</option>
-            <option value="R32">R32</option>
-            <option value="R410A">R410A</option>
-          </select>
-        </div>
-
-        <button type="button" class="submit" onclick="kirim()">
-          Kirim Pemesanan
-        </button>
-      </form>
     </div>
 
     <script>
@@ -169,6 +354,12 @@
         form.style.display = "block";
         keluhan.style.display = tipe === "service" ? "block" : "none";
         freon.style.display = tipe === "service" ? "block" : "none";
+
+        // Reset form saat ganti pilihan
+        if (tipe === "cuci") {
+          document.getElementById("keluhan").value = "";
+          document.getElementById("freon").value = "";
+        }
       }
 
       function kirim() {
@@ -186,7 +377,7 @@
           !jenis ||
           (jenisLayanan === "service" && (!keluhan || !freon))
         ) {
-          alert("Mohon lengkapi semua data terlebih dahulu.");
+          alert("Mohon lengkapi semua data yang wajib diisi.");
           return;
         }
 
@@ -200,7 +391,8 @@
           `*Jenis AC:* ${jenis}\n` +
           (jenisLayanan === "service"
             ? `*Keluhan:* ${keluhan}\n*Freon:* ${freon}\n`
-            : "");
+            : "") +
+          `\n*Harga:* Akan dikonfirmasi oleh admin setelah verifikasi data`;
 
         const waLink = `https://wa.me/6285817818216?text=${encodeURIComponent(
           pesan

@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Form Sewa AC | Sejuk Teknik AC</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <style>
+      :root {
+        --primary: #0066cc;
+        --primary-light: #e6f2ff;
+        --secondary: #ff7a00;
+        --dark: #2d3748;
+        --light: #f8fafc;
+        --gray: #718096;
+        --white: #ffffff;
+        --warning: #fff8e6;
+        --warning-border: #ffc107;
+        --warning-text: #b36b00;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: "Poppins", sans-serif;
+        background: linear-gradient(135deg, #f0f9ff, #ffffff);
+        color: var(--dark);
+        line-height: 1.6;
+        padding: 20px;
+        min-height: 100vh;
+      }
+
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+      }
+
+      h1 {
+        text-align: center;
+        color: var(--primary);
+        margin: 2rem 0;
+        font-size: 2.2rem;
+        font-weight: 600;
+        position: relative;
+        animation: fadeInDown 0.6s ease-out;
+      }
+
+      h1::after {
+        content: "";
+        position: absolute;
+        width: 80px;
+        height: 4px;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: linear-gradient(90deg, var(--primary), var(--secondary));
+        border-radius: 2px;
+      }
+
+      @keyframes fadeInDown {
+        from {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      form {
+        background: var(--white);
+        padding: 2.5rem;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        margin-bottom: 2rem;
+        animation: fadeInUp 0.6s ease-out;
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: var(--dark);
+      }
+
+      .required::after {
+        content: " *";
+        color: #e53e3e;
+      }
+
+      input,
+      textarea,
+      select {
+        width: 100%;
+        padding: 0.8rem 1rem;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background-color: var(--light);
+      }
+
+      input:focus,
+      select:focus,
+      textarea:focus {
+        border-color: var(--primary);
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+      }
+
+      input[type="file"] {
+        padding: 0.5rem;
+        background-color: transparent;
+      }
+
+      .file-input-wrapper {
+        position: relative;
+        overflow: hidden;
+        display: inline-block;
+        width: 100%;
+      }
+
+      .file-input-button {
+        border: 1px dashed #cbd5e0;
+        border-radius: 8px;
+        padding: 1.5rem;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background-color: var(--light);
+      }
+
+      .file-input-button:hover {
+        border-color: var(--primary);
+        background-color: var(--primary-light);
+      }
+
+      .file-input-button i {
+        font-size: 1.5rem;
+        color: var(--primary);
+        margin-bottom: 0.5rem;
+        display: block;
+      }
+
+      .file-input-button span {
+        color: var(--gray);
+        font-size: 0.9rem;
+      }
+
+      input[type="file"] {
+        position: absolute;
+        left: 0;
+        top: 0;
+        opacity: 0;
+        width: 100%;
+        height: 100%;
+        cursor: pointer;
+      }
+
+      button {
+        background-color: var(--primary);
+        color: var(--white);
+        padding: 0.8rem 2rem;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        width: 100%;
+        box-shadow: 0 4px 6px rgba(0, 102, 204, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+      }
+
+      button:disabled {
+        background-color: #cbd5e0;
+        cursor: not-allowed;
+        box-shadow: none;
+      }
+
+      button:not(:disabled):hover {
+        background-color: #0052a3;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 8px rgba(0, 102, 204, 0.15);
+      }
+
+      .info-box {
+        background-color: var(--warning);
+        border-left: 4px solid var(--warning-border);
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+      }
+
+      .info-box h3 {
+        color: var(--warning-text);
+        margin-bottom: 1rem;
+        font-size: 1.1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .info-box h3 i {
+        font-size: 1.2rem;
+      }
+
+      .info-box p {
+        margin-bottom: 1rem;
+        color: var(--dark);
+        font-size: 0.95rem;
+      }
+
+      .info-box strong {
+        color: var(--warning-text);
+      }
+
+      .price-section {
+        background-color: var(--primary-light);
+        border-radius: 8px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+      }
+
+      .price-section p {
+        margin-bottom: 0.5rem;
+      }
+
+      @media (max-width: 768px) {
+        body {
+          padding: 15px;
+        }
+
+        form {
+          padding: 1.5rem;
+        }
+
+        h1 {
+          font-size: 1.8rem;
+          margin: 1.5rem 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Form Pemesanan Sewa AC</h1>
+
+      <form id="form-pesanan">
+        <div class="form-group">
+          <label for="nama" class="required">Nama Lengkap</label>
+          <input type="text" id="nama" required />
+        </div>
+
+        <div class="form-group">
+          <label for="alamat_ktp" class="required">Alamat Sesuai KTP</label>
+          <input type="text" id="alamat_ktp" required />
+        </div>
+
+        <div class="form-group">
+          <label for="alamat_pasang" class="required">Alamat Pemasangan</label>
+          <input type="text" id="alamat_pasang" required />
+        </div>
+
+        <div class="form-group">
+          <label for="foto_ktp" class="required">Foto KTP</label>
+          <div class="file-input-wrapper">
+            <div class="file-input-button">
+              <i class="fas fa-camera"></i>
+              <span>Klik untuk mengunggah foto KTP</span>
+            </div>
+            <input type="file" id="foto_ktp" accept="image/*" required />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="foto_selfie" class="required"
+            >Foto Selfie dengan Memegang KTP</label
+          >
+          <div class="file-input-wrapper">
+            <div class="file-input-button">
+              <i class="fas fa-user-circle"></i>
+              <span>Klik untuk mengunggah foto selfie dengan KTP</span>
+            </div>
+            <input type="file" id="foto_selfie" accept="image/*" required />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="kontak_darurat" class="required">Kontak Darurat</label>
+          <input type="text" id="kontak_darurat" required />
+        </div>
+
+        <div class="form-group">
+          <label for="kontak_pemilik" class="required"
+            >Kontak Pemilik Kost/Kontrakan</label
+          >
+          <input type="text" id="kontak_pemilik" required />
+        </div>
+
+        <div class="form-group">
+          <label for="luas" class="required">Luas Ruangan (m²)</label>
+          <input type="number" id="luas" required />
+        </div>
+
+        <div class="form-group">
+          <label for="kapasitas" class="required"
+            >Kapasitas AC yang Diinginkan</label
+          >
+          <select id="kapasitas" required>
+            <option value="">-- Pilih Kapasitas --</option>
+            <option value="1/2 PK">1/2 PK</option>
+            <option value="3/4 PK">3/4 PK</option>
+            <option value="1 PK">1 PK</option>
+            <option value="1.5 PK">1.5 PK</option>
+            <option value="2 PK">2 PK</option>
+          </select>
+        </div>
+
+        <button
+          type="button"
+          id="submitBtn"
+          onclick="kirimKeWhatsApp()"
+          disabled
+        >
+          <i class="fab fa-whatsapp"></i> Kirim Pemesanan
+        </button>
+      </form>
+
+      <div class="info-box">
+        <h3><i class="fas fa-info-circle"></i> Informasi Biaya Pemasangan</h3>
+
+        <div class="price-section">
+          <h3>Biaya Awal Pemasangan AC 1/2pk - 1pk (Baru / Second)</h3>
+          <p>
+            <strong>AC Second</strong><br />
+            Total: Rp540.000,-<br />
+            Rincian:<br />
+            - Instalasi: Rp350.000,-<br />
+            - Sewa AC Pertama: Rp190.000,- (unit second)
+          </p>
+          <p>
+            <strong>AC Baru</strong><br />
+            Total: Rp600.000,-<br />
+            Rincian:<br />
+            - Instalasi: Rp350.000,-<br />
+            - Sewa AC Pertama: Rp250.000,- (unit baru)
+          </p>
+        </div>
+
+        <div class="price-section">
+          <h3>Biaya Awal Pemasangan AC 1.5pk - 2pk (Baru / Second)</h3>
+          <p>
+            <strong>AC Second</strong><br />
+            Total: Rp850.000,-<br />
+            Rincian:<br />
+            - Instalasi: Rp500.000,-<br />
+            - Sewa AC Pertama: Rp350.000,- (unit second)
+          </p>
+          <p>
+            <strong>AC Baru</strong><br />
+            Total: Rp950.000,-<br />
+            Rincian:<br />
+            - Instalasi: Rp500.000,-<br />
+            - Sewa AC Pertama: Rp450.000,- (unit baru)
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const form = document.getElementById("form-pesanan");
+      const button = document.getElementById("submitBtn");
+
+      // Validasi form real-time
+      form.addEventListener("input", () => {
+        const isValid = form.checkValidity();
+        button.disabled = !isValid;
+      });
+
+      // Update tampilan file yang diupload
+      document
+        .getElementById("foto_ktp")
+        .addEventListener("change", function (e) {
+          updateFileInputDisplay(this, "foto KTP");
+        });
+
+      document
+        .getElementById("foto_selfie")
+        .addEventListener("change", function (e) {
+          updateFileInputDisplay(this, "foto selfie dengan KTP");
+        });
+
+      function updateFileInputDisplay(input, labelText) {
+        const wrapper = input.parentElement;
+        const button = wrapper.querySelector(".file-input-button");
+        if (input.files.length > 0) {
+          button.innerHTML = `<i class="fas fa-check-circle"></i> <span>${input.files[0].name}</span>`;
+          button.querySelector("i").style.color = "#38A169";
+        } else {
+          button.innerHTML = `<i class="fas fa-camera"></i> <span>Klik untuk mengunggah ${labelText}</span>`;
+          button.querySelector("i").style.color = "var(--primary)";
+        }
+      }
+
+      function kirimKeWhatsApp() {
+        const nama = document.getElementById("nama").value;
+        const alamatKTP = document.getElementById("alamat_ktp").value;
+        const alamatPasang = document.getElementById("alamat_pasang").value;
+        const kontakDarurat = document.getElementById("kontak_darurat").value;
+        const kontakPemilik = document.getElementById("kontak_pemilik").value;
+        const luas = document.getElementById("luas").value;
+        const kapasitas = document.getElementById("kapasitas").value;
+
+        const pesan =
+          `*Form Pemesanan Sewa AC*\n\n` +
+          `*Nama:* ${nama}\n` +
+          `*Alamat sesuai KTP:* ${alamatKTP}\n` +
+          `*Alamat Pemasangan:* ${alamatPasang}\n` +
+          `*Kontak Darurat:* ${kontakDarurat}\n` +
+          `*Kontak Pemilik Kost/Kontrakan:* ${kontakPemilik}\n` +
+          `*Luas Ruangan:* ${luas} m²\n` +
+          `*Kapasitas AC:* ${kapasitas}\n\n` +
+          `*Catatan:* Silakan kirim foto KTP & selfie secara manual di chat ini.`;
+
+        const encoded = encodeURIComponent(pesan);
+        const waLink = `https://wa.me/6285817818216?text=${encoded}`;
+        window.open(waLink, "_blank");
+      }
+    </script>
+  </body>
+</html>

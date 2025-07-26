@@ -3,59 +3,140 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sejuk Teknik AC | Solusi AC Terbaik</title>
+    <title>Layanan Sejuk Teknik AC | Solusi AC Terbaik</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
     <style>
+      :root {
+        --primary: #0066cc;
+        --primary-light: #e6f2ff;
+        --secondary: #ff7a00;
+        --dark: #2d3748;
+        --light: #f8fafc;
+        --gray: #718096;
+        --white: #ffffff;
+        --popular-tag: linear-gradient(135deg, #ff5f6d, #ffc371);
+      }
+
       * {
         box-sizing: border-box;
+        margin: 0;
+        padding: 0;
       }
 
       body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        background: #f2f2f2;
-        color: #333;
+        font-family: "Poppins", sans-serif;
+        color: var(--dark);
+        line-height: 1.6;
+        background-color: var(--light);
         scroll-behavior: smooth;
       }
 
       header {
-        background-color: #0077cc;
-        color: white;
-        padding: 25px 15px;
+        background: linear-gradient(135deg, var(--primary), #004c99);
+        color: var(--white);
+        padding: 2rem 1rem;
         text-align: center;
+        position: relative;
+        overflow: hidden;
+      }
+
+      header::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path fill="rgba(255,255,255,0.05)" d="M0,0 L100,0 L100,100 L0,100 Z"></path></svg>');
+        opacity: 0.1;
       }
 
       header h1 {
-        font-size: 3em;
+        margin: 0;
+        font-size: 2.5rem;
+        font-weight: 700;
+        position: relative;
+      }
+
+      header p {
+        font-size: 1.1rem;
+        margin-top: 0.5rem;
+        opacity: 0.9;
+        position: relative;
       }
 
       nav {
-        background-color: #005fa3;
-        text-align: center;
-        padding: 12px;
+        background-color: var(--white);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+
+      .nav-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+      }
+
+      .logo {
+        font-weight: 700;
+        color: var(--primary);
+        font-size: 1.2rem;
+        text-decoration: none;
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 1.5rem;
       }
 
       nav a {
-        color: white;
+        color: var(--dark);
         text-decoration: none;
-        margin: 0 15px;
-        font-weight: bold;
-        display: inline-block;
-        transform: scale(1);
-        transition: transform 0.3s ease, color 0.3s;
+        font-weight: 500;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        position: relative;
       }
 
       nav a:hover {
-        transform: scale(1.15);
-        color: #ffdd57;
+        color: var(--primary);
+      }
+
+      nav a::after {
+        content: "";
+        position: absolute;
+        width: 0;
+        height: 2px;
+        bottom: -5px;
+        left: 0;
+        background-color: var(--primary);
+        transition: width 0.3s ease;
+      }
+
+      nav a:hover::after {
+        width: 100%;
       }
 
       .hero {
-        position: relative;
-        color: white;
-        padding: 80px 20px 40px;
+        background: linear-gradient(145deg, var(--primary), #0088ff);
+        color: var(--white);
         text-align: center;
+        padding: 4rem 1rem;
+        position: relative;
         overflow: hidden;
-        z-index: 1;
       }
 
       .hero::before {
@@ -63,60 +144,100 @@
         position: absolute;
         top: 0;
         left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(135deg, #0077cc, #00c3ff, #0077cc);
-        background-size: 300% 300%;
-        animation: gradakan 12s ease infinite;
-        z-index: 0;
-        opacity: 1;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path fill="rgba(255,255,255,0.05)" d="M0,0 L100,0 L100,100 L0,100 Z"></path></svg>');
+        opacity: 0.1;
       }
 
-      .hero h1,
-      .hero p,
-      .visi-misi {
+      .hero-content {
+        max-width: 800px;
+        margin: 0 auto;
         position: relative;
-        z-index: 1;
       }
 
       .hero h1 {
-        font-size: 2.5em;
+        font-size: 2.2rem;
+        margin-bottom: 1rem;
+        font-weight: 600;
         animation: fadeInDown 1s ease-out;
       }
 
+      .hero p {
+        font-size: 1.1rem;
+        margin-bottom: 1rem;
+        opacity: 0.9;
+      }
+
       .visi-misi {
+        background-color: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(5px);
+        padding: 1.5rem;
+        border-radius: 12px;
+        margin: 1.5rem auto 0;
         max-width: 800px;
-        margin: 20px auto 0;
-        text-align: center;
       }
 
       .visi-misi p {
-        color: #e0f2ff;
+        font-size: 1rem;
+        line-height: 1.7;
+        margin-bottom: 0.5rem;
+      }
+
+      .visi-misi p:last-child {
+        margin-bottom: 0;
       }
 
       .content {
-        padding: 40px 20px;
+        padding: 4rem 1rem;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .section-title {
         text-align: center;
+        margin-bottom: 3rem;
+      }
+
+      .section-title h2 {
+        font-size: 2rem;
+        color: var(--primary);
+        margin-bottom: 1rem;
+        position: relative;
+        display: inline-block;
+      }
+
+      .section-title h2::after {
+        content: "";
+        position: absolute;
+        width: 50%;
+        height: 3px;
+        bottom: -10px;
+        left: 25%;
+        background: linear-gradient(90deg, var(--primary), var(--secondary));
+      }
+
+      .section-title p {
+        color: var(--gray);
+        max-width: 700px;
+        margin: 0 auto;
       }
 
       .cards {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 25px;
-        margin-top: 30px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
       }
 
       .card {
-        background: white;
-        width: 300px;
+        background: var(--white);
         border-radius: 12px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         overflow: hidden;
-        padding: 25px 20px;
-        transition: transform 0.3s, opacity 0.5s;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
         opacity: 0;
         transform: translateY(30px);
+        position: relative;
       }
 
       .card.visible {
@@ -124,118 +245,159 @@
         transform: translateY(0);
       }
 
-      .populer h3::after {
-        content: "  ⭐ Populer";
-        background: linear-gradient(
-          90deg,
-          red,
-          orange,
-          yellow,
-          green,
-          blue,
-          indigo,
-          violet
-        );
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        display: inline-block;
-        animation: rainbow 3s infinite linear;
+      .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
       }
 
-      .goyang {
-        animation: shake 1s ease-in-out infinite alternate;
+      .card-header {
+        background-color: var(--primary-light);
+        color: var(--primary);
+        padding: 1.5rem;
+        text-align: center;
+        position: relative;
+      }
+
+      .popular-badge {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: var(--popular-tag);
+        color: white;
+        padding: 0.25rem 0.75rem;
+        border-radius: 50px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        animation: pulse 2s infinite;
+      }
+
+      .card-content {
+        padding: 1.5rem;
       }
 
       .card h3 {
-        margin-top: 0;
-        color: #0077cc;
+        margin-bottom: 1rem;
+        color: var(--primary);
+        font-size: 1.3rem;
+        text-align: center;
       }
 
       .card p {
-        font-size: 14px;
-        color: #555;
+        color: var(--gray);
+        font-size: 0.95rem;
+        margin-bottom: 1.5rem;
+        text-align: center;
       }
 
       .btn {
-        margin-top: 15px;
         display: inline-block;
-        background-color: #0077cc;
-        color: white;
-        padding: 10px 18px;
-        border-radius: 6px;
+        background-color: var(--primary);
+        color: var(--white);
+        padding: 0.8rem 1.8rem;
+        border-radius: 50px;
         text-decoration: none;
-        transition: background 0.3s;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 10px rgba(0, 102, 204, 0.3);
+        border: 2px solid var(--primary);
+        width: 100%;
+        text-align: center;
       }
 
       .btn:hover {
-        background-color: #005fa3;
+        background-color: transparent;
+        color: var(--primary);
+        box-shadow: none;
+      }
+
+      .btn-whatsapp {
+        background-color: #25d366;
+        border-color: #25d366;
+        box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3);
+      }
+
+      .btn-whatsapp:hover {
+        color: #25d366;
       }
 
       footer {
-        background-color: #333;
-        color: white;
+        background-color: var(--dark);
+        color: var(--white);
+        padding: 3rem 1rem;
         text-align: center;
-        padding: 30px 20px;
+      }
+
+      .footer-content {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      footer h3 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+      }
+
+      footer p {
+        opacity: 0.8;
+        margin-bottom: 1.5rem;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .copyright {
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        font-size: 0.9rem;
+        opacity: 0.7;
       }
 
       @media (max-width: 768px) {
-        .cards {
+        .nav-container {
           flex-direction: column;
-          align-items: center;
+          gap: 1rem;
         }
 
-        .card {
-          width: 90%;
+        .nav-links {
+          flex-wrap: wrap;
+          justify-content: center;
+        }
+
+        header h1 {
+          font-size: 2rem;
+        }
+
+        .hero h1 {
+          font-size: 1.8rem;
+        }
+
+        .cards {
+          grid-template-columns: 1fr;
         }
       }
 
       @keyframes fadeInDown {
-        0% {
+        from {
           opacity: 0;
           transform: translateY(-20px);
         }
-        100% {
+        to {
           opacity: 1;
           transform: translateY(0);
         }
       }
 
-      @keyframes shake {
+      @keyframes pulse {
         0% {
-          transform: rotate(0deg);
-        }
-        25% {
-          transform: rotate(-3deg);
+          transform: scale(1);
         }
         50% {
-          transform: rotate(3deg);
-        }
-        75% {
-          transform: rotate(-2deg);
+          transform: scale(1.05);
         }
         100% {
-          transform: rotate(2deg);
-        }
-      }
-
-      @keyframes rainbow {
-        0% {
-          filter: hue-rotate(0deg);
-        }
-        100% {
-          filter: hue-rotate(360deg);
-        }
-      }
-
-      @keyframes gradakan {
-        0% {
-          background-position: 0% 50%;
-        }
-        50% {
-          background-position: 100% 50%;
-        }
-        100% {
-          background-position: 0% 50%;
+          transform: scale(1);
         }
       }
     </style>
@@ -247,106 +409,174 @@
     </header>
 
     <nav>
-      <a href="index.html">Beranda</a>
-      <a href="layanan.html">Layanan</a>
-      <a href="tentang.html">Tentang</a>
-      <a href="kontak.html">Kontak</a>
-      <a href="faq.html">FAQ</a>
-      <a href="kritik-saran.html">Kritik & Saran</a>
-      <a href="https://maps.app.goo.gl/uTFSMLiKuWcCRUMa6" target="_blank"
-        >Titik Toko</a
-      >
+      <div class="nav-container">
+        <a href="index.html" class="logo">Sejuk Teknik</a>
+        <div class="nav-links">
+          <a href="index.html"><i class="fas fa-home"></i> Beranda</a>
+          <a href="layanan.html"><i class="fas fa-tools"></i> Layanan</a>
+          <a href="tentang.html"><i class="fas fa-info-circle"></i> Tentang</a>
+          <a href="kontak.html"><i class="fas fa-envelope"></i> Kontak</a>
+          <a href="faq.html"><i class="fas fa-question-circle"></i> FAQ</a>
+          <a href="kritik-saran.html"
+            ><i class="fas fa-comment-alt"></i> Kritik & Saran</a
+          >
+          <a href="https://maps.app.goo.gl/uTFSMLiKuWcCRUMa6" target="_blank"
+            ><i class="fas fa-map-marker-alt"></i> Lokasi</a
+          >
+        </div>
+      </div>
     </nav>
 
     <section class="hero">
-      <h1>Layanan AC & Electrical</h1>
-      <p>Pilih layanan sesuai kebutuhan Anda!</p>
-      <div class="visi-misi">
-        <p>
-          Menjadi solusi terbaik di bidang AC dan listrik dengan layanan
-          profesional, cepat, dan terpercaya.
-        </p>
-        <p>
-          Memberikan layanan berkualitas tinggi, menjaga kepuasan pelanggan,
-          serta meningkatkan keahlian tim teknisi secara berkelanjutan.
-        </p>
+      <div class="hero-content">
+        <h1>Layanan AC & Electrical</h1>
+        <p>Pilih layanan sesuai kebutuhan Anda!</p>
+        <div class="visi-misi">
+          <p>
+            Menjadi solusi terbaik di bidang AC dan listrik dengan layanan
+            profesional, cepat, dan terpercaya.
+          </p>
+          <p>
+            Memberikan layanan berkualitas tinggi, menjaga kepuasan pelanggan,
+            serta meningkatkan keahlian tim teknisi secara berkelanjutan.
+          </p>
+        </div>
       </div>
     </section>
 
     <section id="layanan" class="content">
-      <h2>Layanan Kami</h2>
+      <div class="section-title">
+        <h2>Layanan Kami</h2>
+        <p>
+          Berbagai solusi profesional untuk kebutuhan AC dan kelistrikan Anda
+        </p>
+      </div>
       <div class="cards">
-        <div class="card populer goyang">
-          <h3>Service / Cuci AC</h3>
-          <p>
-            Cuci AC berkala agar tetap dingin dan hemat listrik. Mulai Rp70.000
-          </p>
-          <a href="cuci-ac.html" class="btn">Cuci AC Sekarang</a>
+        <div class="card">
+          <div class="card-header">
+            <i class="fas fa-snowflake fa-2x"></i>
+            <div class="popular-badge">Populer</div>
+          </div>
+          <div class="card-content">
+            <h3>Service / Cuci AC</h3>
+            <p>
+              Cuci AC berkala agar tetap dingin dan hemat listrik. Mulai
+              Rp70.000
+            </p>
+            <a href="cuci-ac.html" class="btn">Cuci AC Sekarang</a>
+          </div>
         </div>
 
         <div class="card">
-          <h3>Instalasi AC</h3>
-          <p>
-            Pemasangan unit AC dengan teknisi berpengalaman dan alat lengkap.
-          </p>
-          <a href="instalasi-ac.html" class="btn">Pasang Sekarang</a>
+          <div class="card-header">
+            <i class="fas fa-wrench fa-2x"></i>
+          </div>
+          <div class="card-content">
+            <h3>Instalasi AC</h3>
+            <p>
+              Pemasangan unit AC dengan teknisi berpengalaman dan alat lengkap.
+            </p>
+            <a href="instalasi-ac.html" class="btn">Pasang Sekarang</a>
+          </div>
         </div>
 
         <div class="card">
-          <h3>Repair / Perbaikan AC</h3>
-          <p>Perbaikan AC tidak dingin, bocor, atau kerusakan komponen.</p>
-          <a href="repair-ac.html" class="btn">Perbaiki Sekarang</a>
+          <div class="card-header">
+            <i class="fas fa-tools fa-2x"></i>
+          </div>
+          <div class="card-content">
+            <h3>Repair / Perbaikan AC</h3>
+            <p>Perbaikan AC tidak dingin, bocor, atau kerusakan komponen.</p>
+            <a href="repair-ac.html" class="btn">Perbaiki Sekarang</a>
+          </div>
         </div>
 
         <div class="card">
-          <h3>Bongkar Pasang AC</h3>
-          <p>Pindahkan AC ke lokasi baru dengan aman dan rapi.</p>
-          <a href="bongkar-pasang.html" class="btn">Pesan Sekarang</a>
+          <div class="card-header">
+            <i class="fas fa-exchange-alt fa-2x"></i>
+          </div>
+          <div class="card-content">
+            <h3>Bongkar Pasang AC</h3>
+            <p>Pindahkan AC ke lokasi baru dengan aman dan rapi.</p>
+            <a href="bongkar-pasang.html" class="btn">Pesan Sekarang</a>
+          </div>
         </div>
 
         <div class="card">
-          <h3>Kontrak Perawatan AC</h3>
-          <p>Jasa maintenance rutin untuk kantor, sekolah, atau gedung.</p>
-          <a href="kontrak-ac.html" class="btn">Ajukan Sekarang</a>
-        </div>
-
-        <div class="card populer goyang">
-          <h3>Sewa AC</h3>
-          <p>Sewa AC Split untuk rumah/toko dan gedung mulai Rp190.000.</p>
-          <a href="sewa-ac.html" class="btn">Sewa Sekarang</a>
-        </div>
-
-        <div class="card">
-          <h3>Panel Kontrol Motor</h3>
-          <p>Pembuatan panel kontrol motor listrik 3 phase dan 1 phase.</p>
-          <a href="panel-motor.html" class="btn">Buat Sekarang</a>
+          <div class="card-header">
+            <i class="fas fa-calendar-check fa-2x"></i>
+          </div>
+          <div class="card-content">
+            <h3>Kontrak Perawatan AC</h3>
+            <p>Jasa maintenance rutin untuk kantor, sekolah, atau gedung.</p>
+            <a href="kontrak-ac.html" class="btn">Ajukan Sekarang</a>
+          </div>
         </div>
 
         <div class="card">
-          <h3>Panel Distribusi & Lampu</h3>
-          <p>Pemasangan panel distribusi listrik dan panel lampu gedung.</p>
-          <a href="panel-distribusi.html" class="btn">Pesan Sekarang</a>
+          <div class="card-header">
+            <i class="fas fa-concierge-bell fa-2x"></i>
+            <div class="popular-badge">Populer</div>
+          </div>
+          <div class="card-content">
+            <h3>Sewa AC</h3>
+            <p>Sewa AC Split untuk rumah/toko dan gedung mulai Rp190.000.</p>
+            <a href="sewa-ac.html" class="btn">Sewa Sekarang</a>
+          </div>
         </div>
 
         <div class="card">
-          <h3>Gulung Dinamo</h3>
-          <p>Servis gulung ulang dinamo motor listrik dengan garansi.</p>
-          <a href="gulung-dinamo.html" class="btn">Servis Sekarang</a>
+          <div class="card-header">
+            <i class="fas fa-sliders-h fa-2x"></i>
+          </div>
+          <div class="card-content">
+            <h3>Panel Kontrol Motor</h3>
+            <p>Pembuatan panel kontrol motor listrik 3 phase dan 1 phase.</p>
+            <a href="panel-motor.html" class="btn">Buat Sekarang</a>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <i class="fas fa-bolt fa-2x"></i>
+          </div>
+          <div class="card-content">
+            <h3>Panel Distribusi & Lampu</h3>
+            <p>Pemasangan panel distribusi listrik dan panel lampu gedung.</p>
+            <a href="panel-distribusi.html" class="btn">Pesan Sekarang</a>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <i class="fas fa-cog fa-2x"></i>
+          </div>
+          <div class="card-content">
+            <h3>Gulung Dinamo</h3>
+            <p>Servis gulung ulang dinamo motor listrik dengan garansi.</p>
+            <a href="gulung-dinamo.html" class="btn">Servis Sekarang</a>
+          </div>
         </div>
       </div>
     </section>
 
     <footer id="kontak">
-      <h3>Kontak Kami</h3>
-      <p>
-        Klik tombol di bawah ini untuk langsung menghubungi kami via WhatsApp.
-      </p>
-      <a class="btn" href="https://wa.me/6285817818216" target="_blank"
-        >Hubungi via WhatsApp</a
-      >
-      <p style="margin-top: 20px">
-        &copy; 2025 Sejuk Teknik AC. Semua hak dilindungi.
-      </p>
+      <div class="footer-content">
+        <h3>Kontak Kami</h3>
+        <p>
+          Klik tombol di bawah ini untuk langsung menghubungi kami via WhatsApp.
+        </p>
+        <a
+          href="https://wa.me/6285817818216"
+          class="btn btn-whatsapp"
+          target="_blank"
+        >
+          <i class="fab fa-whatsapp"></i> Hubungi via WhatsApp
+        </a>
+        <div class="copyright">
+          <p>&copy; 2025 Sejuk Teknik AC. Semua hak dilindungi.</p>
+        </div>
+      </div>
     </footer>
 
     <script>
@@ -359,9 +589,8 @@
             }
           });
         },
-        { threshold: 0.2 }
+        { threshold: 0.1 }
       );
-
       cards.forEach((card) => observer.observe(card));
     </script>
   </body>

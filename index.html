@@ -6,101 +6,226 @@
     <title>Sejuk Teknik AC | Solusi AC Terbaik</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link
-      href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
     <style>
+      :root {
+        --primary: #0066cc;
+        --primary-light: #e6f2ff;
+        --secondary: #ff7a00;
+        --dark: #2d3748;
+        --light: #f8fafc;
+        --gray: #718096;
+        --white: #ffffff;
+      }
+
       * {
         box-sizing: border-box;
-      }
-      body {
         margin: 0;
-        font-family: "Rubik", sans-serif;
-        background: #f6f9fc;
-        color: #333;
+        padding: 0;
       }
+
+      body {
+        font-family: "Poppins", sans-serif;
+        color: var(--dark);
+        line-height: 1.6;
+        background-color: var(--light);
+      }
+
       header {
-        background: linear-gradient(135deg, #0077cc, #00c3ff);
-        color: white;
-        padding: 40px 20px;
+        background: linear-gradient(135deg, var(--primary), #004c99);
+        color: var(--white);
+        padding: 2rem 1rem;
         text-align: center;
+        position: relative;
+        overflow: hidden;
       }
+
+      header::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path fill="rgba(255,255,255,0.05)" d="M0,0 L100,0 L100,100 L0,100 Z"></path></svg>');
+        opacity: 0.1;
+      }
+
       header h1 {
         margin: 0;
-        font-size: 2.8em;
-        font-weight: 600;
+        font-size: 2.5rem;
+        font-weight: 700;
+        position: relative;
       }
+
       header p {
-        font-size: 1.2em;
-        margin-top: 10px;
+        font-size: 1.1rem;
+        margin-top: 0.5rem;
+        opacity: 0.9;
+        position: relative;
       }
+
       nav {
-        background: #004f88;
-        text-align: center;
-        padding: 12px 0;
+        background-color: var(--white);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        position: sticky;
+        top: 0;
+        z-index: 100;
       }
-      nav a {
-        color: white;
-        margin: 0 15px;
+
+      .nav-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+      }
+
+      .logo {
+        font-weight: 700;
+        color: var(--primary);
+        font-size: 1.2rem;
         text-decoration: none;
-        font-weight: bold;
-        transition: color 0.3s;
       }
+
+      .nav-links {
+        display: flex;
+        gap: 1.5rem;
+      }
+
+      nav a {
+        color: var(--dark);
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        position: relative;
+      }
+
       nav a:hover {
-        color: #ffdd57;
+        color: var(--primary);
+      }
+
+      nav a::after {
+        content: "";
+        position: absolute;
+        width: 0;
+        height: 2px;
+        bottom: -5px;
+        left: 0;
+        background-color: var(--primary);
+        transition: width 0.3s ease;
+      }
+
+      nav a:hover::after {
+        width: 100%;
       }
 
       .hero {
-        background: linear-gradient(145deg, #00aaff, #0077cc);
-        color: white;
+        background: linear-gradient(145deg, var(--primary), #0088ff);
+        color: var(--white);
         text-align: center;
-        padding: 60px 20px;
-        animation: fadeIn 1s ease-out;
+        padding: 4rem 1rem;
+        position: relative;
+        overflow: hidden;
       }
+
+      .hero::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path fill="rgba(255,255,255,0.05)" d="M0,0 L100,0 L100,100 L0,100 Z"></path></svg>');
+        opacity: 0.1;
+      }
+
+      .hero-content {
+        max-width: 800px;
+        margin: 0 auto;
+        position: relative;
+      }
+
       .hero h1 {
-        font-size: 2.5em;
-        margin-bottom: 10px;
+        font-size: 2.2rem;
+        margin-bottom: 1rem;
+        font-weight: 600;
       }
+
       .hero p {
-        font-size: 1.1em;
+        font-size: 1.1rem;
+        margin-bottom: 2rem;
+        opacity: 0.9;
       }
 
       .visi-misi {
-        margin: 30px auto 0;
-        max-width: 750px;
-        text-align: center;
+        background-color: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(5px);
+        padding: 1.5rem;
+        border-radius: 12px;
+        margin-top: 1.5rem;
       }
 
       .visi-misi p {
-        color: #eaf6ff;
-        font-size: 1.1em;
-        line-height: 1.6;
+        font-size: 1rem;
+        line-height: 1.7;
       }
 
       .content {
-        padding: 50px 20px;
-        text-align: center;
+        padding: 4rem 1rem;
+        max-width: 1200px;
+        margin: 0 auto;
       }
 
-      .content h2 {
-        font-size: 2em;
-        margin-bottom: 30px;
+      .section-title {
+        text-align: center;
+        margin-bottom: 3rem;
+      }
+
+      .section-title h2 {
+        font-size: 2rem;
+        color: var(--primary);
+        margin-bottom: 1rem;
+        position: relative;
+        display: inline-block;
+      }
+
+      .section-title h2::after {
+        content: "";
+        position: absolute;
+        width: 50%;
+        height: 3px;
+        bottom: -10px;
+        left: 25%;
+        background: linear-gradient(90deg, var(--primary), var(--secondary));
+      }
+
+      .section-title p {
+        color: var(--gray);
+        max-width: 700px;
+        margin: 0 auto;
       }
 
       .cards {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 25px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
       }
 
       .card {
-        background: white;
-        width: 300px;
-        padding: 25px;
-        border-radius: 14px;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-        transition: transform 0.3s, opacity 0.5s;
+        background: var(--white);
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
         opacity: 0;
         transform: translateY(30px);
       }
@@ -110,40 +235,117 @@
         transform: translateY(0);
       }
 
+      .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      }
+
+      .card-icon {
+        background-color: var(--primary-light);
+        color: var(--primary);
+        font-size: 2rem;
+        padding: 1.5rem;
+        text-align: center;
+      }
+
+      .card-content {
+        padding: 1.5rem;
+      }
+
       .card h3 {
-        margin-top: 0;
-        color: #0077cc;
+        margin-bottom: 1rem;
+        color: var(--primary);
+        font-size: 1.3rem;
+      }
+
+      .card p {
+        color: var(--gray);
+        font-size: 0.95rem;
       }
 
       .btn {
-        margin-top: 20px;
         display: inline-block;
-        background-color: #0077cc;
-        color: white;
-        padding: 12px 24px;
-        border-radius: 6px;
+        background-color: var(--primary);
+        color: var(--white);
+        padding: 0.8rem 1.8rem;
+        border-radius: 50px;
         text-decoration: none;
-        transition: background 0.3s;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 10px rgba(0, 102, 204, 0.3);
+        border: 2px solid var(--primary);
       }
 
       .btn:hover {
-        background-color: #005fa3;
+        background-color: transparent;
+        color: var(--primary);
+        box-shadow: none;
+      }
+
+      .btn-whatsapp {
+        background-color: #25d366;
+        border-color: #25d366;
+        box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3);
+      }
+
+      .btn-whatsapp:hover {
+        color: #25d366;
       }
 
       footer {
-        background: #333;
-        color: white;
+        background-color: var(--dark);
+        color: var(--white);
+        padding: 3rem 1rem;
         text-align: center;
-        padding: 30px 20px;
-        margin-top: 40px;
+      }
+
+      .footer-content {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      footer h3 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+      }
+
+      footer p {
+        opacity: 0.8;
+        margin-bottom: 1.5rem;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .copyright {
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        font-size: 0.9rem;
+        opacity: 0.7;
       }
 
       @media (max-width: 768px) {
-        .cards {
+        .nav-container {
           flex-direction: column;
+          gap: 1rem;
         }
-        .card {
-          width: 90%;
+
+        .nav-links {
+          flex-wrap: wrap;
+          justify-content: center;
+        }
+
+        header h1 {
+          font-size: 2rem;
+        }
+
+        .hero h1 {
+          font-size: 1.8rem;
+        }
+
+        .cards {
+          grid-template-columns: 1fr;
         }
       }
 
@@ -166,62 +368,112 @@
     </header>
 
     <nav>
-      <a href="index.html">Beranda</a>
-      <a href="layanan.html">Layanan</a>
-      <a href="tentang.html">Tentang</a>
-      <a href="kontak.html">Kontak</a>
-      <a href="faq.html">FAQ</a>
-      <a href="kritik-saran.html">Kritik & Saran</a>
-      <a href="https://maps.app.goo.gl/uTFSMLiKuWcCRUMa6" target="_blank"
-        >Titik Toko</a
-      >
+      <div class="nav-container">
+        <a href="index.html" class="logo">Sejuk Teknik</a>
+        <div class="nav-links">
+          <a href="index.html"><i class="fas fa-home"></i> Beranda</a>
+          <a href="layanan.html"><i class="fas fa-tools"></i> Layanan</a>
+          <a href="tentang.html"><i class="fas fa-info-circle"></i> Tentang</a>
+          <a href="kontak.html"><i class="fas fa-envelope"></i> Kontak</a>
+          <a href="faq.html"><i class="fas fa-question-circle"></i> FAQ</a>
+          <a href="kritik-saran.html"
+            ><i class="fas fa-comment-alt"></i> Kritik & Saran</a
+          >
+          <a href="https://maps.app.goo.gl/uTFSMLiKuWcCRUMa6" target="_blank"
+            ><i class="fas fa-map-marker-alt"></i> Lokasi</a
+          >
+        </div>
+      </div>
     </nav>
 
     <section class="hero">
-      <h1>Selamat Datang di Sejuk Teknik AC</h1>
-      <p>Layanan terpercaya & profesional untuk rumah dan tempat usaha Anda</p>
-      <div class="visi-misi">
+      <div class="hero-content">
+        <h1>Selamat Datang di Sejuk Teknik AC</h1>
         <p>
-          Kami siap memberikan solusi terbaik dalam pemasangan, perawatan, dan
-          service AC serta instalasi kelistrikan, didukung teknisi berpengalaman
-          dan harga transparan.
+          Layanan terpercaya & profesional untuk rumah dan tempat usaha Anda
         </p>
+        <div class="visi-misi">
+          <p>
+            Kami siap memberikan solusi terbaik dalam pemasangan, perawatan, dan
+            service AC serta instalasi kelistrikan, didukung teknisi
+            berpengalaman dan harga transparan.
+          </p>
+        </div>
+        <a
+          href="https://wa.me/6285817818216"
+          class="btn btn-whatsapp"
+          target="_blank"
+        >
+          <i class="fab fa-whatsapp"></i> Hubungi Kami
+        </a>
       </div>
     </section>
 
     <section class="content">
-      <h2>Mengapa Memilih Kami?</h2>
+      <div class="section-title">
+        <h2>Mengapa Memilih Kami?</h2>
+        <p>
+          Kami memberikan layanan terbaik dengan standar profesionalisme tinggi
+        </p>
+      </div>
       <div class="cards">
         <div class="card">
-          <h3>🔧 Teknisi Handal</h3>
-          <p>
-            Teknisi kami berpengalaman lebih dari 5 tahun dan bersertifikat.
-          </p>
+          <div class="card-icon">
+            <i class="fas fa-user-tie"></i>
+          </div>
+          <div class="card-content">
+            <h3>Teknisi Handal</h3>
+            <p>
+              Teknisi kami berpengalaman lebih dari 5 tahun dan bersertifikat
+              resmi, siap memberikan solusi terbaik untuk permasalahan AC Anda.
+            </p>
+          </div>
         </div>
         <div class="card">
-          <h3>💰 Harga Transparan</h3>
-          <p>
-            Tidak ada biaya tersembunyi. Semua harga jelas sejak awal pemesanan.
-          </p>
+          <div class="card-icon">
+            <i class="fas fa-tag"></i>
+          </div>
+          <div class="card-content">
+            <h3>Harga Transparan</h3>
+            <p>
+              Tidak ada biaya tersembunyi. Semua harga jelas sejak awal
+              pemesanan dengan rincian yang dapat dipertanggungjawabkan.
+            </p>
+          </div>
         </div>
         <div class="card">
-          <h3>⚡ Pelayanan Cepat</h3>
-          <p>Respons cepat via WhatsApp & pengerjaan efisien.</p>
+          <div class="card-icon">
+            <i class="fas fa-bolt"></i>
+          </div>
+          <div class="card-content">
+            <h3>Pelayanan Cepat</h3>
+            <p>
+              Respons cepat via WhatsApp & pengerjaan efisien. Garansi
+              pengerjaan untuk semua jenis perbaikan dan pemasangan.
+            </p>
+          </div>
         </div>
       </div>
     </section>
 
     <footer>
-      <h3>Hubungi Kami</h3>
-      <p>
-        Butuh bantuan cepat? Klik tombol di bawah untuk terhubung via WhatsApp.
-      </p>
-      <a class="btn" href="https://wa.me/6285817818216" target="_blank"
-        >Chat WhatsApp</a
-      >
-      <p style="margin-top: 20px">
-        &copy; 2025 Sejuk Teknik AC. All rights reserved.
-      </p>
+      <div class="footer-content">
+        <h3>Hubungi Kami</h3>
+        <p>
+          Butuh bantuan cepat? Klik tombol di bawah untuk terhubung langsung
+          dengan tim kami via WhatsApp.
+        </p>
+        <a
+          href="https://wa.me/6285817818216"
+          class="btn btn-whatsapp"
+          target="_blank"
+        >
+          <i class="fab fa-whatsapp"></i> Chat Sekarang
+        </a>
+        <div class="copyright">
+          <p>&copy; 2025 Sejuk Teknik AC. All rights reserved.</p>
+        </div>
+      </div>
     </footer>
 
     <script>
@@ -234,7 +486,7 @@
             }
           });
         },
-        { threshold: 0.2 }
+        { threshold: 0.1 }
       );
       cards.forEach((card) => observer.observe(card));
     </script>

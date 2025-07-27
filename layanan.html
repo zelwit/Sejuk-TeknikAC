@@ -70,35 +70,43 @@
 
       /* Custom Cursors */
       .cursor-snowflake {
-        cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><text x='0' y='20' style='font-size: 20px;'>❄️</text></svg>"), auto;
+        cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><text x='0' y='20' style='font-size: 20px;'>❄️</text></svg>"),
+          auto;
       }
 
       .cursor-wrench {
-        cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><text x='0' y='20' style='font-size: 20px;'>🔧</text></svg>"), auto;
+        cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><text x='0' y='20' style='font-size: 20px;'>🔧</text></svg>"),
+          auto;
       }
 
       .cursor-bolt {
-        cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><text x='0' y='20' style='font-size: 20px;'>⚡</text></svg>"), auto;
+        cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><text x='0' y='20' style='font-size: 20px;'>⚡</text></svg>"),
+          auto;
       }
 
       .cursor-gear {
-        cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><text x='0' y='20' style='font-size: 20px;'>⚙️</text></svg>"), auto;
+        cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><text x='0' y='20' style='font-size: 20px;'>⚙️</text></svg>"),
+          auto;
       }
 
       .cursor-calendar {
-        cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><text x='0' y='20' style='font-size: 20px;'>📅</text></svg>"), auto;
+        cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><text x='0' y='20' style='font-size: 20px;'>📅</text></svg>"),
+          auto;
       }
 
       .cursor-exchange {
-        cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><text x='0' y='20' style='font-size: 20px;'>🔄</text></svg>"), auto;
+        cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><text x='0' y='20' style='font-size: 20px;'>🔄</text></svg>"),
+          auto;
       }
 
       .cursor-bell {
-        cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><text x='0' y='20' style='font-size: 20px;'>🔔</text></svg>"), auto;
+        cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><text x='0' y='20' style='font-size: 20px;'>🔔</text></svg>"),
+          auto;
       }
 
       .cursor-sliders {
-        cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><text x='0' y='20' style='font-size: 20px;'>🎚️</text></svg>"), auto;
+        cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><text x='0' y='20' style='font-size: 20px;'>🎚️</text></svg>"),
+          auto;
       }
 
       /* Modal Styles */
@@ -234,7 +242,8 @@
       }
 
       @keyframes freezeEffect {
-        0%, 100% {
+        0%,
+        100% {
           transform: scale(1);
           color: var(--white);
           text-shadow: none;
@@ -365,7 +374,8 @@
         0% {
           left: -100%;
         }
-        20%, 100% {
+        20%,
+        100% {
           left: 100%;
         }
       }
@@ -491,7 +501,8 @@
         font-size: 0.7rem;
         font-weight: 600;
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        animation: pulse 2s infinite, rainbow 3s linear infinite, shake 0.5s infinite;
+        animation: pulse 2s infinite, rainbow 3s linear infinite,
+          shake 0.5s infinite;
       }
 
       .card-content {
@@ -656,13 +667,21 @@
       }
 
       @keyframes shake {
-        0%, 100% {
+        0%,
+        100% {
           transform: translateX(0);
         }
-        10%, 30%, 50%, 70%, 90% {
+        10%,
+        30%,
+        50%,
+        70%,
+        90% {
           transform: translateX(-2px);
         }
-        20%, 40%, 60%, 80% {
+        20%,
+        40%,
+        60%,
+        80% {
           transform: translateX(2px);
         }
       }
@@ -692,7 +711,9 @@
           </div>
         </div>
         <div class="modal-footer">
-          <a href="#" class="btn btn-detail" id="modalWhatsApp">Hubungi via WhatsApp</a>
+          <a href="#" class="btn btn-detail" id="modalWhatsApp"
+            >Hubungi via WhatsApp</a
+          >
           <button class="btn close-modal">Tutup</button>
         </div>
       </div>
@@ -709,8 +730,13 @@
         <div class="nav-links">
           <a href="index.html"><i class="fas fa-home"></i> Beranda</a>
           <a href="layanan.html"><i class="fas fa-tools"></i> Layanan</a>
+          <a href="AC-Placement-Planner.html"
+            ><i class="fas fa-tools"></i> 3D AC Placement Planner</a
+          >
           <a href="tentang.html"><i class="fas fa-info-circle"></i> Tentang</a>
-          <a href="https://wa.me/6285817818216"><i class="fas fa-envelope"></i> Kontak</a>
+          <a href="https://wa.me/6285817818216"
+            ><i class="fas fa-envelope"></i> Kontak</a
+          >
           <a href="faq.html"><i class="fas fa-question-circle"></i> FAQ</a>
           <a href="kritik-saran.html"
             ><i class="fas fa-comment-alt"></i> Kritik & Saran</a
@@ -758,7 +784,9 @@
               Cuci AC berkala agar tetap dingin dan hemat listrik. Mulai
               Rp70.000
             </p>
-            <a href="#" class="btn btn-detail" data-service="cuci-ac">Lihat Detail</a>
+            <a href="#" class="btn btn-detail" data-service="cuci-ac"
+              >Lihat Detail</a
+            >
             <a href="cuci-ac.html" class="btn">Cuci AC Sekarang</a>
           </div>
         </div>
@@ -769,10 +797,10 @@
           </div>
           <div class="card-content">
             <h3>Tukar Tambah AC</h3>
-            <p>
-              Tukar tambah AC anda dengan yang lebih baik.
-            </p>
-            <a href="#" class="btn btn-detail" data-service="tukar-tambah">Lihat Detail</a>
+            <p>Tukar tambah AC anda dengan yang lebih baik.</p>
+            <a href="#" class="btn btn-detail" data-service="tukar-tambah"
+              >Lihat Detail</a
+            >
             <a href="tukar-tambah.html" class="btn">Pasang Sekarang</a>
           </div>
         </div>
@@ -784,7 +812,9 @@
           <div class="card-content">
             <h3>Repair / Perbaikan AC</h3>
             <p>Perbaikan AC tidak dingin, bocor, atau kerusakan komponen.</p>
-            <a href="#" class="btn btn-detail" data-service="repair-ac">Lihat Detail</a>
+            <a href="#" class="btn btn-detail" data-service="repair-ac"
+              >Lihat Detail</a
+            >
             <a href="repair-ac.html" class="btn">Perbaiki Sekarang</a>
           </div>
         </div>
@@ -796,7 +826,9 @@
           <div class="card-content">
             <h3>Bongkar Pasang AC</h3>
             <p>Pindahkan AC ke lokasi baru dengan aman dan rapi.</p>
-            <a href="#" class="btn btn-detail" data-service="bongkar-pasang">Lihat Detail</a>
+            <a href="#" class="btn btn-detail" data-service="bongkar-pasang"
+              >Lihat Detail</a
+            >
             <a href="bongkar-pasang.html" class="btn">Pesan Sekarang</a>
           </div>
         </div>
@@ -808,7 +840,9 @@
           <div class="card-content">
             <h3>Kontrak Perawatan AC</h3>
             <p>Jasa maintenance rutin untuk kantor, sekolah, atau gedung.</p>
-            <a href="#" class="btn btn-detail" data-service="kontrak-ac">Lihat Detail</a>
+            <a href="#" class="btn btn-detail" data-service="kontrak-ac"
+              >Lihat Detail</a
+            >
             <a href="kontrak-ac.html" class="btn">Ajukan Sekarang</a>
           </div>
         </div>
@@ -821,7 +855,9 @@
           <div class="card-content">
             <h3>Sewa AC</h3>
             <p>Sewa AC Split untuk rumah/toko dan gedung mulai Rp190.000.</p>
-            <a href="#" class="btn btn-detail" data-service="sewa-ac">Lihat Detail</a>
+            <a href="#" class="btn btn-detail" data-service="sewa-ac"
+              >Lihat Detail</a
+            >
             <a href="sewa-ac.html" class="btn">Sewa Sekarang</a>
           </div>
         </div>
@@ -833,7 +869,9 @@
           <div class="card-content">
             <h3>Panel Kontrol Motor</h3>
             <p>Pembuatan panel kontrol motor listrik 3 phase dan 1 phase.</p>
-            <a href="#" class="btn btn-detail" data-service="panel-motor">Lihat Detail</a>
+            <a href="#" class="btn btn-detail" data-service="panel-motor"
+              >Lihat Detail</a
+            >
             <a href="panel-motor.html" class="btn">Buat Sekarang</a>
           </div>
         </div>
@@ -845,7 +883,9 @@
           <div class="card-content">
             <h3>Panel Distribusi & Lampu</h3>
             <p>Pemasangan panel distribusi listrik dan panel lampu gedung.</p>
-            <a href="#" class="btn btn-detail" data-service="panel-distribusi">Lihat Detail</a>
+            <a href="#" class="btn btn-detail" data-service="panel-distribusi"
+              >Lihat Detail</a
+            >
             <a href="panel-distribusi.html" class="btn">Pesan Sekarang</a>
           </div>
         </div>
@@ -857,7 +897,9 @@
           <div class="card-content">
             <h3>Gulung Dinamo</h3>
             <p>Servis gulung ulang dinamo motor listrik dengan garansi.</p>
-            <a href="#" class="btn btn-detail" data-service="gulung-dinamo">Lihat Detail</a>
+            <a href="#" class="btn btn-detail" data-service="gulung-dinamo"
+              >Lihat Detail</a
+            >
             <a href="gulung-dinamo.html" class="btn">Servis Sekarang</a>
           </div>
         </div>
@@ -886,164 +928,181 @@
     <script>
       // Service data
       const services = {
-        'cuci-ac': {
-          title: 'Service / Cuci AC',
-          description: 'Layanan cuci AC profesional untuk menjaga kinerja optimal AC Anda. Membersihkan semua komponen penting termasuk evaporator, kondensor, filter, dan saluran udara.',
+        "cuci-ac": {
+          title: "Service / Cuci AC",
+          description:
+            "Layanan cuci AC profesional untuk menjaga kinerja optimal AC Anda. Membersihkan semua komponen penting termasuk evaporator, kondensor, filter, dan saluran udara.",
           features: [
-            'Pembersihan evaporator dan kondensor',
-            'Pembersihan filter udara',
-            'Pengecekan freon dan tekanan',
-            'Pelumasan bagian yang bergerak',
-            'Pengecekan sistem drainase',
-            'Garansi 30 hari untuk pekerjaan'
+            "Pembersihan evaporator dan kondensor",
+            "Pembersihan filter udara",
+            "Pengecekan freon dan tekanan",
+            "Pelumasan bagian yang bergerak",
+            "Pengecekan sistem drainase",
+            "Garansi 30 hari untuk pekerjaan",
           ],
-          price: 'Rp70.000 - Rp150.000 (tergantung PK AC)',
-          whatsapp: 'https://wa.me/6285817818216?text=Saya%20ingin%20pesan%20layanan%20Cuci%20AC'
+          price: "Rp70.000 - Rp150.000 (tergantung PK AC)",
+          whatsapp:
+            "https://wa.me/6285817818216?text=Saya%20ingin%20pesan%20layanan%20Cuci%20AC",
         },
-        'tukar-tambah': {
-          title: 'Tukar Tambah AC',
-          description: 'Layanan tukar tambah AC lama Anda dengan AC baru yang lebih hemat energi dan berteknologi terbaru. Dapatkan nilai terbaik untuk AC lama Anda.',
+        "tukar-tambah": {
+          title: "Tukar Tambah AC",
+          description:
+            "Layanan tukar tambah AC lama Anda dengan AC baru yang lebih hemat energi dan berteknologi terbaru. Dapatkan nilai terbaik untuk AC lama Anda.",
           features: [
-            'Penilaian profesional untuk AC lama',
-            'Berbagai pilihan AC baru dari merek ternama',
-            'Pemasangan gratis untuk AC baru',
-            'Penghapusan AC lama yang ramah lingkungan',
-            'Garansi produk dan pemasangan',
-            'Pembayaran fleksibel'
+            "Penilaian profesional untuk AC lama",
+            "Berbagai pilihan AC baru dari merek ternama",
+            "Pemasangan gratis untuk AC baru",
+            "Penghapusan AC lama yang ramah lingkungan",
+            "Garansi produk dan pemasangan",
+            "Pembayaran fleksibel",
           ],
-          price: 'Harga bervariasi tergantung model AC',
-          whatsapp: 'https://wa.me/6285817818216?text=Saya%20ingin%20info%20tukar%20tambah%20AC'
+          price: "Harga bervariasi tergantung model AC",
+          whatsapp:
+            "https://wa.me/6285817818216?text=Saya%20ingin%20info%20tukar%20tambah%20AC",
         },
-        'repair-ac': {
-          title: 'Repair / Perbaikan AC',
-          description: 'Perbaikan komprehensif untuk semua masalah AC termasuk tidak dingin, kebocoran, suara berisik, dan masalah komponen lainnya.',
+        "repair-ac": {
+          title: "Repair / Perbaikan AC",
+          description:
+            "Perbaikan komprehensif untuk semua masalah AC termasuk tidak dingin, kebocoran, suara berisik, dan masalah komponen lainnya.",
           features: [
-            'Diagnosis masalah secara profesional',
-            'Perbaikan komponen elektronik',
-            'Penggantian part jika diperlukan',
-            'Pengisian freon',
-            'Perbaikan kebocoran',
-            'Garansi 90 hari untuk perbaikan'
+            "Diagnosis masalah secara profesional",
+            "Perbaikan komponen elektronik",
+            "Penggantian part jika diperlukan",
+            "Pengisian freon",
+            "Perbaikan kebocoran",
+            "Garansi 90 hari untuk perbaikan",
           ],
-          price: 'Rp150.000 - Rp1.500.000 (tergantung kerusakan)',
-          whatsapp: 'https://wa.me/6285817818216?text=Saya%20butuh%20layanan%20perbaikan%20AC'
+          price: "Rp150.000 - Rp1.500.000 (tergantung kerusakan)",
+          whatsapp:
+            "https://wa.me/6285817818216?text=Saya%20butuh%20layanan%20perbaikan%20AC",
         },
-        'bongkar-pasang': {
-          title: 'Bongkar Pasang AC',
-          description: 'Layanan bongkar pasang AC untuk relokasi unit ke lokasi baru dengan aman dan profesional tanpa merusak unit atau properti Anda.',
+        "bongkar-pasang": {
+          title: "Bongkar Pasang AC",
+          description:
+            "Layanan bongkar pasang AC untuk relokasi unit ke lokasi baru dengan aman dan profesional tanpa merusak unit atau properti Anda.",
           features: [
-            'Penanganan profesional unit AC',
-            'Penyimpanan sementara jika diperlukan',
-            'Pemasangan di lokasi baru',
-            'Pengujian sistem setelah pemasangan',
-            'Pembersihan unit sebelum pemasangan',
-            'Garansi 60 hari untuk pemasangan'
+            "Penanganan profesional unit AC",
+            "Penyimpanan sementara jika diperlukan",
+            "Pemasangan di lokasi baru",
+            "Pengujian sistem setelah pemasangan",
+            "Pembersihan unit sebelum pemasangan",
+            "Garansi 60 hari untuk pemasangan",
           ],
-          price: 'Rp250.000 - Rp500.000 per unit',
-          whatsapp: 'https://wa.me/6285817818216?text=Saya%20butuh%20layanan%20bongkar%20pasang%20AC'
+          price: "Rp250.000 - Rp500.000 per unit",
+          whatsapp:
+            "https://wa.me/6285817818216?text=Saya%20butuh%20layanan%20bongkar%20pasang%20AC",
         },
-        'kontrak-ac': {
-          title: 'Kontrak Perawatan AC',
-          description: 'Paket perawatan rutin untuk kantor, sekolah, atau gedung komersial dengan jadwal yang fleksibel dan harga kompetitif.',
+        "kontrak-ac": {
+          title: "Kontrak Perawatan AC",
+          description:
+            "Paket perawatan rutin untuk kantor, sekolah, atau gedung komersial dengan jadwal yang fleksibel dan harga kompetitif.",
           features: [
-            'Pembersihan rutin bulanan/triwulan',
-            'Pengecekan performa sistem',
-            'Pelaporan kondisi AC',
-            'Prioritas perbaikan darurat',
-            'Diskon untuk sparepart',
-            'Teknisi yang sama untuk konsistensi'
+            "Pembersihan rutin bulanan/triwulan",
+            "Pengecekan performa sistem",
+            "Pelaporan kondisi AC",
+            "Prioritas perbaikan darurat",
+            "Diskon untuk sparepart",
+            "Teknisi yang sama untuk konsistensi",
           ],
-          price: 'Mulai dari Rp500.000/bulan (tergantung jumlah unit)',
-          whatsapp: 'https://wa.me/6285817818216?text=Saya%20ingin%20info%20kontrak%20perawatan%20AC'
+          price: "Mulai dari Rp500.000/bulan (tergantung jumlah unit)",
+          whatsapp:
+            "https://wa.me/6285817818216?text=Saya%20ingin%20info%20kontrak%20perawatan%20AC",
         },
-        'sewa-ac': {
-          title: 'Sewa AC',
-          description: 'Layanan sewa AC jangka pendek atau panjang untuk acara, kantor sementara, atau kebutuhan lainnya. Unit terawat dengan pemasangan profesional.',
+        "sewa-ac": {
+          title: "Sewa AC",
+          description:
+            "Layanan sewa AC jangka pendek atau panjang untuk acara, kantor sementara, atau kebutuhan lainnya. Unit terawat dengan pemasangan profesional.",
           features: [
-            'Berbagai tipe AC (Split, Standing, dll)',
-            'Pemasangan dan bongkar gratis',
-            'Perawatan rutin untuk sewa jangka panjang',
-            'Penggantian unit jika ada masalah',
-            'Harga all-inclusive',
-            'Fleksibel durasi sewa'
+            "Berbagai tipe AC (Split, Standing, dll)",
+            "Pemasangan dan bongkar gratis",
+            "Perawatan rutin untuk sewa jangka panjang",
+            "Penggantian unit jika ada masalah",
+            "Harga all-inclusive",
+            "Fleksibel durasi sewa",
           ],
-          price: 'Mulai dari Rp190.000/hari (minimal 3 hari)',
-          whatsapp: 'https://wa.me/6285817818216?text=Saya%20ingin%20sewa%20AC'
+          price: "Mulai dari Rp190.000/hari (minimal 3 hari)",
+          whatsapp: "https://wa.me/6285817818216?text=Saya%20ingin%20sewa%20AC",
         },
-        'panel-motor': {
-          title: 'Panel Kontrol Motor',
-          description: 'Pembuatan panel kontrol motor listrik custom untuk berbagai aplikasi industri dengan standar keamanan tinggi dan kualitas terbaik.',
+        "panel-motor": {
+          title: "Panel Kontrol Motor",
+          description:
+            "Pembuatan panel kontrol motor listrik custom untuk berbagai aplikasi industri dengan standar keamanan tinggi dan kualitas terbaik.",
           features: [
-            'Desain sesuai kebutuhan',
-            'Komponen berkualitas tinggi',
-            'Pengujian ketat sebelum serah terima',
-            'Dokumentasi diagram lengkap',
-            'Garansi 1 tahun',
-            'Layanan purna jual'
+            "Desain sesuai kebutuhan",
+            "Komponen berkualitas tinggi",
+            "Pengujian ketat sebelum serah terima",
+            "Dokumentasi diagram lengkap",
+            "Garansi 1 tahun",
+            "Layanan purna jual",
           ],
-          price: 'Mulai dari Rp2.500.000 (tergantung kompleksitas)',
-          whatsapp: 'https://wa.me/6285817818216?text=Saya%20butuh%20panel%20kontrol%20motor'
+          price: "Mulai dari Rp2.500.000 (tergantung kompleksitas)",
+          whatsapp:
+            "https://wa.me/6285817818216?text=Saya%20butuh%20panel%20kontrol%20motor",
         },
-        'panel-distribusi': {
-          title: 'Panel Distribusi & Lampu',
-          description: 'Pemasangan dan perbaikan panel distribusi listrik serta panel kontrol lampu untuk gedung komersial dan industri.',
+        "panel-distribusi": {
+          title: "Panel Distribusi & Lampu",
+          description:
+            "Pemasangan dan perbaikan panel distribusi listrik serta panel kontrol lampu untuk gedung komersial dan industri.",
           features: [
-            'Pengecekan sistem kelistrikan',
-            'Pemasangan sesuai standar PUIL',
-            'Penggunaan MCB/MCCB berkualitas',
-            'Pengujian beban penuh',
-            'Labeling yang jelas',
-            'Garansi 1 tahun'
+            "Pengecekan sistem kelistrikan",
+            "Pemasangan sesuai standar PUIL",
+            "Penggunaan MCB/MCCB berkualitas",
+            "Pengujian beban penuh",
+            "Labeling yang jelas",
+            "Garansi 1 tahun",
           ],
-          price: 'Mulai dari Rp3.000.000 (tergantung ukuran panel)',
-          whatsapp: 'https://wa.me/6285817818216?text=Saya%20butuh%20panel%20distribusi%20listrik'
+          price: "Mulai dari Rp3.000.000 (tergantung ukuran panel)",
+          whatsapp:
+            "https://wa.me/6285817818216?text=Saya%20butuh%20panel%20distribusi%20listrik",
         },
-        'gulung-dinamo': {
-          title: 'Gulung Dinamo',
-          description: 'Servis gulung ulang dinamo motor listrik 1 phase dan 3 phase dengan presisi tinggi menggunakan bahan berkualitas.',
+        "gulung-dinamo": {
+          title: "Gulung Dinamo",
+          description:
+            "Servis gulung ulang dinamo motor listrik 1 phase dan 3 phase dengan presisi tinggi menggunakan bahan berkualitas.",
           features: [
-            'Diagnosis kerusakan awal',
-            'Pembersihan komponen',
-            'Penggulungan ulang dengan kawat tembaga grade A',
-            'Pengujian beban dan isolasi',
-            'Pelumasan bearing',
-            'Garansi 3 bulan'
+            "Diagnosis kerusakan awal",
+            "Pembersihan komponen",
+            "Penggulungan ulang dengan kawat tembaga grade A",
+            "Pengujian beban dan isolasi",
+            "Pelumasan bearing",
+            "Garansi 3 bulan",
           ],
-          price: 'Mulai dari Rp350.000 (tergantung ukuran dinamo)',
-          whatsapp: 'https://wa.me/6285817818216?text=Saya%20butuh%20servis%20gulung%20dinamo'
-        }
+          price: "Mulai dari Rp350.000 (tergantung ukuran dinamo)",
+          whatsapp:
+            "https://wa.me/6285817818216?text=Saya%20butuh%20servis%20gulung%20dinamo",
+        },
       };
 
       // Snow animation
       function createSnow() {
-        const snowContainer = document.getElementById('snow');
+        const snowContainer = document.getElementById("snow");
         const snowflakeCount = 50;
-        
+
         for (let i = 0; i < snowflakeCount; i++) {
-          const snowflake = document.createElement('div');
-          snowflake.classList.add('snowflake');
-          
+          const snowflake = document.createElement("div");
+          snowflake.classList.add("snowflake");
+
           // Random size between 2px and 6px
           const size = Math.random() * 4 + 2;
           snowflake.style.width = `${size}px`;
           snowflake.style.height = `${size}px`;
-          
+
           // Random position
           snowflake.style.left = `${Math.random() * 100}%`;
-          
+
           // Random animation duration between 5s and 15s
           const duration = Math.random() * 10 + 5;
           snowflake.style.animationDuration = `${duration}s`;
-          
+
           // Random delay
           snowflake.style.animationDelay = `${Math.random() * 5}s`;
-          
+
           snowContainer.appendChild(snowflake);
         }
       }
-      
+
       // Create snow when page loads
-      window.addEventListener('load', createSnow);
+      window.addEventListener("load", createSnow);
 
       // Card animation
       const cards = document.querySelectorAll(".card");
@@ -1060,67 +1119,67 @@
       cards.forEach((card) => observer.observe(card));
 
       // Shake effect for popular cards
-      const popularCards = document.querySelectorAll('.popular-card');
-      popularCards.forEach(card => {
-        card.addEventListener('mouseenter', () => {
-          card.style.animation = 'shake 0.5s infinite';
+      const popularCards = document.querySelectorAll(".popular-card");
+      popularCards.forEach((card) => {
+        card.addEventListener("mouseenter", () => {
+          card.style.animation = "shake 0.5s infinite";
         });
-        card.addEventListener('mouseleave', () => {
-          card.style.animation = '';
+        card.addEventListener("mouseleave", () => {
+          card.style.animation = "";
         });
       });
 
       // Modal functionality
-      const modal = document.getElementById('serviceModal');
-      const modalTitle = document.getElementById('modalTitle');
-      const modalDescription = document.getElementById('modalDescription');
-      const modalFeatures = document.getElementById('modalFeatures');
-      const modalPrice = document.getElementById('modalPrice');
-      const modalWhatsApp = document.getElementById('modalWhatsApp');
-      const closeButtons = document.querySelectorAll('.close-modal');
+      const modal = document.getElementById("serviceModal");
+      const modalTitle = document.getElementById("modalTitle");
+      const modalDescription = document.getElementById("modalDescription");
+      const modalFeatures = document.getElementById("modalFeatures");
+      const modalPrice = document.getElementById("modalPrice");
+      const modalWhatsApp = document.getElementById("modalWhatsApp");
+      const closeButtons = document.querySelectorAll(".close-modal");
 
       // Add click event to all detail buttons
-      document.querySelectorAll('.btn-detail').forEach(button => {
-        button.addEventListener('click', function(e) {
+      document.querySelectorAll(".btn-detail").forEach((button) => {
+        button.addEventListener("click", function (e) {
           e.preventDefault();
-          const serviceId = this.getAttribute('data-service');
+          const serviceId = this.getAttribute("data-service");
           const service = services[serviceId];
-          
+
           if (service) {
             modalTitle.textContent = service.title;
             modalDescription.textContent = service.description;
             modalPrice.textContent = `Harga mulai dari: ${service.price}`;
             modalWhatsApp.href = service.whatsapp;
-            
+
             // Clear existing features
-            modalFeatures.innerHTML = '';
-            
+            modalFeatures.innerHTML = "";
+
             // Add new features
-            service.features.forEach(feature => {
-              const li = document.createElement('li');
+            service.features.forEach((feature) => {
+              const li = document.createElement("li");
               li.textContent = feature;
               modalFeatures.appendChild(li);
             });
-            
+
             // Show modal
-            modal.style.display = 'block';
-            document.body.style.overflow = 'hidden';
+            modal.style.display = "block";
+            document.body.style.overflow = "hidden";
           }
         });
       });
 
       // Close modal when clicking close button or outside
-      closeButtons.forEach(button => {
-        button.addEventListener('click', () => {
-          modal.style.display = 'none';
-          document.body.style.overflow = 'auto';
+      closeButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          modal.style.display = "none";
+          document.body.style.overflow = "auto";
         });
       });
 
-      window.addEventListener('click', (e) => {
+      window.addEventListener("click", (e) => {
         if (e.target === modal) {
-          modal.style.display = 'none';
-          document.body.style.overflow = 'auto';
+          modal.style.display = "none";
+          document.body.style.overflow = "auto";
         }
       });
     </script>

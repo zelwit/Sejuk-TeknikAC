@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sejuk Teknik AC - 3D AC Planner</title>
+    <style>
+        /* CSS untuk planner */
+        .planner-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .planner-title {
+            text-align: center;
+            color: #0066cc;
+            margin-bottom: 1.5rem;
+        }
+        
+        .planner-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+        
+        .planner-controls {
+            flex: 1;
+            min-width: 300px;
+            padding: 1rem;
+            background: white;
+            border-radius: 8px;
+        }
+        
+        .planner-3dview {
+            flex: 2;
+            min-width: 400px;
+            height: 500px;
+            background: #e6f2ff;
+            border-radius: 8px;
+            position: relative;
+        }
+        
+        #room3d {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .btn {
+            background: #0066cc;
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            margin-top: 1rem;
+        }
+        
+        .btn-danger {
+            background: #cc3300;
+        }
+        
+        .btn-success {
+            background: #28a745;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+        }
+        
+        .ac-options {
+            margin-top: 2rem;
+            border-top: 1px solid #e6f2ff;
+            padding-top: 1.5rem;
+        }
+        
+        .ac-type-selector {
+            display: flex;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .ac-type {
+            padding: 0.5rem 1rem;
+            background: #e6f2ff;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .ac-type.active {
+            background: #0066cc;
+            color: white;
+        }
+        
+        .instructions {
+            margin-top: 2rem;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        /* Context Menu Styles */
+        .context-menu {
+            position: absolute;
+            background: white;
+            border-radius: 4px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            z-index: 1000;
+            display: none;
+        }
+        
+        .context-menu ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .context-menu li {
+            padding: 8px 16px;
+            cursor: pointer;
+        }
+        
+        .context-menu li:hover {
+            background: #f0f0f0;
+        }
+        
+        /* AC Info Panel */
+        .ac-info-panel {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255,255,255,0.9);
+            padding: 10px;
+            border-radius: 4px;
+            max-width: 200px;
+            display: none;
+        }
+        
+        /* Mode Selector */
+        .mode-selector {
+            display: flex;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .mode-btn {
+            padding: 0.5rem 1rem;
+            background: #e6f2ff;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .mode-btn.active {
+            background: #0066cc;
+            color: white;
+        }
+        
+        .component-selector {
+            display: flex;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .component-btn {
+            padding: 0.5rem 1rem;
+            background: #e6f2ff;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .component-btn.active {
+            background: #0066cc;
+            color: white;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+    </style>
+    <!-- Load Three.js library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- Load OrbitControls for camera movement -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.min.js"></script>
+    <!-- Load TransformControls for object manipulation -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/TransformControls.min.js"></script>
+</head>
+<body>
+    <section class="planner-container">
+        <h2 class="planner-title">3D AC Placement Planner</h2>
+        <p style="text-align: center; margin-bottom: 2rem;">Visualisasikan posisi AC ideal di ruangan Anda</p>
+        
+        <div class="planner-content">
+            <div class="planner-controls">
+                <div class="form-group">
+                    <label for="room-length">Panjang Ruangan (meter)</label>
+                    <input type="number" id="room-length" min="2" max="20" value="5">
+                </div>
+                
+                <div class="form-group">
+                    <label for="room-width">Lebar Ruangan (meter)</label>
+                    <input type="number" id="room-width" min="2" max="20" value="4">
+                </div>
+                
+                <div class="form-group">
+                    <label for="room-height">Tinggi Ruangan (meter)</label>
+                    <input type="number" id="room-height" min="2" max="6" value="3">
+                </div>
+                
+                <button id="generate-room" class="btn">Buat Ruangan 3D</button>
+                
+                <div class="ac-options">
+                    <h4>Pilih Tipe AC:</h4>
+                    <div class="ac-type-selector">
+                        <div class="ac-type active" data-type="wall">AC Dinding</div>
+                        <div class="ac-type" data-type="standing">AC Standing</div>
+                    </div>
+                    
+                    <h4 style="margin-top: 1.5rem;">Mode Interaksi:</h4>
+                    <div class="mode-selector">
+                        <div class="mode-btn active" data-mode="select">Select</div>
+                        <div class="mode-btn" data-mode="move">Move</div>
+                        <div class="mode-btn" data-mode="rotate">Rotate</div>
+                    </div>
+                    
+                    <h4 style="margin-top: 1.5rem;">Pilih Komponen:</h4>
+                    <div class="component-selector">
+                        <div class="component-btn active" data-component="indoor">Indoor</div>
+                        <div class="component-btn" data-component="pipes">Pipa</div>
+                        <div class="component-btn" data-component="outdoor">Outdoor</div>
+                    </div>
+                    
+                    <button id="add-ac" class="btn">Tambahkan AC</button>
+                    <button id="delete-ac" class="btn btn-danger" style="display: none;">Hapus AC</button>
+                    
+                    <div class="action-buttons">
+                        <button id="save-scene" class="btn btn-success">Simpan</button>
+                        <button id="load-scene" class="btn">Muat</button>
+                        <button id="clear-scene" class="btn btn-danger">Hapus Semua</button>
+                    </div>
+                    
+                    <div class="instructions">
+                        <p><strong>Cara menggunakan:</strong></p>
+                        <ul>
+                            <li>Gerakkan mouse untuk melihat dari berbagai sudut</li>
+                            <li>Scroll untuk memperbesar/memperkecil</li>
+                            <li>Klik kiri untuk memilih AC atau komponennya</li>
+                            <li>Klik kanan pada AC untuk menu konteks</li>
+                            <li>Gunakan mode interaksi untuk mengubah AC</li>
+                            <li>Pilih komponen yang ingin dipindahkan (Indoor/Pipa/Outdoor)</li>
+                            <li>Gunakan tombol Simpan untuk menyimpan desain</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="planner-3dview">
+                <div id="room3d"></div>
+                <div id="context-menu" class="context-menu">
+                    <ul>
+                        <li id="menu-move">Pindahkan</li>
+                        <li id="menu-rotate">Putar</li>
+                        <li id="menu-delete">Hapus</li>
+                        <li id="menu-properties">Properties</li>
+                    </ul>
+                </div>
+                <div id="ac-info" class="ac-info-panel">
+                    <h4>AC Info</h4>
+                    <div id="ac-info-content"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Inisialisasi scene Three.js
+        let scene, camera, renderer, controls, transformControls;
+        let room = null;
+        let floor = null;
+        let acUnits = [];
+        let selectedObject = null;
+        let selectedComponent = null;
+        let acType = 'wall';
+        let interactionMode = 'select';
+        let activeComponent = 'indoor'; // Default to indoor unit
+        let contextMenu = null;
+        let acInfoPanel = null;
+        
+        // Fungsi untuk menginisialisasi scene 3D
+        function init3D() {
+            const container = document.getElementById('room3d');
+            
+            // Buat scene
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0xe6f2ff);
+            
+            // Buat kamera
+            camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+            camera.position.set(10, 10, 10);
+            
+            // Buat renderer
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            container.appendChild(renderer.domElement);
+            
+            // Tambahkan kontrol kamera
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.25;
+            
+            // Tambahkan transform controls
+            transformControls = new THREE.TransformControls(camera, renderer.domElement);
+            transformControls.addEventListener('dragging-changed', function(event) {
+                controls.enabled = !event.value;
+            });
+            
+            scene.add(transformControls);
+            
+            // Tambahkan pencahayaan
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+            scene.add(ambientLight);
+            
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            directionalLight.position.set(5, 10, 7);
+            scene.add(directionalLight);
+            
+            // Tambahkan grid helper
+            const gridHelper = new THREE.GridHelper(20, 20);
+            scene.add(gridHelper);
+            
+            // Handle window resize
+            window.addEventListener('resize', function() {
+                camera.aspect = container.clientWidth / container.clientHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(container.clientWidth, container.clientHeight);
+            });
+            
+            // Inisialisasi context menu
+            contextMenu = document.getElementById('context-menu');
+            acInfoPanel = document.getElementById('ac-info');
+            
+            // Handle mouse events untuk interaksi AC
+            renderer.domElement.addEventListener('mousedown', onMouseDown, false);
+            renderer.domElement.addEventListener('mousemove', onMouseMove, false);
+            renderer.domElement.addEventListener('mouseup', onMouseUp, false);
+            renderer.domElement.addEventListener('contextmenu', onContextMenu, false);
+            
+            // Coba muat scene dari localStorage
+            loadFromLocalStorage();
+            
+            // Mulai animasi
+            animate();
+        }
+        
+        // Fungsi untuk membuat lantai
+        function createFloor(length, width) {
+            if (floor) {
+                scene.remove(floor);
+            }
+            
+            const floorGeometry = new THREE.PlaneGeometry(length, width);
+            const floorMaterial = new THREE.MeshStandardMaterial({ 
+                color: 0x888888,
+                side: THREE.DoubleSide
+            });
+            
+            floor = new THREE.Mesh(floorGeometry, floorMaterial);
+            floor.rotation.x = -Math.PI / 2;
+            floor.position.y = 0;
+            floor.receiveShadow = true;
+            scene.add(floor);
+        }
+        
+        // Fungsi untuk membuat ruangan berdasarkan input
+        function generateRoom() {
+            const length = parseFloat(document.getElementById('room-length').value);
+            const width = parseFloat(document.getElementById('room-width').value);
+            const height = parseFloat(document.getElementById('room-height').value);
+            
+            // Hapus ruangan yang ada jika ada
+            if (room) {
+                scene.remove(room);
+            }
+            
+            // Buat lantai
+            createFloor(length, width);
+            
+            // Buat geometri ruangan
+            const roomGeometry = new THREE.BoxGeometry(length, height, width);
+            const roomMaterial = new THREE.MeshPhongMaterial({ 
+                color: 0xdddddd, 
+                side: THREE.BackSide,
+                transparent: true,
+                opacity: 0.7
+            });
+            
+            room = new THREE.Mesh(roomGeometry, roomMaterial);
+            scene.add(room);
+            
+            // Posisikan kamera berdasarkan ukuran ruangan
+            const maxDim = Math.max(length, width, height);
+            camera.position.set(maxDim * 1.5, maxDim * 1.5, maxDim * 1.5);
+            controls.target.set(0, height/2, 0);
+            
+            // Hapus semua AC yang ada
+            clearAllACUnits();
+        }
+        
+        // Fungsi untuk membuat model outdoor unit yang lebih realistis
+        function createOutdoorUnit() {
+            const group = new THREE.Group();
+            
+            // Main housing (white)
+            const housing = new THREE.Mesh(
+                new THREE.BoxGeometry(0.8, 0.6, 0.3),
+                new THREE.MeshPhongMaterial({ color: 0xffffff })
+            );
+            group.add(housing);
+            
+            // Fan guard (metal)
+            const fanGuard = new THREE.Mesh(
+                new THREE.CylinderGeometry(0.25, 0.25, 0.02, 32),
+                new THREE.MeshPhongMaterial({ color: 0xcccccc })
+            );
+            fanGuard.position.set(0, 0.25, 0.15);
+            group.add(fanGuard);
+            
+            // Fan blades (black)
+            const fan = new THREE.Mesh(
+                new THREE.CylinderGeometry(0.2, 0.2, 0.01, 8),
+                new THREE.MeshPhongMaterial({ color: 0x333333, flatShading: true })
+            );
+            fan.position.set(0, 0.25, 0.16);
+            fan.rotation.x = Math.PI / 2;
+            group.add(fan);
+            
+            // Side vents
+            for (let i = 0; i < 5; i++) {
+                const vent = new THREE.Mesh(
+                    new THREE.BoxGeometry(0.7, 0.02, 0.1),
+                    new THREE.MeshPhongMaterial({ color: 0x333333 })
+                );
+                vent.position.set(0, -0.2 + i * 0.1, 0.15);
+                group.add(vent);
+            }
+            
+            // Pipe connections (copper)
+            const pipeConnector = new THREE.Mesh(
+                new THREE.CylinderGeometry(0.05, 0.05, 0.1, 16),
+                new THREE.MeshPhongMaterial({ color: 0xb87333 })
+            );
+            pipeConnector.position.set(0.3, 0.1, -0.15);
+            pipeConnector.rotation.x = Math.PI / 2;
+            group.add(pipeConnector);
+            
+            return group;
+        }
+        
+        // Fungsi untuk membuat model AC dinding
+        function createWallAC(length, width, height) {
+            const group = new THREE.Group();
+            
+            // Main unit (white)
+            const mainUnit = new THREE.Mesh(
+                new THREE.BoxGeometry(0.8, 0.25, 0.15),
+                new THREE.MeshPhongMaterial({ color: 0xffffff })
+            );
+            mainUnit.position.set(0, 0, 0);
+            group.add(mainUnit);
+            
+            // Front panel (gray with vents)
+            const frontPanel = new THREE.Mesh(
+                new THREE.BoxGeometry(0.75, 0.2, 0.05),
+                new THREE.MeshPhongMaterial({ color: 0xaaaaaa })
+            );
+            frontPanel.position.set(0, 0, 0.075);
+            group.add(frontPanel);
+            
+            // Vents (black lines)
+            for (let i = 0; i < 5; i++) {
+                const vent = new THREE.Mesh(
+                    new THREE.BoxGeometry(0.7, 0.01, 0.02),
+                    new THREE.MeshPhongMaterial({ color: 0x333333 })
+                );
+                vent.position.set(0, -0.075 + i * 0.0375, 0.1);
+                group.add(vent);
+            }
+            
+            // Pipes (copper color)
+            const pipes = new THREE.Group();
+            
+            // Main pipe
+            const pipeGeometry = new THREE.CylinderGeometry(0.02, 0.02, 0.5, 16);
+            const pipeMaterial = new THREE.MeshPhongMaterial({ color: 0xb87333 }); // Copper color
+            
+            const pipe1 = new THREE.Mesh(pipeGeometry, pipeMaterial);
+            pipe1.rotation.x = Math.PI / 2;
+            pipe1.position.set(0.3, -0.2, 0);
+            pipes.add(pipe1);
+            
+            const pipe2 = new THREE.Mesh(pipeGeometry, pipeMaterial);
+            pipe2.rotation.x = Math.PI / 2;
+            pipe2.position.set(0.2, -0.2, 0);
+            pipes.add(pipe2);
+            
+            // Outdoor unit
+            const outdoorUnit = createOutdoorUnit();
+            outdoorUnit.position.set(0.5, -0.5, -0.5);
+            
+            return { 
+                unit: group, 
+                pipes: pipes, 
+                outdoor: outdoorUnit,
+                type: 'wall',
+                name: `AC ${acUnits.length + 1}`,
+                brand: 'Default',
+                capacity: '1 PK'
+            };
+        }
+        
+        // Fungsi untuk membuat model AC standing
+        function createStandingAC(length, width, height) {
+            const group = new THREE.Group();
+            
+            // Main unit (white)
+            const mainUnit = new THREE.Mesh(
+                new THREE.BoxGeometry(0.3, 1.2, 0.3),
+                new THREE.MeshPhongMaterial({ color: 0xffffff })
+            );
+            mainUnit.position.set(0, 0.6, 0);
+            group.add(mainUnit);
+            
+            // Front panel (gray with vents)
+            const frontPanel = new THREE.Mesh(
+                new THREE.BoxGeometry(0.28, 1.1, 0.05),
+                new THREE.MeshPhongMaterial({ color: 0xaaaaaa })
+            );
+            frontPanel.position.set(0, 0.6, 0.15);
+            group.add(frontPanel);
+            
+            // Vents (black lines - horizontal)
+            for (let i = 0; i < 10; i++) {
+                const vent = new THREE.Mesh(
+                    new THREE.BoxGeometry(0.25, 0.01, 0.02),
+                    new THREE.MeshPhongMaterial({ color: 0x333333 })
+                );
+                vent.position.set(0, 0.6 + (-0.5 + i * 0.1), 0.175);
+                group.add(vent);
+            }
+            
+            // Pipes (copper color)
+            const pipes = new THREE.Group();
+            
+            // Main pipe going to outdoor unit
+            const pipeGeometry = new THREE.CylinderGeometry(0.02, 0.02, 0.8, 16);
+            const pipeMaterial = new THREE.MeshPhongMaterial({ color: 0xb87333 }); // Copper color
+            
+            const pipe1 = new THREE.Mesh(pipeGeometry, pipeMaterial);
+            pipe1.rotation.x = Math.PI / 2;
+            pipe1.position.set(0.15, 0.2, -0.2);
+            pipes.add(pipe1);
+            
+            const pipe2 = new THREE.Mesh(pipeGeometry, pipeMaterial);
+            pipe2.rotation.x = Math.PI / 2;
+            pipe2.position.set(-0.15, 0.2, -0.2);
+            pipes.add(pipe2);
+            
+            // Outdoor unit
+            const outdoorUnit = createOutdoorUnit();
+            outdoorUnit.position.set(0, 0, -0.8);
+            
+            return { 
+                unit: group, 
+                pipes: pipes, 
+                outdoor: outdoorUnit,
+                type: 'standing',
+                name: `AC ${acUnits.length + 1}`,
+                brand: 'Default',
+                capacity: '1 PK'
+            };
+        }
+        
+        // Fungsi untuk menambahkan AC ke ruangan
+        function addACUnit() {
+            if (!room) {
+                alert('Buat ruangan terlebih dahulu!');
+                return;
+            }
+            
+            const length = parseFloat(document.getElementById('room-length').value);
+            const width = parseFloat(document.getElementById('room-width').value);
+            const height = parseFloat(document.getElementById('room-height').value);
+            
+            let acModel;
+            
+            if (acType === 'wall') {
+                acModel = createWallAC(length, width, height);
+                
+                // Position the wall AC
+                acModel.unit.position.set(length/2 - 0.5, height - 0.3, 0);
+                acModel.unit.rotation.y = Math.PI;
+                
+                // Position pipes relative to AC
+                acModel.pipes.position.copy(acModel.unit.position);
+                acModel.pipes.rotation.copy(acModel.unit.rotation);
+                
+                // Position outdoor unit
+                acModel.outdoor.position.set(length/2 - 0.5, height - 0.8, -0.5);
+            } else if (acType === 'standing') {
+                acModel = createStandingAC(length, width, height);
+                
+                // Position the standing AC
+                acModel.unit.position.set(length/2 - 1, 0, width/2 - 1);
+                
+                // Position pipes relative to AC
+                acModel.pipes.position.copy(acModel.unit.position);
+                acModel.pipes.rotation.copy(acModel.unit.rotation);
+                
+                // Position outdoor unit
+                acModel.outdoor.position.set(length/2 - 1, 0, width/2 - 1.8);
+            }
+            
+            // Tambahkan properti khusus untuk semua komponen
+            acModel.unit.userData.isACComponent = true;
+            acModel.unit.userData.acId = acUnits.length;
+            acModel.pipes.userData.isACComponent = true;
+            acModel.pipes.userData.acId = acUnits.length;
+            acModel.outdoor.userData.isACComponent = true;
+            acModel.outdoor.userData.acId = acUnits.length;
+            
+            // Add all parts to scene
+            scene.add(acModel.unit);
+            scene.add(acModel.pipes);
+            scene.add(acModel.outdoor);
+            
+            // Store reference to all parts
+            acUnits.push(acModel);
+            
+            // Pilih AC yang baru ditambahkan
+            selectObject(acModel.unit);
+        }
+        
+        // Fungsi untuk memilih objek
+        function selectObject(obj) {
+            // Reset transform controls
+            transformControls.detach();
+            
+            // Find the complete AC object if this is an AC component
+            if (obj && obj.userData.isACComponent) {
+                selectedObject = acUnits[obj.userData.acId];
+                
+                // Determine which component was selected
+                if (obj === selectedObject.unit) {
+                    selectedComponent = 'indoor';
+                } else if (obj === selectedObject.pipes) {
+                    selectedComponent = 'pipes';
+                } else if (obj === selectedObject.outdoor) {
+                    selectedComponent = 'outdoor';
+                }
+                
+                // Update active component buttons
+                updateComponentButtons();
+                
+                // Attach transform controls to the selected component
+                transformControls.attach(obj);
+                updateTransformControlsMode();
+                document.getElementById('delete-ac').style.display = 'inline-block';
+                updateACInfoPanel(selectedObject);
+                acInfoPanel.style.display = 'block';
+            } else {
+                selectedObject = null;
+                selectedComponent = null;
+                document.getElementById('delete-ac').style.display = 'none';
+                acInfoPanel.style.display = 'none';
+            }
+        }
+        
+        // Fungsi untuk memperbarui tombol komponen aktif
+        function updateComponentButtons() {
+            document.querySelectorAll('.component-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.getAttribute('data-component') === activeComponent);
+            });
+        }
+        
+        // Fungsi untuk mengatur komponen aktif yang akan dimanipulasi
+        function setActiveComponent(component) {
+            activeComponent = component;
+            updateComponentButtons();
+            
+            if (selectedObject) {
+                // Switch the transform controls to the new active component
+                let targetObj;
+                switch(component) {
+                    case 'indoor':
+                        targetObj = selectedObject.unit;
+                        break;
+                    case 'pipes':
+                        targetObj = selectedObject.pipes;
+                        break;
+                    case 'outdoor':
+                        targetObj = selectedObject.outdoor;
+                        break;
+                }
+                
+                transformControls.detach();
+                transformControls.attach(targetObj);
+                updateTransformControlsMode();
+            }
+        }
+        
+        // Fungsi untuk menghapus AC yang dipilih
+        function deleteSelectedAC() {
+            if (selectedObject) {
+                const index = acUnits.indexOf(selectedObject);
+                if (index !== -1) {
+                    scene.remove(selectedObject.unit);
+                    scene.remove(selectedObject.pipes);
+                    scene.remove(selectedObject.outdoor);
+                    acUnits.splice(index, 1);
+                    selectedObject = null;
+                    selectedComponent = null;
+                    transformControls.detach();
+                    document.getElementById('delete-ac').style.display = 'none';
+                    acInfoPanel.style.display = 'none';
+                }
+            }
+        }
+        
+        // Fungsi untuk menghapus semua AC
+        function clearAllACUnits() {
+            acUnits.forEach(ac => {
+                scene.remove(ac.unit);
+                scene.remove(ac.pipes);
+                scene.remove(ac.outdoor);
+            });
+            acUnits = [];
+            selectedObject = null;
+            selectedComponent = null;
+            transformControls.detach();
+            document.getElementById('delete-ac').style.display = 'none';
+            acInfoPanel.style.display = 'none';
+        }
+        
+        // Fungsi untuk memperbarui mode transform controls
+        function updateTransformControlsMode() {
+            if (!selectedObject) return;
+            
+            switch(interactionMode) {
+                case 'move':
+                    transformControls.setMode('translate');
+                    transformControls.enabled = true;
+                    break;
+                case 'rotate':
+                    transformControls.setMode('rotate');
+                    transformControls.enabled = true;
+                    break;
+                case 'select':
+                default:
+                    transformControls.setMode('translate');
+                    transformControls.enabled = false;
+                    break;
+            }
+        }
+        
+        // Fungsi untuk memperbarui panel info AC
+        function updateACInfoPanel(ac) {
+            if (!ac) return;
+            
+            const content = document.getElementById('ac-info-content');
+            content.innerHTML = `
+                <p><strong>Nama:</strong> ${ac.name}</p>
+                <p><strong>Tipe:</strong> ${ac.type === 'wall' ? 'Dinding' : 'Standing'}</p>
+                <p><strong>Posisi Unit Indoor:</strong> 
+                    X: ${ac.unit.position.x.toFixed(2)}, 
+                    Y: ${ac.unit.position.y.toFixed(2)}, 
+                    Z: ${ac.unit.position.z.toFixed(2)}</p>
+                <p><strong>Rotasi:</strong> Y: ${(ac.unit.rotation.y * (180/Math.PI)).toFixed(1)}°</p>
+                <p><strong>Merk:</strong> ${ac.brand}</p>
+                <p><strong>Kapasitas:</strong> ${ac.capacity}</p>
+            `;
+        }
+        
+        // Fungsi untuk menyimpan scene ke localStorage
+        function saveToLocalStorage() {
+            const roomLength = parseFloat(document.getElementById('room-length').value);
+            const roomWidth = parseFloat(document.getElementById('room-width').value);
+            const roomHeight = parseFloat(document.getElementById('room-height').value);
+            
+            const sceneData = {
+                room: {
+                    length: roomLength,
+                    width: roomWidth,
+                    height: roomHeight
+                },
+                acUnits: acUnits.map(ac => ({
+                    type: ac.type,
+                    name: ac.name,
+                    brand: ac.brand,
+                    capacity: ac.capacity,
+                    unitPosition: [ac.unit.position.x, ac.unit.position.y, ac.unit.position.z],
+                    unitRotation: [ac.unit.rotation.x, ac.unit.rotation.y, ac.unit.rotation.z],
+                    pipesPosition: [ac.pipes.position.x, ac.pipes.position.y, ac.pipes.position.z],
+                    pipesRotation: [ac.pipes.rotation.x, ac.pipes.rotation.y, ac.pipes.rotation.z],
+                    outdoorPosition: [ac.outdoor.position.x, ac.outdoor.position.y, ac.outdoor.position.z]
+                }))
+            };
+            
+            localStorage.setItem('acPlannerScene', JSON.stringify(sceneData));
+            alert('Desain berhasil disimpan!');
+        }
+        
+        // Fungsi untuk memuat scene dari localStorage
+        function loadFromLocalStorage() {
+            const savedScene = localStorage.getItem('acPlannerScene');
+            if (!savedScene) return;
+            
+            try {
+                const sceneData = JSON.parse(savedScene);
+                
+                // Set room dimensions
+                document.getElementById('room-length').value = sceneData.room.length;
+                document.getElementById('room-width').value = sceneData.room.width;
+                document.getElementById('room-height').value = sceneData.room.height;
+                
+                // Generate room
+                generateRoom();
+                
+                // Clear existing AC units
+                clearAllACUnits();
+                
+                // Add saved AC units
+                sceneData.acUnits.forEach(savedAc => {
+                    let acModel;
+                    
+                    if (savedAc.type === 'wall') {
+                        acType = 'wall';
+                        acModel = createWallAC(sceneData.room.length, sceneData.room.width, sceneData.room.height);
+                    } else {
+                        acType = 'standing';
+                        acModel = createStandingAC(sceneData.room.length, sceneData.room.width, sceneData.room.height);
+                    }
+                    
+                    // Set properties
+                    acModel.name = savedAc.name || `AC ${acUnits.length + 1}`;
+                    acModel.brand = savedAc.brand || 'Default';
+                    acModel.capacity = savedAc.capacity || '1 PK';
+                    
+                    // Set positions and rotations
+                    acModel.unit.position.set(...savedAc.unitPosition);
+                    acModel.unit.rotation.set(...savedAc.unitRotation);
+                    acModel.pipes.position.set(...savedAc.pipesPosition);
+                    acModel.pipes.rotation.set(...savedAc.pipesRotation);
+                    acModel.outdoor.position.set(...savedAc.outdoorPosition);
+                    
+                    // Add userData
+                    acModel.unit.userData.isACComponent = true;
+                    acModel.unit.userData.acId = acUnits.length;
+                    acModel.pipes.userData.isACComponent = true;
+                    acModel.pipes.userData.acId = acUnits.length;
+                    acModel.outdoor.userData.isACComponent = true;
+                    acModel.outdoor.userData.acId = acUnits.length;
+                    
+                    // Add to scene
+                    scene.add(acModel.unit);
+                    scene.add(acModel.pipes);
+                    scene.add(acModel.outdoor);
+                    
+                    // Store reference
+                    acUnits.push(acModel);
+                });
+                
+                alert('Desain berhasil dimuat!');
+            } catch (e) {
+                console.error('Error loading scene:', e);
+                alert('Gagal memuat desain yang disimpan');
+            }
+        }
+        
+        // Fungsi untuk animasi
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+            renderer.render(scene, camera);
+        }
+        
+        // Fungsi untuk menangani interaksi mouse
+        function onMouseDown(event) {
+            // Abaikan jika sedang mengklik context menu
+            if (event.target !== renderer.domElement) return;
+            
+            // Cegah context menu jika bukan klik kanan
+            if (event.button !== 2) {
+                event.preventDefault();
+                
+                // Hitung posisi mouse
+                const mouse = new THREE.Vector2();
+                mouse.x = (event.clientX / renderer.domElement.clientWidth) * 2 - 1;
+                mouse.y = -(event.clientY / renderer.domElement.clientHeight) * 2 + 1;
+                
+                // Cek apakah ada objek yang diklik
+                const raycaster = new THREE.Raycaster();
+                raycaster.setFromCamera(mouse, camera);
+                
+                // Buat array dari semua objek yang bisa dipilih
+                const selectableObjects = [];
+                acUnits.forEach(ac => {
+                    selectableObjects.push(ac.unit, ac.pipes, ac.outdoor);
+                });
+                
+                const intersects = raycaster.intersectObjects(selectableObjects);
+                
+                if (intersects.length > 0 && intersects[0].object.userData.isACComponent) {
+                    selectObject(intersects[0].object);
+                } else {
+                    // Klik di luar objek, hapus seleksi
+                    selectObject(null);
+                }
+            }
+        }
+        
+        function onMouseMove(event) {
+            // Tidak digunakan saat ini, bisa untuk hover effects
+        }
+        
+        function onMouseUp(event) {
+            // Tidak digunakan saat ini
+        }
+        
+        function onContextMenu(event) {
+            event.preventDefault();
+            
+            // Hitung posisi mouse
+            const mouse = new THREE.Vector2();
+            mouse.x = (event.clientX / renderer.domElement.clientWidth) * 2 - 1;
+            mouse.y = -(event.clientY / renderer.domElement.clientHeight) * 2 + 1;
+            
+            // Cek apakah ada objek yang diklik
+            const raycaster = new THREE.Raycaster();
+            raycaster.setFromCamera(mouse, camera);
+            
+            // Buat array dari semua objek yang bisa dipilih
+            const selectableObjects = [];
+            acUnits.forEach(ac => {
+                selectableObjects.push(ac.unit, ac.pipes, ac.outdoor);
+            });
+            
+            const intersects = raycaster.intersectObjects(selectableObjects);
+            
+            if (intersects.length > 0 && intersects[0].object.userData.isACComponent) {
+                const obj = intersects[0].object;
+                selectObject(obj);
+                
+                // Tampilkan context menu di posisi mouse
+                contextMenu.style.display = 'block';
+                contextMenu.style.left = `${event.clientX}px`;
+                contextMenu.style.top = `${event.clientY}px`;
+                
+                // Atur event listeners untuk menu
+                document.getElementById('menu-move').onclick = function() {
+                    setInteractionMode('move');
+                    contextMenu.style.display = 'none';
+                };
+                
+                document.getElementById('menu-rotate').onclick = function() {
+                    setInteractionMode('rotate');
+                    contextMenu.style.display = 'none';
+                };
+                
+                document.getElementById('menu-delete').onclick = function() {
+                    deleteSelectedAC();
+                    contextMenu.style.display = 'none';
+                };
+                
+                document.getElementById('menu-properties').onclick = function() {
+                    // Tampilkan dialog properties
+                    const newName = prompt('Masukkan nama AC:', selectedObject.name);
+                    if (newName !== null) {
+                        selectedObject.name = newName;
+                        updateACInfoPanel(selectedObject);
+                    }
+                    contextMenu.style.display = 'none';
+                };
+            } else {
+                contextMenu.style.display = 'none';
+            }
+            
+            // Tutup menu jika klik di luar
+            document.addEventListener('click', function closeMenu() {
+                contextMenu.style.display = 'none';
+                document.removeEventListener('click', closeMenu);
+            });
+        }
+        
+        // Fungsi untuk mengatur mode interaksi
+        function setInteractionMode(mode) {
+            interactionMode = mode;
+            document.querySelectorAll('.mode-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.getAttribute('data-mode') === mode);
+            });
+            
+            if (selectedObject) {
+                updateTransformControlsMode();
+            }
+        }
+        
+        // Inisialisasi ketika halaman dimuat
+        document.addEventListener('DOMContentLoaded', function() {
+            init3D();
+            generateRoom();
+            
+            // Event listener untuk tombol
+            document.getElementById('generate-room').addEventListener('click', generateRoom);
+            document.getElementById('add-ac').addEventListener('click', addACUnit);
+            document.getElementById('delete-ac').addEventListener('click', deleteSelectedAC);
+            document.getElementById('save-scene').addEventListener('click', saveToLocalStorage);
+            document.getElementById('load-scene').addEventListener('click', loadFromLocalStorage);
+            document.getElementById('clear-scene').addEventListener('click', clearAllACUnits);
+            
+            // Event listener untuk pilihan tipe AC
+            document.querySelectorAll('.ac-type').forEach(type => {
+                type.addEventListener('click', function() {
+                    document.querySelectorAll('.ac-type').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    acType = this.getAttribute('data-type');
+                });
+            });
+            
+            // Event listener untuk mode interaksi
+            document.querySelectorAll('.mode-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    setInteractionMode(this.getAttribute('data-mode'));
+                });
+            });
+            
+            // Event listener untuk pilihan komponen
+            document.querySelectorAll('.component-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    setActiveComponent(this.getAttribute('data-component'));
+                });
+            });
+            
+            // Tutup context menu saat mengklik di luar
+            window.addEventListener('click', function(event) {
+                if (!event.target.closest('.context-menu')) {
+                    contextMenu.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -37,6 +37,35 @@
         line-height: 1.6;
         background-color: var(--light);
         scroll-behavior: smooth;
+        position: relative;
+        overflow-x: hidden;
+      }
+
+      /* Snow Animation */
+      .snow {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 1000;
+      }
+
+      .snowflake {
+        position: absolute;
+        background-color: rgba(255, 255, 255, 0.8);
+        border-radius: 50%;
+        animation: snowfall linear infinite;
+      }
+
+      @keyframes snowfall {
+        0% {
+          transform: translateY(-10px) rotate(0deg);
+        }
+        100% {
+          transform: translateY(calc(100vh + 10px)) rotate(360deg);
+        }
       }
 
       header {
@@ -64,6 +93,36 @@
         font-size: 2.5rem;
         font-weight: 700;
         position: relative;
+        display: inline-block;
+        animation: freezeEffect 6s infinite;
+      }
+
+      @keyframes freezeEffect {
+        0%, 100% {
+          transform: scale(1);
+          color: var(--white);
+          text-shadow: none;
+        }
+        20% {
+          transform: scale(1.05);
+          color: #a0e7ff;
+          text-shadow: 0 0 10px rgba(160, 231, 255, 0.7);
+        }
+        40% {
+          transform: scale(1);
+          color: #7fd8ff;
+          text-shadow: 0 0 15px rgba(127, 216, 255, 0.8);
+        }
+        60% {
+          transform: scale(0.98);
+          color: #b3f0ff;
+          text-shadow: 0 0 20px rgba(179, 240, 255, 0.9);
+        }
+        80% {
+          transform: scale(1.02);
+          color: #d9f7ff;
+          text-shadow: 0 0 25px rgba(217, 247, 255, 1);
+        }
       }
 
       header p {
@@ -150,10 +209,36 @@
         opacity: 0.1;
       }
 
+      .hero::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.2),
+          transparent
+        );
+        animation: shine 3s infinite;
+      }
+
+      @keyframes shine {
+        0% {
+          left: -100%;
+        }
+        20%, 100% {
+          left: 100%;
+        }
+      }
+
       .hero-content {
         max-width: 800px;
         margin: 0 auto;
         position: relative;
+        z-index: 1;
       }
 
       .hero h1 {
@@ -262,14 +347,15 @@
         position: absolute;
         top: 10px;
         right: 10px;
-        background: var(--popular-tag);
+        background: linear-gradient(90deg, #ff5f6d, #ffc371, #ff5f6d);
+        background-size: 200% auto;
         color: white;
         padding: 0.25rem 0.75rem;
         border-radius: 50px;
         font-size: 0.7rem;
         font-weight: 600;
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        animation: pulse 2s infinite;
+        animation: pulse 2s infinite, rainbow 3s linear infinite, shake 0.5s infinite;
       }
 
       .card-content {
@@ -400,9 +486,33 @@
           transform: scale(1);
         }
       }
+
+      @keyframes rainbow {
+        0% {
+          background-position: 0% 50%;
+        }
+        100% {
+          background-position: 200% 50%;
+        }
+      }
+
+      @keyframes shake {
+        0%, 100% {
+          transform: translateX(0);
+        }
+        10%, 30%, 50%, 70%, 90% {
+          transform: translateX(-2px);
+        }
+        20%, 40%, 60%, 80% {
+          transform: translateX(2px);
+        }
+      }
     </style>
   </head>
   <body>
+    <!-- Snow Animation -->
+    <div class="snow" id="snow"></div>
+
     <header>
       <h1>Sejuk Teknik AC</h1>
       <p>Solusi AC & Kelistrikan Profesional</p>
@@ -452,7 +562,7 @@
         </p>
       </div>
       <div class="cards">
-        <div class="card">
+        <div class="card popular-card">
           <div class="card-header">
             <i class="fas fa-snowflake fa-2x"></i>
             <div class="popular-badge">Populer</div>
@@ -513,7 +623,7 @@
           </div>
         </div>
 
-        <div class="card">
+        <div class="card popular-card">
           <div class="card-header">
             <i class="fas fa-concierge-bell fa-2x"></i>
             <div class="popular-badge">Populer</div>
@@ -580,6 +690,38 @@
     </footer>
 
     <script>
+      // Snow animation
+      function createSnow() {
+        const snowContainer = document.getElementById('snow');
+        const snowflakeCount = 50;
+        
+        for (let i = 0; i < snowflakeCount; i++) {
+          const snowflake = document.createElement('div');
+          snowflake.classList.add('snowflake');
+          
+          // Random size between 2px and 6px
+          const size = Math.random() * 4 + 2;
+          snowflake.style.width = `${size}px`;
+          snowflake.style.height = `${size}px`;
+          
+          // Random position
+          snowflake.style.left = `${Math.random() * 100}%`;
+          
+          // Random animation duration between 5s and 15s
+          const duration = Math.random() * 10 + 5;
+          snowflake.style.animationDuration = `${duration}s`;
+          
+          // Random delay
+          snowflake.style.animationDelay = `${Math.random() * 5}s`;
+          
+          snowContainer.appendChild(snowflake);
+        }
+      }
+      
+      // Create snow when page loads
+      window.addEventListener('load', createSnow);
+
+      // Card animation
       const cards = document.querySelectorAll(".card");
       const observer = new IntersectionObserver(
         (entries) => {
@@ -592,6 +734,17 @@
         { threshold: 0.1 }
       );
       cards.forEach((card) => observer.observe(card));
+
+      // Shake effect for popular cards
+      const popularCards = document.querySelectorAll('.popular-card');
+      popularCards.forEach(card => {
+        card.addEventListener('mouseenter', () => {
+          card.style.animation = 'shake 0.5s infinite';
+        });
+        card.addEventListener('mouseleave', () => {
+          card.style.animation = '';
+        });
+      });
     </script>
   </body>
 </html>

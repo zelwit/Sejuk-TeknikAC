@@ -54,12 +54,24 @@
       padding-left: 20px;
     }
 
+    textarea {
+      width: 100%;
+      min-height: 100px;
+      padding: 12px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      margin-top: 10px;
+      resize: vertical;
+    }
+
     .cta {
       text-align: center;
-      margin-top: 40px;
+      margin-top: 30px;
     }
 
     .cta a {
+      display: inline-block;
       background: #007bff;
       color: white;
       padding: 14px 28px;
@@ -116,12 +128,31 @@
       <p><em>*Harga dapat berubah tergantung kondisi dan model AC</em></p>
     </div>
 
+    <div class="section">
+      <h2>Tulis Keluhan atau Masalah AC Anda:</h2>
+      <textarea id="keluhan" placeholder="Contoh: AC saya tidak dingin dan mengeluarkan air dari bawah..."></textarea>
+    </div>
+
     <div class="cta">
-      <a href="https://wa.me/6281234567890?text=Halo%20Sejuk%20Teknik%2C%20saya%20ingin%20memperbaiki%20AC%20saya" target="_blank">
+      <a href="#" id="whatsappBtn" target="_blank">
         Hubungi Teknisi via WhatsApp
       </a>
     </div>
   </div>
+
+  <script>
+    document.getElementById("whatsappBtn").addEventListener("click", function(event) {
+      const keluhan = document.getElementById("keluhan").value.trim();
+      if (keluhan === "") {
+        alert("Silakan isi keluhan Anda terlebih dahulu.");
+        return;
+      }
+      const nomor = "6281234567890"; // Ganti dengan nomor WA teknisi kamu
+      const pesan = `Halo Sejuk Teknik, saya ingin memperbaiki AC saya. Berikut keluhan saya:\n\n${keluhan}`;
+      const url = `https://wa.me/${nomor}?text=${encodeURIComponent(pesan)}`;
+      this.href = url;
+    });
+  </script>
 
 </body>
 </html>

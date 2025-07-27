@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Tukar Tambah AC | Sejuk Teknik</title>
+  <title>Trade-In AC | Sejuk Teknik</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet"/>
   <style>
     body {
@@ -59,24 +59,47 @@
       margin-top: 10px;
     }
 
-    .cta {
-      text-align: center;
-      margin-top: 40px;
+    form {
+      background: #ffffff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.05);
+      margin-top: 30px;
     }
 
-    .cta a {
-      display: inline-block;
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+
+    .cta {
+      text-align: center;
+      margin-top: 30px;
+    }
+
+    .cta button {
       background: #0077cc;
       color: white;
       padding: 14px 28px;
-      text-decoration: none;
+      border: none;
       border-radius: 8px;
       font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
       transition: background 0.3s ease;
-      margin: 8px;
     }
 
-    .cta a:hover {
+    .cta button:hover {
       background: #005fa3;
     }
 
@@ -90,43 +113,70 @@
 <body>
 
   <div class="header">
-    <h1>Program Tukar Tambah & Trade-In AC</h1>
-    <p>Ganti AC lama Anda dan nikmati kenyamanan baru bersama Sejuk Teknik!</p>
+    <h1>Form Trade-In / Tukar Tambah AC</h1>
+    <p>Isi data di bawah ini untuk kami bantu proses trade-in AC Anda.</p>
   </div>
 
   <div class="content">
-    <div class="box-info">
-      <h2>Apa Itu Tukar Tambah / Trade-In AC?</h2>
-      <p>
-        Tukar Tambah atau <strong>Trade-In</strong> adalah program dari Sejuk Teknik untuk mempermudah Anda yang ingin mengganti AC lama dengan unit baru atau second yang lebih hemat daya dan modern. Kami akan menilai kondisi AC lama Anda, dan memberikan potongan harga sebagai nilai tukarnya.
-      </p>
-    </div>
 
     <div class="box-info">
-      <h2>Keuntungan Trade-In AC:</h2>
+      <h2>Keuntungan Tukar Tambah</h2>
       <div class="highlight">
-        ✅ Tidak perlu repot jual sendiri<br/>
-        ✅ Dapat diskon langsung saat beli AC baru<br/>
-        ✅ Kami angkut AC lama Anda<br/>
-        ✅ Teknisi profesional akan pasang AC baru langsung di tempat Anda
+        ✅ Potongan harga langsung<br/>
+        ✅ AC lama kami angkut<br/>
+        ✅ Pemasangan AC baru oleh teknisi profesional<br/>
+        ✅ Bisa tukar dengan AC baru atau second
       </div>
     </div>
 
-    <div class="box-info">
-      <h2>Syarat & Ketentuan:</h2>
-      <ul>
-        <li>AC lama masih utuh secara fisik (tidak rusak total)</li>
-        <li>Program hanya berlaku di wilayah Jabodetabek</li>
-        <li>Potongan harga berdasarkan kondisi & merek AC lama</li>
-        <li>AC baru tersedia dalam kondisi second maupun baru</li>
-      </ul>
-    </div>
+    <form id="tradeinForm">
+      <label for="nama">Nama Lengkap</label>
+      <input type="text" id="nama" required>
 
-    <div class="cta">
-      <a href="https://wa.me/6281234567890?text=Halo%20saya%20ingin%20ikut%20program%20Trade-In%20AC" target="_blank">Ajukan Trade-In Sekarang</a>
-      <a href="https://wa.me/6281234567890" target="_blank">Hubungi CS via WhatsApp</a>
-    </div>
+      <label for="alamat">Alamat Lengkap</label>
+      <textarea id="alamat" rows="3" required></textarea>
+
+      <label for="merk">Merek AC Lama</label>
+      <input type="text" id="merk" required>
+
+      <label for="kondisi">Kondisi AC Lama</label>
+      <select id="kondisi" required>
+        <option value="">Pilih...</option>
+        <option value="Masih dingin">Masih dingin</option>
+        <option value="Kurang dingin">Kurang dingin</option>
+        <option value="Mati total">Mati total</option>
+      </select>
+
+      <label for="foto">Upload Foto AC (opsional)</label>
+      <input type="file" id="foto" accept="image/*" disabled placeholder="Kirim foto via WhatsApp setelah ini.">
+
+      <div class="cta">
+        <button type="button" onclick="kirimWhatsApp()">Kirim via WhatsApp</button>
+      </div>
+    </form>
+
   </div>
+
+  <script>
+    function kirimWhatsApp() {
+      const nama = document.getElementById('nama').value;
+      const alamat = document.getElementById('alamat').value;
+      const merk = document.getElementById('merk').value;
+      const kondisi = document.getElementById('kondisi').value;
+
+      const pesan = `Halo Sejuk Teknik, saya ingin melakukan Trade-In AC:\n\n` +
+        `🧍 Nama: ${nama}\n` +
+        `🏠 Alamat: ${alamat}\n` +
+        `🔧 Merek AC Lama: ${merk}\n` +
+        `📊 Kondisi AC: ${kondisi}\n\n` +
+        `Mohon info lebih lanjut.`;
+
+      const encodedPesan = encodeURIComponent(pesan);
+      const nomorWa = '6281234567890';
+      const url = `https://wa.me/${nomorWa}?text=${encodedPesan}`;
+      window.open(url, '_blank');
+    }
+  </script>
 
 </body>
 </html>

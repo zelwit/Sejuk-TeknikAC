@@ -286,89 +286,90 @@
         @media (max-width: 768px) {
             body {
                 padding: 15px;
-            font-size: 14px;
-            line-height: 1.5;
-            padding-bottom: 60px;
-            overflow-x: hidden;
-            -webkit-text-size-adjust: 100%;
-            -ms-text-size-adjust: 100%;
-            text-size-adjust: 100%;
-        }
-        
-        .container {
-            padding: 0 10px;
-        }
-        
-        .card {
-            padding: 1.2rem;
-            margin-bottom: 1.2rem;
-        }
-        
-        h1 {
-            font-size: 1.6rem;
-            margin-bottom: 0.8rem;
-        }
-        
-        .description {
-            font-size: 0.9rem;
-            margin-bottom: 1rem;
-        }
-        
-        .form-group {
-            margin-bottom: 1rem;
-        }
-        
-        input, textarea, select {
-            padding: 0.7rem;
-            font-size: 0.9rem;
-        }
-        
-        textarea {
-            min-height: 120px;
-        }
-        
-        .rating-star {
-            font-size: 1.6rem;
-        }
-        
-        .submit-btn {
-            padding: 0.7rem;
-            font-size: 0.9rem;
-        }
-        
-        .reviews-header {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 0.8rem;
-        }
-        
-        .review-sort {
-            width: 100%;
-        }
-        
-        .review-card {
-            padding: 1rem;
-        }
-        
-        .review-header {
-            flex-direction: column;
-            gap: 0.3rem;
-        }
-        
-        .review-date {
-            font-size: 0.8rem;
-        }
-        
-        .thank-you-message {
-            padding: 1.5rem;
-        }
-        
-        .thank-you-message i {
-            font-size: 2.5rem;
-        }
-        
-        .thank-you-message h2 {
-            font-size: 1.3rem;
+                font-size: 14px;
+                line-height: 1.5;
+                padding-bottom: 60px;
+                overflow-x: hidden;
+                -webkit-text-size-adjust: 100%;
+                -ms-text-size-adjust: 100%;
+                text-size-adjust: 100%;
+            }
+            
+            .container {
+                padding: 0 10px;
+            }
+            
+            .card {
+                padding: 1.2rem;
+                margin-bottom: 1.2rem;
+            }
+            
+            h1 {
+                font-size: 1.6rem;
+                margin-bottom: 0.8rem;
+            }
+            
+            .description {
+                font-size: 0.9rem;
+                margin-bottom: 1rem;
+            }
+            
+            .form-group {
+                margin-bottom: 1rem;
+            }
+            
+            input, textarea, select {
+                padding: 0.7rem;
+                font-size: 0.9rem;
+            }
+            
+            textarea {
+                min-height: 120px;
+            }
+            
+            .rating-star {
+                font-size: 1.6rem;
+            }
+            
+            .submit-btn {
+                padding: 0.7rem;
+                font-size: 0.9rem;
+            }
+            
+            .reviews-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.8rem;
+            }
+            
+            .review-sort {
+                width: 100%;
+            }
+            
+            .review-card {
+                padding: 1rem;
+            }
+            
+            .review-header {
+                flex-direction: column;
+                gap: 0.3rem;
+            }
+            
+            .review-date {
+                font-size: 0.8rem;
+            }
+            
+            .thank-you-message {
+                padding: 1.5rem;
+            }
+            
+            .thank-you-message i {
+                font-size: 2.5rem;
+            }
+            
+            .thank-you-message h2 {
+                font-size: 1.3rem;
+            }
         }
     </style>
 </head>
@@ -468,12 +469,11 @@
         </div>
     </div>
 
-    <!-- Firebase SDK -->
+    <!-- Firebase SDK dan semua JavaScript dalam satu tag script -->
     <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
-    
     <script>
-        // Konfigurasi Firebase (Ganti dengan konfigurasi Anda)
+        // Konfigurasi Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyDEXAMPLEEXAMPLEEXAMPLE",
             authDomain: "sejukteknik-ac.firebaseapp.com",
@@ -483,7 +483,7 @@
             appId: "1:123456789012:web:abc123def456EXAMPLE"
         };
 
-        // Inisialisasi Firebase dengan pengecekan
+        // Inisialisasi Firebase
         if (!firebase.apps.length) {
             firebase.initializeApp(firebaseConfig);
         }
@@ -496,7 +496,7 @@
         let isLoading = false;
         let allReviewsLoaded = false;
 
-        // Inisialisasi Rating Stars
+        // Fungsi untuk inisialisasi rating stars
         function initRatingStars() {
             const stars = document.querySelectorAll('.rating-star');
             
@@ -535,7 +535,7 @@
             });
         }
 
-        // Format Tanggal
+        // Fungsi untuk memformat tanggal
         function formatDate(date) {
             if (!date) return 'Tanggal tidak tersedia';
             
@@ -549,7 +549,7 @@
             return new Date(date).toLocaleDateString('id-ID', options);
         }
 
-        // Validasi Form
+        // Fungsi untuk validasi form
         function validateForm() {
             const nama = document.getElementById('nama').value.trim();
             const kritik = document.getElementById('kritik').value.trim();
@@ -563,60 +563,7 @@
             return true;
         }
 
-        // Submit Feedback
-        async function submitFeedback() {
-            if (!validateForm()) return;
-            
-            const nama = document.getElementById('nama').value.trim();
-            const email = document.getElementById('email').value.trim();
-            const nohp = document.getElementById('nohp').value.trim();
-            const layanan = document.getElementById('layanan').value;
-            const kritik = document.getElementById('kritik').value.trim();
-            const rating = document.getElementById('rating-value').value;
-            
-            try {
-                // Tampilkan loading
-                document.getElementById('loading-spinner').style.display = 'block';
-                document.getElementById('submit-btn').disabled = true;
-                
-                // Simpan ke Firestore dengan data lengkap
-                await db.collection('reviews').add({
-                    fullName: nama, // Simpan nama lengkap (untuk admin)
-                    displayName: generateDisplayName(nama), // Nama yang ditampilkan ke publik
-                    email: email || null,
-                    phone: nohp || null,
-                    service: layanan || 'Tidak disebutkan',
-                    rating: parseInt(rating),
-                    review: kritik,
-                    date: firebase.firestore.FieldValue.serverTimestamp(),
-                    approved: true, // Langsung tampilkan (untuk demo)
-                    ipAddress: await getIPAddress() // Catat alamat IP untuk keamanan
-                });
-                
-                // Tampilkan pesan terima kasih
-                document.getElementById('feedback-form').style.display = 'none';
-                document.getElementById('thank-you').style.display = 'block';
-                
-                // Reset form
-                document.getElementById('feedback-form').reset();
-                document.querySelectorAll('.rating-star').forEach(star => star.classList.remove('active'));
-                selectedRating = 0;
-                document.getElementById('rating-value').value = '0';
-                
-                // Muat ulang ulasan
-                resetReviews();
-                await loadReviews();
-                
-            } catch (error) {
-                console.error('Error saving review:', error);
-                alert('Terjadi kesalahan saat mengirim ulasan. Silakan coba lagi.');
-            } finally {
-                document.getElementById('loading-spinner').style.display = 'none';
-                document.getElementById('submit-btn').disabled = false;
-            }
-        }
-
-        // Generate Nama yang Ditampilkan
+        // Fungsi untuk generate nama yang ditampilkan
         function generateDisplayName(fullName) {
             const names = fullName.split(' ');
             if (names.length === 1) return names[0].charAt(0) + '***';
@@ -626,7 +573,7 @@
             return firstName.charAt(0) + '***' + lastName.charAt(0);
         }
 
-        // Dapatkan Alamat IP Pengguna
+        // Fungsi untuk mendapatkan alamat IP pengguna
         async function getIPAddress() {
             try {
                 const response = await fetch('https://api.ipify.org?format=json');
@@ -638,14 +585,14 @@
             }
         }
 
-        // Reset Reviews untuk pemuatan baru
+        // Fungsi untuk reset reviews
         function resetReviews() {
             lastVisibleDoc = null;
             allReviewsLoaded = false;
             document.getElementById('reviews-list').innerHTML = '';
         }
 
-        // Load Reviews dengan optimasi
+        // Fungsi untuk load reviews dengan optimasi
         async function loadReviews() {
             if (isLoading || allReviewsLoaded) return;
             
@@ -655,7 +602,6 @@
                           .where('approved', '==', true)
                           .limit(batchSize);
             
-            // Atur pengurutan berdasarkan pilihan
             switch(sortBy) {
                 case 'newest':
                     query = query.orderBy('date', 'desc');
@@ -671,7 +617,6 @@
                     break;
             }
             
-            // Untuk pagination
             if (lastVisibleDoc) {
                 query = query.startAfter(lastVisibleDoc);
             }
@@ -679,12 +624,9 @@
             try {
                 document.getElementById('loading-spinner').style.display = 'block';
                 
-                // Gunakan cache untuk mempercepat pemuatan
-                const options = {
-                    source: 'cache'
-                };
-                
+                const options = { source: 'cache' };
                 let querySnapshot;
+                
                 try {
                     querySnapshot = await query.get(options);
                 } catch (error) {
@@ -707,15 +649,12 @@
                     return;
                 }
                 
-                // Hapus "no reviews" message jika ada
                 if (lastVisibleDoc === null && reviewsList.querySelector('.no-reviews')) {
                     reviewsList.innerHTML = '';
                 }
                 
-                // Simpan dokumen terakhir untuk pagination
                 lastVisibleDoc = querySnapshot.docs[querySnapshot.docs.length - 1];
                 
-                // Proses dan tampilkan ulasan
                 querySnapshot.forEach((doc) => {
                     const review = doc.data();
                     const dateString = formatDate(review.date?.toDate());
@@ -740,7 +679,6 @@
                     reviewsList.appendChild(reviewCard);
                 });
                 
-                // Jika hasil kurang dari batch size, artinya sudah semua
                 if (querySnapshot.size < batchSize) {
                     allReviewsLoaded = true;
                 }
@@ -754,7 +692,7 @@
             }
         }
 
-        // Deteksi scroll untuk infinite loading
+        // Fungsi untuk setup infinite scroll
         function setupInfiniteScroll() {
             window.addEventListener('scroll', () => {
                 const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
@@ -765,23 +703,66 @@
             });
         }
 
+        // Fungsi untuk submit feedback
+        async function submitFeedback() {
+            if (!validateForm()) return;
+            
+            const nama = document.getElementById('nama').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const nohp = document.getElementById('nohp').value.trim();
+            const layanan = document.getElementById('layanan').value;
+            const kritik = document.getElementById('kritik').value.trim();
+            const rating = document.getElementById('rating-value').value;
+            
+            try {
+                document.getElementById('loading-spinner').style.display = 'block';
+                document.getElementById('submit-btn').disabled = true;
+                
+                await db.collection('reviews').add({
+                    fullName: nama,
+                    displayName: generateDisplayName(nama),
+                    email: email || null,
+                    phone: nohp || null,
+                    service: layanan || 'Tidak disebutkan',
+                    rating: parseInt(rating),
+                    review: kritik,
+                    date: firebase.firestore.FieldValue.serverTimestamp(),
+                    approved: true,
+                    ipAddress: await getIPAddress()
+                });
+                
+                document.getElementById('feedback-form').style.display = 'none';
+                document.getElementById('thank-you').style.display = 'block';
+                
+                document.getElementById('feedback-form').reset();
+                document.querySelectorAll('.rating-star').forEach(star => star.classList.remove('active'));
+                selectedRating = 0;
+                document.getElementById('rating-value').value = '0';
+                
+                resetReviews();
+                await loadReviews();
+                
+            } catch (error) {
+                console.error('Error saving review:', error);
+                alert('Terjadi kesalahan saat mengirim ulasan. Silakan coba lagi.');
+            } finally {
+                document.getElementById('loading-spinner').style.display = 'none';
+                document.getElementById('submit-btn').disabled = false;
+            }
+        }
+
         // Inisialisasi saat DOM siap
         document.addEventListener('DOMContentLoaded', function() {
             initRatingStars();
             
-            // Event listener untuk tombol submit
             document.getElementById('submit-btn').addEventListener('click', submitFeedback);
             
-            // Event listener untuk sorting
             document.getElementById('review-sort').addEventListener('change', function() {
                 resetReviews();
                 loadReviews();
             });
             
-            // Setup infinite scroll
             setupInfiniteScroll();
-            
-            // Load reviews awal
             loadReviews();
         });
     </script>

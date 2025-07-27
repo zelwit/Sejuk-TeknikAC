@@ -62,6 +62,36 @@
         font-size: 2.5rem;
         font-weight: 700;
         position: relative;
+        display: inline-block;
+        animation: freezeEffect 6s infinite;
+      }
+
+      @keyframes freezeEffect {
+        0%, 100% {
+          transform: scale(1);
+          color: var(--white);
+          text-shadow: none;
+        }
+        20% {
+          transform: scale(1.05);
+          color: #a0e7ff;
+          text-shadow: 0 0 10px rgba(160, 231, 255, 0.7);
+        }
+        40% {
+          transform: scale(1);
+          color: #7fd8ff;
+          text-shadow: 0 0 15px rgba(127, 216, 255, 0.8);
+        }
+        60% {
+          transform: scale(0.98);
+          color: #b3f0ff;
+          text-shadow: 0 0 20px rgba(179, 240, 255, 0.9);
+        }
+        80% {
+          transform: scale(1.02);
+          color: #d9f7ff;
+          text-shadow: 0 0 25px rgba(217, 247, 255, 1);
+        }
       }
 
       header p {
@@ -148,10 +178,36 @@
         opacity: 0.1;
       }
 
+      .hero::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.2),
+          transparent
+        );
+        animation: shine 3s infinite;
+      }
+
+      @keyframes shine {
+        0% {
+          left: -100%;
+        }
+        20%, 100% {
+          left: 100%;
+        }
+      }
+
       .hero-content {
         max-width: 800px;
         margin: 0 auto;
         position: relative;
+        z-index: 1;
       }
 
       .hero h1 {

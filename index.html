@@ -383,6 +383,315 @@
         opacity: 0.7;
       }
 
+      /* New Styles for Added Features */
+      .promo-banner {
+        background-color: var(--secondary);
+        color: white;
+        padding: 0.8rem;
+        text-align: center;
+        font-weight: 500;
+      }
+
+      .promo-banner marquee {
+        font-size: 1.1rem;
+      }
+
+      .calculator {
+        background: var(--white);
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        margin: 2rem auto;
+        max-width: 600px;
+      }
+
+      .calculator h3 {
+        color: var(--primary);
+        margin-bottom: 1.5rem;
+        text-align: center;
+      }
+
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+      }
+
+      .form-group select,
+      .form-group input {
+        width: 100%;
+        padding: 0.8rem;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-family: 'Poppins', sans-serif;
+      }
+
+      .result {
+        background: var(--primary-light);
+        padding: 1rem;
+        border-radius: 8px;
+        margin-top: 1.5rem;
+        text-align: center;
+        font-weight: 600;
+        color: var(--primary);
+        display: none;
+      }
+
+      .testimonials {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        margin: 3rem 0;
+      }
+
+      .testimonial {
+        background: var(--white);
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        position: relative;
+      }
+
+      .testimonial::before {
+        content: '"';
+        font-size: 4rem;
+        color: var(--primary-light);
+        position: absolute;
+        top: 0;
+        left: 1rem;
+        line-height: 1;
+      }
+
+      .testimonial p {
+        font-style: italic;
+        margin-bottom: 1rem;
+        position: relative;
+        z-index: 1;
+      }
+
+      .testimonial .author {
+        font-weight: 600;
+        color: var(--primary);
+      }
+
+      .service-highlights {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+        margin: 3rem 0;
+      }
+
+      .service-card {
+        background: var(--white);
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        text-align: center;
+        transition: transform 0.3s ease;
+      }
+
+      .service-card:hover {
+        transform: translateY(-10px);
+      }
+
+      .service-icon {
+        background: var(--primary);
+        color: white;
+        font-size: 2.5rem;
+        padding: 1.5rem;
+      }
+
+      .service-content {
+        padding: 1.5rem;
+      }
+
+      .service-content h3 {
+        color: var(--primary);
+        margin-bottom: 1rem;
+      }
+
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 2rem;
+        margin: 3rem 0;
+      }
+
+      .stat-item {
+        text-align: center;
+        padding: 1.5rem;
+        background: var(--white);
+        border-radius: 12px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+      }
+
+      .stat-icon {
+        font-size: 2.5rem;
+        color: var(--primary);
+        margin-bottom: 1rem;
+      }
+
+      .stat-number {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--primary);
+        margin-bottom: 0.5rem;
+      }
+
+      .stat-label {
+        color: var(--gray);
+        font-size: 0.9rem;
+      }
+
+      .map-container {
+        height: 300px;
+        margin: 3rem 0;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .blog-posts {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        margin: 3rem 0;
+      }
+
+      .blog-card {
+        background: var(--white);
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+      }
+
+      .blog-image {
+        height: 200px;
+        background: var(--primary-light);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--primary);
+        font-size: 3rem;
+      }
+
+      .blog-content {
+        padding: 1.5rem;
+      }
+
+      .blog-content h3 {
+        color: var(--primary);
+        margin-bottom: 1rem;
+      }
+
+      .blog-content p {
+        color: var(--gray);
+        margin-bottom: 1.5rem;
+        font-size: 0.9rem;
+      }
+
+      .payment-methods {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        justify-content: center;
+        margin: 2rem 0;
+      }
+
+      .payment-method {
+        background: var(--white);
+        padding: 0.5rem 1rem;
+        border-radius: 50px;
+        font-weight: 500;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      }
+
+      .certificates {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        justify-content: center;
+        margin: 2rem 0;
+      }
+
+      .certificate {
+        background: var(--white);
+        padding: 1rem;
+        border-radius: 8px;
+        text-align: center;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        width: 150px;
+      }
+
+      .certificate i {
+        font-size: 2rem;
+        color: var(--primary);
+        margin-bottom: 0.5rem;
+      }
+
+      .diagnosis {
+        background: var(--white);
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        margin: 2rem 0;
+      }
+
+      .diagnosis-options {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .diagnosis-option {
+        background: var(--primary-light);
+        padding: 1rem;
+        border-radius: 8px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .diagnosis-option:hover {
+        background: var(--primary);
+        color: white;
+      }
+
+      .diagnosis-result {
+        background: var(--primary-light);
+        padding: 1rem;
+        border-radius: 8px;
+        margin-top: 1.5rem;
+        display: none;
+      }
+
+      .security-banner {
+        background: var(--primary-light);
+        padding: 1rem;
+        border-radius: 8px;
+        text-align: center;
+        margin: 2rem 0;
+      }
+
+      .language-switcher {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+      }
+
+      .language-btn {
+        background: transparent;
+        border: none;
+        font-size: 1.2rem;
+        cursor: pointer;
+        padding: 0.5rem;
+      }
+
       @media (max-width: 768px) {
         .nav-container {
           flex-direction: column;
@@ -405,6 +714,12 @@
         .cards {
           grid-template-columns: 1fr;
         }
+
+        .language-switcher {
+          position: static;
+          text-align: center;
+          margin-top: 1rem;
+        }
       }
 
       @keyframes fadeIn {
@@ -421,9 +736,17 @@
   </head>
   <body>
     <header>
+      <div class="language-switcher">
+        <button class="language-btn">🇮🇩</button>
+        <button class="language-btn">🇬🇧</button>
+      </div>
       <h1>Sejuk Teknik AC</h1>
       <p>Solusi AC dan Kelistrikan Profesional</p>
     </header>
+
+    <div class="promo-banner">
+      <marquee>🔥 Diskon 10% untuk Instalasi AC Baru sampai 31 Agustus! 🔥</marquee>
+    </div>
 
     <nav>
       <div class="nav-container">
@@ -431,20 +754,12 @@
         <div class="nav-links">
           <a href="index.html"><i class="fas fa-home"></i> Beranda</a>
           <a href="layanan.html"><i class="fas fa-tools"></i> Layanan</a>
-          <a href="AC-Placement-Planner.html"
-            ><i class="fas fa-tools"></i> 3D AC Placement Planner</a
-          >
+          <a href="AC-Placement-Planner.html"><i class="fas fa-tools"></i> 3D AC Placement Planner</a>
           <a href="tentang.html"><i class="fas fa-info-circle"></i> Tentang</a>
-          <a href="https://wa.me/6285817818216"
-            ><i class="fas fa-envelope"></i> Kontak</a
-          >
+          <a href="https://wa.me/6285817818216"><i class="fas fa-envelope"></i> Kontak</a>
           <a href="faq.html"><i class="fas fa-question-circle"></i> FAQ</a>
-          <a href="kritik-saran.html"
-            ><i class="fas fa-comment-alt"></i> Kritik & Saran</a
-          >
-          <a href="https://maps.app.goo.gl/uTFSMLiKuWcCRUMa6" target="_blank"
-            ><i class="fas fa-map-marker-alt"></i> Lokasi</a
-          >
+          <a href="kritik-saran.html"><i class="fas fa-comment-alt"></i> Kritik & Saran</a>
+          <a href="https://maps.app.goo.gl/uTFSMLiKuWcCRUMa6" target="_blank"><i class="fas fa-map-marker-alt"></i> Lokasi</a>
         </div>
       </div>
     </nav>
@@ -452,9 +767,7 @@
     <section class="hero">
       <div class="hero-content">
         <h1>Selamat Datang di Sejuk Teknik AC</h1>
-        <p>
-          Layanan terpercaya & profesional untuk rumah dan tempat usaha Anda
-        </p>
+        <p>Layanan terpercaya & profesional untuk rumah dan tempat usaha Anda</p>
         <div class="visi-misi">
           <p>
             Kami siap memberikan solusi terbaik dalam pemasangan, perawatan, dan
@@ -462,60 +775,210 @@
             berpengalaman dan harga transparan.
           </p>
         </div>
-        <a
-          href="https://wa.me/6285817818216"
-          class="btn btn-whatsapp"
-          target="_blank"
-        >
+        <a href="https://wa.me/6285817818216" class="btn btn-whatsapp" target="_blank">
           <i class="fab fa-whatsapp"></i> Hubungi Kami
         </a>
       </div>
     </section>
 
     <section class="content">
-      <div class="section-title">
-        <h2>Mengapa Memilih Kami?</h2>
-        <p>
-          Kami memberikan layanan terbaik dengan standar profesionalisme tinggi
-        </p>
-      </div>
-      <div class="cards">
-        <div class="card">
-          <div class="card-icon">
-            <i class="fas fa-user-tie"></i>
+      <div class="service-highlights">
+        <div class="service-card">
+          <div class="service-icon">
+            <i class="fas fa-air-conditioner"></i>
           </div>
-          <div class="card-content">
-            <h3>Teknisi Handal</h3>
-            <p>
-              Teknisi kami berpengalaman lebih dari 5 tahun dan bersertifikat
-              resmi, siap memberikan solusi terbaik untuk permasalahan AC Anda.
-            </p>
+          <div class="service-content">
+            <h3>Instalasi AC</h3>
+            <p>Pemasangan AC baru dengan standar profesional</p>
+            <a href="https://wa.me/6285817818216" class="btn">Pesan Sekarang</a>
           </div>
         </div>
-        <div class="card">
-          <div class="card-icon">
-            <i class="fas fa-tag"></i>
+        <div class="service-card">
+          <div class="service-icon">
+            <i class="fas fa-broom"></i>
           </div>
-          <div class="card-content">
-            <h3>Harga Transparan</h3>
-            <p>
-              Tidak ada biaya tersembunyi. Semua harga jelas sejak awal
-              pemesanan dengan rincian yang dapat dipertanggungjawabkan.
-            </p>
+          <div class="service-content">
+            <h3>Cuci AC</h3>
+            <p>Perawatan rutin untuk performa AC optimal</p>
+            <a href="https://wa.me/6285817818216" class="btn">Pesan Sekarang</a>
           </div>
         </div>
-        <div class="card">
-          <div class="card-icon">
+        <div class="service-card">
+          <div class="service-icon">
             <i class="fas fa-bolt"></i>
           </div>
-          <div class="card-content">
-            <h3>Pelayanan Cepat</h3>
-            <p>
-              Respons cepat via WhatsApp & pengerjaan efisien. Garansi
-              pengerjaan untuk semua jenis perbaikan dan pemasangan.
-            </p>
+          <div class="service-content">
+            <h3>Service Panel</h3>
+            <p>Perbaikan dan perawatan panel listrik</p>
+            <a href="https://wa.me/6285817818216" class="btn">Pesan Sekarang</a>
           </div>
         </div>
+      </div>
+    </section>
+
+    <section class="content">
+      <div class="calculator">
+        <h3><i class="fas fa-calculator"></i> Simulasi Harga Pemasangan AC</h3>
+        <div class="form-group">
+          <label for="ac-type">Jenis AC</label>
+          <select id="ac-type">
+            <option value="standard">Standard (1/2 PK)</option>
+            <option value="medium">Medium (3/4 PK)</option>
+            <option value="large">Large (1 PK)</option>
+            <option value="xl">Extra Large (2 PK)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="pipa">Panjang Pipa (meter)</label>
+          <input type="number" id="pipa" min="1" max="20" value="5">
+        </div>
+        <div class="form-group">
+          <label for="ruangan">Luas Ruangan (m²)</label>
+          <input type="number" id="ruangan" min="5" max="50" value="15">
+        </div>
+        <button class="btn" onclick="calculatePrice()">Hitung Estimasi</button>
+        <div class="result" id="result"></div>
+      </div>
+    </section>
+
+    <section class="content">
+      <div class="section-title">
+        <h2>Testimoni Pelanggan</h2>
+        <p>Apa kata mereka tentang layanan kami</p>
+      </div>
+      <div class="testimonials">
+        <div class="testimonial">
+          <p>AC rumah saya dingin banget sekarang! Pelayanan cepat dan teknisi ramah.</p>
+          <div class="author">— Budi, Bekasi</div>
+        </div>
+        <div class="testimonial">
+          <p>Harga bersahabat dan hasil kerja rapi. Recommended!</p>
+          <div class="author">— Siti, Jakarta Timur</div>
+        </div>
+        <div class="testimonial">
+          <p>Sudah 3 tahun pakai jasa Sejuk Teknik, selalu puas dengan hasilnya.</p>
+          <div class="author">— Andi, Depok</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="content">
+      <div class="stats">
+        <div class="stat-item">
+          <div class="stat-icon">🧊</div>
+          <div class="stat-number" data-count="300">0</div>
+          <div class="stat-label">Unit AC Telah Dipasang</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-icon">🛠️</div>
+          <div class="stat-number" data-count="1000">0</div>
+          <div class="stat-label">Pelanggan Puas</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-icon">🔧</div>
+          <div class="stat-number" data-count="15">0</div>
+          <div class="stat-label">Tahun Pengalaman</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="content">
+      <div class="section-title">
+        <h2>Wilayah Layanan Kami</h2>
+        <p>Kami melayani berbagai area di Jabodetabek</p>
+      </div>
+      <div class="map-container">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.521260322283!2d106.8195613506864!3d-6.194741395493371!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNsKwMTEnNDEuMSJTIDEwNsKwNDknMTAuMyJF!5e0!3m2!1sen!2sid!4v1621234567890!5m2!1sen!2sid" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+      </div>
+    </section>
+
+    <section class="content">
+      <div class="section-title">
+        <h2>Tips & Artikel</h2>
+        <p>Informasi berguna seputar perawatan AC</p>
+      </div>
+      <div class="blog-posts">
+        <div class="blog-card">
+          <div class="blog-image">
+            <i class="fas fa-question-circle"></i>
+          </div>
+          <div class="blog-content">
+            <h3>5 Tanda AC Kamu Butuh Diservice</h3>
+            <p>Ketahui tanda-tanda ketika AC Anda membutuhkan perawatan profesional sebelum masalah menjadi lebih serius.</p>
+            <a href="#" class="btn">Baca Selengkapnya</a>
+          </div>
+        </div>
+        <div class="blog-card">
+          <div class="blog-image">
+            <i class="fas fa-gas-pump"></i>
+          </div>
+          <div class="blog-content">
+            <h3>Perbedaan Freon R32 vs R410A</h3>
+            <p>Memahami perbedaan antara dua jenis freon yang umum digunakan dalam AC modern saat ini.</p>
+            <a href="#" class="btn">Baca Selengkapnya</a>
+          </div>
+        </div>
+        <div class="blog-card">
+          <div class="blog-image">
+            <i class="fas fa-tools"></i>
+          </div>
+          <div class="blog-content">
+            <h3>Cara Merawat AC Agar Tahan Lama</h3>
+            <p>Tips sederhana untuk merawat AC Anda agar tetap berfungsi optimal dengan usia pakai yang panjang.</p>
+            <a href="#" class="btn">Baca Selengkapnya</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="content">
+      <div class="payment-methods">
+        <div class="payment-method">✅ DANA</div>
+        <div class="payment-method">✅ BCA</div>
+        <div class="payment-method">✅ BRI</div>
+        <div class="payment-method">✅ Mandiri</div>
+        <div class="payment-method">✅ Tunai</div>
+      </div>
+    </section>
+
+    <section class="content">
+      <div class="section-title">
+        <h2>Sertifikat & Legalitas</h2>
+        <p>Bukti profesionalisme dan keahlian kami</p>
+      </div>
+      <div class="certificates">
+        <div class="certificate">
+          <i class="fas fa-certificate"></i>
+          <div>Sertifikat Teknisi AC</div>
+        </div>
+        <div class="certificate">
+          <i class="fas fa-id-card"></i>
+          <div>Lisensi Resmi</div>
+        </div>
+        <div class="certificate">
+          <i class="fas fa-shield-alt"></i>
+          <div>Asuransi Kerja</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="content">
+      <div class="diagnosis">
+        <h3><i class="fas fa-stethoscope"></i> Diagnosa Masalah AC</h3>
+        <p>Pilih gejala yang Anda alami:</p>
+        <div class="diagnosis-options">
+          <div class="diagnosis-option" onclick="showDiagnosis('tidak-dingin')">AC tidak dingin</div>
+          <div class="diagnosis-option" onclick="showDiagnosis('keluar-air')">Keluar air</div>
+          <div class="diagnosis-option" onclick="showDiagnosis('berisik')">Berisik</div>
+          <div class="diagnosis-option" onclick="showDiagnosis('mati-total')">Mati total</div>
+        </div>
+        <div class="diagnosis-result" id="diagnosis-result"></div>
+      </div>
+    </section>
+
+    <section class="content">
+      <div class="security-banner">
+        <i class="fas fa-lock"></i> Data Anda Aman – Kami tidak menyebarkan nomor HP atau foto properti Anda
       </div>
     </section>
 
@@ -526,11 +989,7 @@
           Butuh bantuan cepat? Klik tombol di bawah untuk terhubung langsung
           dengan tim kami via WhatsApp.
         </p>
-        <a
-          href="https://wa.me/6285817818216"
-          class="btn btn-whatsapp"
-          target="_blank"
-        >
+        <a href="https://wa.me/6285817818216" class="btn btn-whatsapp" target="_blank">
           <i class="fab fa-whatsapp"></i> Chat Sekarang
         </a>
         <div class="copyright">
@@ -540,18 +999,115 @@
     </footer>
 
     <script>
-      const cards = document.querySelectorAll(".card");
-      const observer = new IntersectionObserver(
+      // Animate stats counters
+      function animateCounters() {
+        const counters = document.querySelectorAll('.stat-number');
+        const speed = 200;
+        
+        counters.forEach(counter => {
+          const target = +counter.getAttribute('data-count');
+          const count = +counter.innerText;
+          const increment = target / speed;
+          
+          if (count < target) {
+            counter.innerText = Math.ceil(count + increment);
+            setTimeout(animateCounters, 1);
+          } else {
+            counter.innerText = target + '+';
+          }
+        });
+      }
+
+      // Show counters when scrolled to
+      const statsSection = document.querySelector('.stats');
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            animateCounters();
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.5 });
+
+      if (statsSection) {
+        observer.observe(statsSection);
+      }
+
+      // Price calculator
+      function calculatePrice() {
+        const acType = document.getElementById('ac-type').value;
+        const pipa = parseInt(document.getElementById('pipa').value);
+        const ruangan = parseInt(document.getElementById('ruangan').value);
+        
+        let basePrice;
+        switch(acType) {
+          case 'standard': basePrice = 1500000; break;
+          case 'medium': basePrice = 1800000; break;
+          case 'large': basePrice = 2200000; break;
+          case 'xl': basePrice = 3000000; break;
+          default: basePrice = 1500000;
+        }
+        
+        const pipaCost = Math.max(0, pipa - 5) * 50000;
+        const ruanganAdjustment = ruangan > 20 ? 200000 : 0;
+        
+        const total = basePrice + pipaCost + ruanganAdjustment;
+        
+        document.getElementById('result').innerHTML = `
+          <p>Estimasi Biaya Pemasangan: <strong>Rp ${total.toLocaleString('id-ID')}</strong></p>
+          <small>* Harga dapat berubah setelah survey lokasi</small>
+        `;
+        document.getElementById('result').style.display = 'block';
+      }
+
+      // AC Diagnosis
+      function showDiagnosis(problem) {
+        const resultDiv = document.getElementById('diagnosis-result');
+        let solution = '';
+        
+        switch(problem) {
+          case 'tidak-dingin':
+            solution = 'Kemungkinan: Freon habis atau kompresor bermasalah. Silakan cek layanan isi freon atau perbaikan kompresor.';
+            break;
+          case 'keluar-air':
+            solution = 'Kemungkinan: Saluran pembuangan tersumbat atau instalasi tidak level. Kami menyediakan jasa pembersihan saluran dan perbaikan instalasi.';
+            break;
+          case 'berisik':
+            solution = 'Kemungkinan: Kipas atau kompresor bermasalah, atau ada bagian yang longgar. Perlu pemeriksaan lebih lanjut oleh teknisi kami.';
+            break;
+          case 'mati-total':
+            solution = 'Kemungkinan: Masalah kelistrikan atau PCB rusak. Segera hubungi teknisi kami untuk diagnosis lebih akurat.';
+            break;
+          default:
+            solution = 'Silakan pilih gejala yang dialami untuk diagnosa lebih lanjut.';
+        }
+        
+        resultDiv.innerHTML = solution;
+        resultDiv.style.display = 'block';
+      }
+
+      // Card animation on scroll
+      const cards = document.querySelectorAll('.card');
+      const cardObserver = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
             if (entry.isIntersecting) {
-              entry.target.classList.add("visible");
+              entry.target.classList.add('visible');
             }
           });
         },
         { threshold: 0.1 }
       );
-      cards.forEach((card) => observer.observe(card));
+      cards.forEach((card) => cardObserver.observe(card));
+
+      // Language switcher
+      const languageBtns = document.querySelectorAll('.language-btn');
+      languageBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          // In a real implementation, this would change the language
+          alert('Fitur ganti bahasa akan datang!');
+        });
+      });
     </script>
   </body>
 </html>

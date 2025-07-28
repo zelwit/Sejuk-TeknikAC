@@ -385,15 +385,22 @@
 
       /* New Styles for Added Features */
       .promo-banner {
-        background-color: var(--secondary);
+        background-color: rgba(255, 122, 0, 0.8);
         color: white;
         padding: 0.8rem;
         text-align: center;
         font-weight: 500;
       }
 
-      .promo-banner marquee {
-        font-size: 1.1rem;
+      .promo-banner a {
+        color: white;
+        text-decoration: none;
+        margin: 0 20px;
+        transition: all 0.3s ease;
+      }
+
+      .promo-banner a:hover {
+        text-shadow: 0 0 5px rgba(255, 255, 255, 0.7);
       }
 
       .calculator {
@@ -692,6 +699,55 @@
         padding: 0.5rem;
       }
 
+      /* Modal styles for blog posts */
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.4);
+      }
+
+      .modal-content {
+        background-color: #fefefe;
+        margin: 10% auto;
+        padding: 20px;
+        border-radius: 10px;
+        max-width: 700px;
+        width: 80%;
+        position: relative;
+        animation: modalSlideUp 0.4s ease-out;
+      }
+
+      @keyframes modalSlideUp {
+        from {
+          transform: translateY(50px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      .close-btn {
+        position: absolute;
+        top: 10px;
+        right: 20px;
+        font-size: 28px;
+        font-weight: bold;
+        color: #aaa;
+        cursor: pointer;
+      }
+
+      .close-btn:hover {
+        color: #333;
+      }
+
       @media (max-width: 768px) {
         .nav-container {
           flex-direction: column;
@@ -720,6 +776,11 @@
           text-align: center;
           margin-top: 1rem;
         }
+
+        .modal-content {
+          width: 95%;
+          margin: 20% auto;
+        }
       }
 
       @keyframes fadeIn {
@@ -745,7 +806,11 @@
     </header>
 
     <div class="promo-banner">
-      <marquee>🔥 Diskon 10% untuk Instalasi AC Baru sampai 31 Agustus! 🔥</marquee>
+      <marquee>
+        <a href="https://zelwit.github.io/Sejuk-TeknikAC/cuci-ac.html">🔥 Diskon 10% untuk Instalasi AC Baru sampai 31 Agustus! 🔥</a>
+        <a href="https://zelwit.github.io/Sejuk-TeknikAC/cuci-ac.html">💧 Cuci AC Hemat - Mulai dari Rp 150.000! 💧</a>
+        <a href="https://zelwit.github.io/Sejuk-TeknikAC/sewa-ac.html">❄️ Sewa AC Murah - Mulai Rp 500.000/bulan ❄️</a>
+      </marquee>
     </div>
 
     <nav>
@@ -805,11 +870,11 @@
         </div>
         <div class="service-card">
           <div class="service-icon">
-            <i class="fas fa-bolt"></i>
+            <i class="fas fa-snowflake"></i>
           </div>
           <div class="service-content">
-            <h3>Service Panel</h3>
-            <p>Perbaikan dan perawatan panel listrik</p>
+            <h3>Sewa AC</h3>
+            <p>Sewa AC berkualitas untuk acara Anda</p>
             <a href="https://wa.me/6285817818216" class="btn">Pesan Sekarang</a>
           </div>
         </div>
@@ -848,16 +913,28 @@
       </div>
       <div class="testimonials">
         <div class="testimonial">
-          <p>AC rumah saya dingin banget sekarang! Pelayanan cepat dan teknisi ramah.</p>
+          <p>AC rumah saya dingin banget sekarang! Pelayanan cepat dan teknisi ramah. Harga juga bersaing dibanding tempat lain.</p>
           <div class="author">— Budi, Bekasi</div>
         </div>
         <div class="testimonial">
-          <p>Harga bersahabat dan hasil kerja rapi. Recommended!</p>
+          <p>Harga bersahabat dan hasil kerja rapi. Sudah 3 kali panggil untuk cuci AC rutin, selalu puas dengan hasilnya. Recommended!</p>
           <div class="author">— Siti, Jakarta Timur</div>
         </div>
         <div class="testimonial">
-          <p>Sudah 3 tahun pakai jasa Sejuk Teknik, selalu puas dengan hasilnya.</p>
+          <p>Teknisi datang tepat waktu dan pekerjaan selesai dengan cepat. AC yang tadinya bermasalah sekarang berjalan normal kembali. Terima kasih Sejuk Teknik!</p>
           <div class="author">— Andi, Depok</div>
+        </div>
+        <div class="testimonial">
+          <p>Pemasangan AC baru untuk kantor kami sangat rapi dan profesional. Tidak ada kebocoran atau masalah setelah pemasangan. Sangat memuaskan!</p>
+          <div class="author">— Rina, Jakarta Selatan</div>
+        </div>
+        <div class="testimonial">
+          <p>Service AC rumah sakit kami ditangani dengan baik. Teknisi memahami kebutuhan khusus di lingkungan medis. Sangat profesional!</p>
+          <div class="author">— Dr. Ahmad, Tangerang</div>
+        </div>
+        <div class="testimonial">
+          <p>Sewa AC untuk acara pernikahan berjalan lancar. Unit yang disediakan dingin dan teknisi membantu setup dengan baik. Terima kasih!</p>
+          <div class="author">— Dian, Bogor</div>
         </div>
       </div>
     </section>
@@ -905,7 +982,7 @@
           <div class="blog-content">
             <h3>5 Tanda AC Kamu Butuh Diservice</h3>
             <p>Ketahui tanda-tanda ketika AC Anda membutuhkan perawatan profesional sebelum masalah menjadi lebih serius.</p>
-            <a href="#" class="btn">Baca Selengkapnya</a>
+            <button class="btn read-more-btn" data-modal="modal1">Baca Selengkapnya</button>
           </div>
         </div>
         <div class="blog-card">
@@ -915,7 +992,7 @@
           <div class="blog-content">
             <h3>Perbedaan Freon R32 vs R410A</h3>
             <p>Memahami perbedaan antara dua jenis freon yang umum digunakan dalam AC modern saat ini.</p>
-            <a href="#" class="btn">Baca Selengkapnya</a>
+            <button class="btn read-more-btn" data-modal="modal2">Baca Selengkapnya</button>
           </div>
         </div>
         <div class="blog-card">
@@ -925,11 +1002,85 @@
           <div class="blog-content">
             <h3>Cara Merawat AC Agar Tahan Lama</h3>
             <p>Tips sederhana untuk merawat AC Anda agar tetap berfungsi optimal dengan usia pakai yang panjang.</p>
-            <a href="#" class="btn">Baca Selengkapnya</a>
+            <button class="btn read-more-btn" data-modal="modal3">Baca Selengkapnya</button>
           </div>
         </div>
       </div>
     </section>
+
+    <!-- Modal Windows for Blog Posts -->
+    <div id="modal1" class="modal">
+      <div class="modal-content">
+        <span class="close-btn">&times;</span>
+        <h3>5 Tanda AC Kamu Butuh Diservice</h3>
+        <p>AC yang berfungsi dengan baik adalah kenyamanan yang sering kita anggap remeh, sampai tiba-tiba berhenti bekerja. Berikut adalah 5 tanda bahwa AC Anda membutuhkan perhatian profesional:</p>
+        <ol>
+          <li><strong>Udara tidak sedingin biasanya</strong> - Jika AC Anda tidak lagi mendinginkan ruangan seperti dulu, mungkin ada masalah dengan kompresor atau level freon.</li>
+          <li><strong>Suara aneh atau berisik</strong> - Bunyi berdecit, berderak, atau bergetar keras bisa menandakan masalah mekanis.</li>
+          <li><strong>Bau tidak sedap</strong> - Bau apek bisa berarti ada jamur di saluran, sementara bau terbakar bisa menandakan masalah listrik.</li>
+          <li><strong>Kebocoran air</strong> - Air yang menetes dari unit dalam bisa berarti saluran pembuangan tersumbat.</li>
+          <li><strong>Tagihan listrik melonjak</strong> - AC yang bekerja terlalu keras akan mengonsumsi lebih banyak energi.</li>
+        </ol>
+        <p>Jangan tunda perbaikan AC Anda. Hubungi teknisi profesional Sejuk Teknik untuk diagnosis dan perbaikan yang tepat.</p>
+      </div>
+    </div>
+
+    <div id="modal2" class="modal">
+      <div class="modal-content">
+        <span class="close-btn">&times;</span>
+        <h3>Perbedaan Freon R32 vs R410A</h3>
+        <p>Freon adalah zat pendingin yang digunakan dalam sistem AC. Dua jenis yang umum saat ini adalah R32 dan R410A. Berikut perbedaannya:</p>
+        
+        <h4>Freon R410A</h4>
+        <ul>
+          <li>Campuran dari dua zat (R32 dan R125)</li>
+          <li>Tekanan kerja lebih tinggi</li>
+          <li>Potensi pemanasan global (GWP) 2088</li>
+          <li>Lebih banyak digunakan di AC produksi lama</li>
+        </ul>
+        
+        <h4>Freon R32</h4>
+        <ul>
+          <li>Zat tunggal (tidak campuran)</li>
+          <li>Efisiensi energi lebih baik (sekitar 10%)</li>
+          <li>GWP lebih rendah (675)</li>
+          <li>Lebih ramah lingkungan</li>
+          <li>Membutuhkan lebih sedikit isi (sekitar 30% lebih sedikit)</li>
+        </ul>
+        
+        <p>Kebanyakan AC baru sekarang menggunakan R32 karena lebih efisien dan ramah lingkungan. Namun, pengisian harus dilakukan oleh teknisi bersertifikat karena sifatnya yang mudah terbakar.</p>
+      </div>
+    </div>
+
+    <div id="modal3" class="modal">
+      <div class="modal-content">
+        <span class="close-btn">&times;</span>
+        <h3>Cara Merawat AC Agar Tahan Lama</h3>
+        <p>Dengan perawatan yang tepat, AC Anda bisa bertahan hingga 10-15 tahun. Berikut tips merawat AC Anda:</p>
+        
+        <h4>Perawatan Rutin</h4>
+        <ul>
+          <li><strong>Cuci filter</strong> setiap 1-2 bulan. Filter kotor mengurangi aliran udara dan membuat AC bekerja lebih keras.</li>
+          <li><strong>Bersihkan unit outdoor</strong> dari daun, debu, dan kotoran yang bisa menyumbat sirip pendingin.</li>
+          <li><strong>Service profesional</strong> setahun sekali untuk pemeriksaan menyeluruh dan pembersihan bagian dalam.</li>
+        </ul>
+        
+        <h4>Penggunaan Bijak</h4>
+        <ul>
+          <li>Atur suhu ideal (24-26°C). Setiap 1°C lebih dingin meningkatkan konsumsi energi 6%.</li>
+          <li>Gunakan timer atau fitur sleep mode di malam hari.</li>
+          <li>Tutup pintu/jendela saat AC menyala untuk mempertahankan suhu.</li>
+        </ul>
+        
+        <h4>Ketika Musim Hujan</h4>
+        <ul>
+          <li>Nyalakan AC setidaknya 15 menit seminggu sekali untuk mencegah kompresor macet.</li>
+          <li>Jika tidak digunakan dalam waktu lama, tutup unit outdoor untuk melindungi dari hujan dan debu.</li>
+        </ul>
+        
+        <p>Dengan perawatan rutin, AC Anda akan bekerja lebih efisien, lebih tahan lama, dan menghemat biaya listrik bulanan.</p>
+      </div>
+    </div>
 
     <section class="content">
       <div class="payment-methods">
@@ -1033,7 +1184,7 @@
         observer.observe(statsSection);
       }
 
-      // Price calculator
+      // Price calculator with lower prices
       function calculatePrice() {
         const acType = document.getElementById('ac-type').value;
         const pipa = parseInt(document.getElementById('pipa').value);
@@ -1041,15 +1192,15 @@
         
         let basePrice;
         switch(acType) {
-          case 'standard': basePrice = 1500000; break;
-          case 'medium': basePrice = 1800000; break;
-          case 'large': basePrice = 2200000; break;
-          case 'xl': basePrice = 3000000; break;
-          default: basePrice = 1500000;
+          case 'standard': basePrice = 500000; break;
+          case 'medium': basePrice = 650000; break;
+          case 'large': basePrice = 800000; break;
+          case 'xl': basePrice = 1200000; break;
+          default: basePrice = 500000;
         }
         
-        const pipaCost = Math.max(0, pipa - 5) * 50000;
-        const ruanganAdjustment = ruangan > 20 ? 200000 : 0;
+        const pipaCost = Math.max(0, pipa - 5) * 30000;
+        const ruanganAdjustment = ruangan > 20 ? 100000 : 0;
         
         const total = basePrice + pipaCost + ruanganAdjustment;
         
@@ -1104,9 +1255,32 @@
       const languageBtns = document.querySelectorAll('.language-btn');
       languageBtns.forEach(btn => {
         btn.addEventListener('click', () => {
-          // In a real implementation, this would change the language
           alert('Fitur ganti bahasa akan datang!');
         });
+      });
+
+      // Modal functionality for blog posts
+      const modalBtns = document.querySelectorAll('.read-more-btn');
+      const modals = document.querySelectorAll('.modal');
+      const closeBtns = document.querySelectorAll('.close-btn');
+
+      modalBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const modalId = btn.getAttribute('data-modal');
+          document.getElementById(modalId).style.display = 'block';
+        });
+      });
+
+      closeBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          btn.closest('.modal').style.display = 'none';
+        });
+      });
+
+      window.addEventListener('click', (e) => {
+        if (e.target.classList.contains('modal')) {
+          e.target.style.display = 'none';
+        }
       });
     </script>
   </body>

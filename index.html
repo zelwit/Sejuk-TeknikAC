@@ -23,20 +23,17 @@
         --gray: #718096;
         --white: #ffffff;
       }
-
       * {
         box-sizing: border-box;
         margin: 0;
         padding: 0;
       }
-
       body {
         font-family: "Poppins", sans-serif;
         color: var(--dark);
         line-height: 1.6;
         background-color: var(--light);
       }
-
       header {
         background: linear-gradient(135deg, var(--primary), #004c99);
         color: var(--white);
@@ -45,7 +42,6 @@
         position: relative;
         overflow: hidden;
       }
-
       header::before {
         content: "";
         position: absolute;
@@ -56,7 +52,6 @@
         background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path fill="rgba(255,255,255,0.05)" d="M0,0 L100,0 L100,100 L0,100 Z"></path></svg>');
         opacity: 0.1;
       }
-
       header h1 {
         margin: 0;
         font-size: 2.5rem;
@@ -65,7 +60,6 @@
         display: inline-block;
         animation: freezeEffect 6s infinite;
       }
-
       @keyframes freezeEffect {
         0%,
         100% {
@@ -94,14 +88,12 @@
           text-shadow: 0 0 25px rgba(217, 247, 255, 1);
         }
       }
-
       header p {
         font-size: 1.1rem;
         margin-top: 0.5rem;
         opacity: 0.9;
         position: relative;
       }
-
       nav {
         background-color: var(--white);
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
@@ -109,7 +101,6 @@
         top: 0;
         z-index: 100;
       }
-
       .nav-container {
         max-width: 1200px;
         margin: 0 auto;
@@ -118,19 +109,16 @@
         align-items: center;
         padding: 1rem;
       }
-
       .logo {
         font-weight: 700;
         color: var(--primary);
         font-size: 1.2rem;
         text-decoration: none;
       }
-
       .nav-links {
         display: flex;
         gap: 1.5rem;
       }
-
       nav a {
         color: var(--dark);
         text-decoration: none;
@@ -139,11 +127,9 @@
         transition: all 0.3s ease;
         position: relative;
       }
-
       nav a:hover {
         color: var(--primary);
       }
-
       nav a::after {
         content: "";
         position: absolute;
@@ -154,11 +140,9 @@
         background-color: var(--primary);
         transition: width 0.3s ease;
       }
-
       nav a:hover::after {
         width: 100%;
       }
-
       .hero {
         background: linear-gradient(145deg, var(--primary), #0088ff);
         color: var(--white);
@@ -167,7 +151,6 @@
         position: relative;
         overflow: hidden;
       }
-
       .hero::before {
         content: "";
         position: absolute;
@@ -178,7 +161,6 @@
         background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path fill="rgba(255,255,255,0.05)" d="M0,0 L100,0 L100,100 L0,100 Z"></path></svg>');
         opacity: 0.1;
       }
-
       .hero::after {
         content: "";
         position: absolute;
@@ -194,7 +176,6 @@
         );
         animation: shine 3s infinite;
       }
-
       @keyframes shine {
         0% {
           left: -100%;
@@ -204,26 +185,22 @@
           left: 100%;
         }
       }
-
       .hero-content {
         max-width: 800px;
         margin: 0 auto;
         position: relative;
         z-index: 1;
       }
-
       .hero h1 {
         font-size: 2.2rem;
         margin-bottom: 1rem;
         font-weight: 600;
       }
-
       .hero p {
         font-size: 1.1rem;
         margin-bottom: 2rem;
         opacity: 0.9;
       }
-
       .visi-misi {
         background-color: rgba(255, 255, 255, 0.1);
         backdrop-filter: blur(5px);
@@ -231,23 +208,19 @@
         border-radius: 12px;
         margin-top: 1.5rem;
       }
-
       .visi-misi p {
         font-size: 1rem;
         line-height: 1.7;
       }
-
       .content {
         padding: 4rem 1rem;
         max-width: 1200px;
         margin: 0 auto;
       }
-
       .section-title {
         text-align: center;
         margin-bottom: 3rem;
       }
-
       .section-title h2 {
         font-size: 2rem;
         color: var(--primary);
@@ -255,7 +228,6 @@
         position: relative;
         display: inline-block;
       }
-
       .section-title h2::after {
         content: "";
         position: absolute;
@@ -265,19 +237,16 @@
         left: 25%;
         background: linear-gradient(90deg, var(--primary), var(--secondary));
       }
-
       .section-title p {
         color: var(--gray);
         max-width: 700px;
         margin: 0 auto;
       }
-
       .cards {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
         gap: 2rem;
       }
-
       .card {
         background: var(--white);
         border-radius: 12px;
@@ -287,17 +256,14 @@
         opacity: 0;
         transform: translateY(30px);
       }
-
       .card.visible {
         opacity: 1;
         transform: translateY(0);
       }
-
       .card:hover {
         transform: translateY(-5px);
         box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
       }
-
       .card-icon {
         background-color: var(--primary-light);
         color: var(--primary);
@@ -305,22 +271,18 @@
         padding: 1.5rem;
         text-align: center;
       }
-
       .card-content {
         padding: 1.5rem;
       }
-
       .card h3 {
         margin-bottom: 1rem;
         color: var(--primary);
         font-size: 1.3rem;
       }
-
       .card p {
         color: var(--gray);
         font-size: 0.95rem;
       }
-
       .btn {
         display: inline-block;
         background-color: var(--primary);
@@ -333,30 +295,25 @@
         box-shadow: 0 4px 10px rgba(0, 102, 204, 0.3);
         border: 2px solid var(--primary);
       }
-
       .btn:hover {
         background-color: transparent;
         color: var(--primary);
         box-shadow: none;
       }
-
       .btn-whatsapp {
         background-color: #25d366;
         border-color: #25d366;
         box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3);
       }
-
       .btn-whatsapp:hover {
         color: #25d366;
       }
-
       /* Footer Styles */
       .footer {
         background-color: var(--dark);
         color: var(--white);
         padding: 3rem 0 0;
       }
-
       .footer-container {
         max-width: 1200px;
         margin: 0 auto;
@@ -365,11 +322,9 @@
         grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
         gap: 2rem;
       }
-
       .footer-about {
         margin-bottom: 2rem;
       }
-
       .footer-logo {
         display: flex;
         align-items: center;
@@ -378,24 +333,20 @@
         margin-bottom: 1rem;
         color: var(--white);
       }
-
       .footer-logo i {
         margin-right: 0.5rem;
         font-size: 1.8rem;
       }
-
       .footer-about p {
         opacity: 0.8;
         font-size: 0.9rem;
       }
-
       .footer-links h3 {
         font-size: 1.2rem;
         margin-bottom: 1.5rem;
         position: relative;
         padding-bottom: 0.5rem;
       }
-
       .footer-links h3::after {
         content: "";
         position: absolute;
@@ -405,15 +356,12 @@
         height: 2px;
         background: var(--primary);
       }
-
       .footer-links ul {
         list-style: none;
       }
-
       .footer-links li {
         margin-bottom: 0.8rem;
       }
-
       .footer-links a {
         color: var(--white);
         opacity: 0.8;
@@ -422,18 +370,15 @@
         display: flex;
         align-items: center;
       }
-
       .footer-links a:hover {
         opacity: 1;
         padding-left: 5px;
       }
-
       .footer-links a i {
         margin-right: 0.5rem;
         width: 20px;
         text-align: center;
       }
-
       .footer-contact p {
         display: flex;
         align-items: center;
@@ -441,13 +386,11 @@
         opacity: 0.8;
         font-size: 0.9rem;
       }
-
       .footer-contact i {
         margin-right: 0.8rem;
         width: 20px;
         text-align: center;
       }
-
       .footer-bottom {
         text-align: center;
         padding: 1.5rem;
@@ -456,7 +399,6 @@
         font-size: 0.9rem;
         opacity: 0.8;
       }
-
       /* New Styles for Added Features */
       .promo-banner {
         background-color: rgba(255, 122, 0, 0.8);
@@ -465,18 +407,15 @@
         text-align: center;
         font-weight: 500;
       }
-
       .promo-banner a {
         color: white;
         text-decoration: none;
         margin: 0 20px;
         transition: all 0.3s ease;
       }
-
       .promo-banner a:hover {
         text-shadow: 0 0 5px rgba(255, 255, 255, 0.7);
       }
-
       .calculator {
         background: var(--white);
         border-radius: 12px;
@@ -485,23 +424,19 @@
         margin: 2rem auto;
         max-width: 600px;
       }
-
       .calculator h3 {
         color: var(--primary);
         margin-bottom: 1.5rem;
         text-align: center;
       }
-
       .form-group {
         margin-bottom: 1.5rem;
       }
-
       .form-group label {
         display: block;
         margin-bottom: 0.5rem;
         font-weight: 500;
       }
-
       .form-group select,
       .form-group input {
         width: 100%;
@@ -510,7 +445,6 @@
         border-radius: 8px;
         font-family: 'Poppins', sans-serif;
       }
-
       .result {
         background: var(--primary-light);
         padding: 1rem;
@@ -521,14 +455,12 @@
         color: var(--primary);
         display: none;
       }
-
       .testimonials {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
         gap: 2rem;
         margin: 3rem 0;
       }
-
       .testimonial {
         background: var(--white);
         padding: 1.5rem;
@@ -536,7 +468,6 @@
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
         position: relative;
       }
-
       .testimonial::before {
         content: '"';
         font-size: 4rem;
@@ -546,26 +477,22 @@
         left: 1rem;
         line-height: 1;
       }
-
       .testimonial p {
         font-style: italic;
         margin-bottom: 1rem;
         position: relative;
         z-index: 1;
       }
-
       .testimonial .author {
         font-weight: 600;
         color: var(--primary);
       }
-
       .service-highlights {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
         gap: 2rem;
         margin: 3rem 0;
       }
-
       .service-card {
         background: var(--white);
         border-radius: 12px;
@@ -574,34 +501,28 @@
         text-align: center;
         transition: transform 0.3s ease;
       }
-
       .service-card:hover {
         transform: translateY(-10px);
       }
-
       .service-icon {
         background: var(--primary);
         color: white;
         font-size: 2.5rem;
         padding: 1.5rem;
       }
-
       .service-content {
         padding: 1.5rem;
       }
-
       .service-content h3 {
         color: var(--primary);
         margin-bottom: 1rem;
       }
-
       .stats {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
         gap: 2rem;
         margin: 3rem 0;
       }
-
       .stat-item {
         text-align: center;
         padding: 1.5rem;
@@ -609,25 +530,21 @@
         border-radius: 12px;
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
       }
-
       .stat-icon {
         font-size: 2.5rem;
         color: var(--primary);
         margin-bottom: 1rem;
       }
-
       .stat-number {
         font-size: 2rem;
         font-weight: 700;
         color: var(--primary);
         margin-bottom: 0.5rem;
       }
-
       .stat-label {
         color: var(--gray);
         font-size: 0.9rem;
       }
-
       .map-container {
         height: 300px;
         margin: 3rem 0;
@@ -635,21 +552,18 @@
         overflow: hidden;
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
       }
-
       .blog-posts {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
         gap: 2rem;
         margin: 3rem 0;
       }
-
       .blog-card {
         background: var(--white);
         border-radius: 12px;
         overflow: hidden;
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
       }
-
       .blog-image {
         height: 200px;
         background: var(--primary-light);
@@ -659,22 +573,18 @@
         color: var(--primary);
         font-size: 3rem;
       }
-
       .blog-content {
         padding: 1.5rem;
       }
-
       .blog-content h3 {
         color: var(--primary);
         margin-bottom: 1rem;
       }
-
       .blog-content p {
         color: var(--gray);
         margin-bottom: 1.5rem;
         font-size: 0.9rem;
       }
-
       .payment-methods {
         display: flex;
         flex-wrap: wrap;
@@ -682,7 +592,6 @@
         justify-content: center;
         margin: 2rem 0;
       }
-
       .payment-method {
         background: var(--white);
         padding: 0.5rem 1rem;
@@ -690,7 +599,6 @@
         font-weight: 500;
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
       }
-
       .certificates {
         display: flex;
         flex-wrap: wrap;
@@ -698,7 +606,6 @@
         justify-content: center;
         margin: 2rem 0;
       }
-
       .certificate {
         background: var(--white);
         padding: 1rem;
@@ -707,13 +614,11 @@
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
         width: 150px;
       }
-
       .certificate i {
         font-size: 2rem;
         color: var(--primary);
         margin-bottom: 0.5rem;
       }
-
       .diagnosis {
         background: var(--white);
         border-radius: 12px;
@@ -721,14 +626,12 @@
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
         margin: 2rem 0;
       }
-
       .diagnosis-options {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
         gap: 1rem;
         margin-bottom: 1.5rem;
       }
-
       .diagnosis-option {
         background: var(--primary-light);
         padding: 1rem;
@@ -737,12 +640,10 @@
         cursor: pointer;
         transition: all 0.3s ease;
       }
-
       .diagnosis-option:hover {
         background: var(--primary);
         color: white;
       }
-
       .diagnosis-result {
         background: var(--primary-light);
         padding: 1rem;
@@ -750,7 +651,6 @@
         margin-top: 1.5rem;
         display: none;
       }
-
       .security-banner {
         background: var(--primary-light);
         padding: 1rem;
@@ -758,13 +658,11 @@
         text-align: center;
         margin: 2rem 0;
       }
-
       .language-switcher {
         position: absolute;
         top: 1rem;
         right: 1rem;
       }
-
       .language-btn {
         background: transparent;
         border: none;
@@ -772,7 +670,6 @@
         cursor: pointer;
         padding: 0.5rem;
       }
-
       /* Modal styles for blog posts */
       .modal {
         display: none;
@@ -785,7 +682,6 @@
         overflow: auto;
         background-color: rgba(0, 0, 0, 0.4);
       }
-
       .modal-content {
         background-color: #fefefe;
         margin: 10% auto;
@@ -796,7 +692,6 @@
         position: relative;
         animation: modalSlideUp 0.4s ease-out;
       }
-
       @keyframes modalSlideUp {
         from {
           transform: translateY(50px);
@@ -807,7 +702,6 @@
           opacity: 1;
         }
       }
-
       .close-btn {
         position: absolute;
         top: 10px;
@@ -817,46 +711,37 @@
         color: #aaa;
         cursor: pointer;
       }
-
       .close-btn:hover {
         color: #333;
       }
-
       @media (max-width: 768px) {
         .nav-container {
           flex-direction: column;
           gap: 1rem;
         }
-
         .nav-links {
           flex-wrap: wrap;
           justify-content: center;
         }
-
         header h1 {
           font-size: 2rem;
         }
-
         .hero h1 {
           font-size: 1.8rem;
         }
-
         .cards {
           grid-template-columns: 1fr;
         }
-
         .language-switcher {
           position: static;
           text-align: center;
           margin-top: 1rem;
         }
-
         .modal-content {
           width: 95%;
           margin: 20% auto;
         }
       }
-
       @keyframes fadeIn {
         from {
           opacity: 0;
@@ -878,7 +763,6 @@
       <h1>Sejuk Teknik AC</h1>
       <p>Solusi AC dan Kelistrikan Profesional</p>
     </header>
-
     <div class="promo-banner">
       <marquee>
         <a href="https://zelwit.github.io/Sejuk-TeknikAC/cuci-ac.html">🔥 Diskon 10% untuk Instalasi AC Baru sampai 31 Agustus! 🔥</a>
@@ -886,7 +770,6 @@
         <a href="https://zelwit.github.io/Sejuk-TeknikAC/sewa-ac.html">❄️ Sewa AC Murah - Mulai Rp 500.000/bulan ❄️</a>
       </marquee>
     </div>
-
     <nav>
       <div class="nav-container">
         <a href="index.html" class="logo">Sejuk Teknik</a>
@@ -902,7 +785,6 @@
         </div>
       </div>
     </nav>
-
     <section class="hero">
       <div class="hero-content">
         <h1>Selamat Datang di Sejuk Teknik AC</h1>
@@ -919,7 +801,6 @@
         </a>
       </div>
     </section>
-
     <section class="content">
       <div class="service-highlights">
         <div class="service-card">
@@ -954,7 +835,6 @@
         </div>
       </div>
     </section>
-
     <section class="content">
       <div class="calculator">
         <h3><i class="fas fa-calculator"></i> Simulasi Harga Pemasangan AC</h3>
@@ -979,7 +859,6 @@
         <div class="result" id="result"></div>
       </div>
     </section>
-
     <section class="content">
       <div class="section-title">
         <h2>Testimoni Pelanggan</h2>
@@ -1012,7 +891,6 @@
         </div>
       </div>
     </section>
-
     <section class="content">
       <div class="stats">
         <div class="stat-item">
@@ -1032,7 +910,6 @@
         </div>
       </div>
     </section>
-
     <section class="content">
       <div class="section-title">
         <h2>Wilayah Layanan Kami</h2>
@@ -1042,7 +919,6 @@
         <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.521260322283!2d106.8195613506864!3d-6.194741395493371!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNsKwMTEnNDEuMSJTIDEwNsKwNDknMTAuMyJF!5e0!3m2!1sen!2sid!4v1621234567890!5m2!1sen!2sid" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
       </div>
     </section>
-
     <section class="content">
       <div class="section-title">
         <h2>Tips & Artikel</h2>
@@ -1081,7 +957,6 @@
         </div>
       </div>
     </section>
-
     <!-- Modal Windows for Blog Posts -->
     <div id="modal1" class="modal">
       <div class="modal-content">
@@ -1098,7 +973,6 @@
         <p>Jangan tunda perbaikan AC Anda. Hubungi teknisi profesional Sejuk Teknik untuk diagnosis dan perbaikan yang tepat.</p>
       </div>
     </div>
-
     <div id="modal2" class="modal">
       <div class="modal-content">
         <span class="close-btn">&times;</span>
@@ -1125,7 +999,6 @@
         <p>Kebanyakan AC baru sekarang menggunakan R32 karena lebih efisien dan ramah lingkungan. Namun, pengisian harus dilakukan oleh teknisi bersertifikat karena sifatnya yang mudah terbakar.</p>
       </div>
     </div>
-
     <div id="modal3" class="modal">
       <div class="modal-content">
         <span class="close-btn">&times;</span>
@@ -1155,7 +1028,6 @@
         <p>Dengan perawatan rutin, AC Anda akan bekerja lebih efisien, lebih tahan lama, dan menghemat biaya listrik bulanan.</p>
       </div>
     </div>
-
     <section class="content">
       <div class="payment-methods">
         <div class="payment-method">✅ DANA</div>
@@ -1165,7 +1037,6 @@
         <div class="payment-method">✅ Tunai</div>
       </div>
     </section>
-
     <section class="content">
       <div class="section-title">
         <h2>Sertifikat & Legalitas</h2>
@@ -1186,7 +1057,6 @@
         </div>
       </div>
     </section>
-
     <section class="content">
       <div class="diagnosis">
         <h3><i class="fas fa-stethoscope"></i> Diagnosa Masalah AC</h3>
@@ -1200,13 +1070,11 @@
         <div class="diagnosis-result" id="diagnosis-result"></div>
       </div>
     </section>
-
     <section class="content">
       <div class="security-banner">
         <i class="fas fa-lock"></i> Data Anda Aman – Kami tidak menyebarkan nomor HP atau foto properti Anda
       </div>
     </section>
-
     <!-- Footer -->
     <footer class="footer">
       <div class="footer-container">
@@ -1249,7 +1117,6 @@
         <p>&copy; 2025 Sejuk Teknik AC. All Rights Reserved.</p>
       </div>
     </footer>
-
     <script>
       // Animate stats counters
       function animateCounters() {
@@ -1269,7 +1136,6 @@
           }
         });
       }
-
       // Show counters when scrolled to
       const statsSection = document.querySelector('.stats');
       const observer = new IntersectionObserver((entries) => {
@@ -1280,11 +1146,9 @@
           }
         });
       }, { threshold: 0.5 });
-
       if (statsSection) {
         observer.observe(statsSection);
       }
-
       // Price calculator with lower prices
       function calculatePrice() {
         const acType = document.getElementById('ac-type').value;
@@ -1311,7 +1175,6 @@
         `;
         document.getElementById('result').style.display = 'block';
       }
-
       // AC Diagnosis
       function showDiagnosis(problem) {
         const resultDiv = document.getElementById('diagnosis-result');
@@ -1337,7 +1200,6 @@
         resultDiv.innerHTML = solution;
         resultDiv.style.display = 'block';
       }
-
       // Card animation on scroll
       const cards = document.querySelectorAll('.card');
       const cardObserver = new IntersectionObserver(
@@ -1351,7 +1213,6 @@
         { threshold: 0.1 }
       );
       cards.forEach((card) => cardObserver.observe(card));
-
       // Language switcher
       const languageBtns = document.querySelectorAll('.language-btn');
       languageBtns.forEach(btn => {
@@ -1359,31 +1220,26 @@
           alert('Fitur ganti bahasa akan datang!');
         });
       });
-
       // Modal functionality for blog posts
       const modalBtns = document.querySelectorAll('.read-more-btn');
       const modals = document.querySelectorAll('.modal');
       const closeBtns = document.querySelectorAll('.close-btn');
-
       modalBtns.forEach(btn => {
         btn.addEventListener('click', () => {
           const modalId = btn.getAttribute('data-modal');
           document.getElementById(modalId).style.display = 'block';
         });
       });
-
       closeBtns.forEach(btn => {
         btn.addEventListener('click', () => {
           btn.closest('.modal').style.display = 'none';
         });
       });
-
       window.addEventListener('click', (e) => {
         if (e.target.classList.contains('modal')) {
           e.target.style.display = 'none';
         }
       });
-
       // Set active navigation link based on current page
       document.addEventListener('DOMContentLoaded', function() {
         const currentPage = window.location.pathname.split('/').pop() || 'index.html';
@@ -1398,6 +1254,547 @@
           }
         });
       });
+    </script>
+
+    <!-- ====================================================
+         Tambahan: Satu script di paling bawah (Login/Signup, member features)
+         Jangan ubah struktur lain. Semua dibuat via JS.
+         ==================================================== -->
+    <script>
+    /* Sejuk Teknik — Auth & Member Features (single script)
+       - Menambahkan tombol Login/Sign up (floating)
+       - Membuat modal untuk login/signup
+       - Membuat panel member (tracking, pembayaran, garansi, notifikasi)
+       - Gating 3D AC Placement Planner untuk user belum login
+       - Membuat URL "pretty" login-<uuid>.html dan signup-<uuid>.html via history.pushState
+       - Poin + popup meriah saat login
+       - Auto-fill data pelanggan jika form ada (#nama, #alamat, #hp)
+    */
+    (function(){
+      /* ---------- Utilities ---------- */
+      const ST = {
+        keyUser: "st_user",
+        keyOrders: "st_orders",
+        keyPoints: "st_points",
+        keyNotifs: "st_notifs",
+        q: (s, r=document)=> r.querySelector(s),
+        qa: (s, r=document)=> Array.from(r.querySelectorAll(s)),
+        byId: (id)=> document.getElementById(id),
+        uuid() {
+          // simple UUIDv4
+          return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+            (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+          );
+        },
+        todayISO(){ return new Date().toISOString().slice(0,10); },
+        getJSON(k, def){ try{return JSON.parse(localStorage.getItem(k)||"null")||def;}catch(e){return def;} },
+        setJSON(k,v){ localStorage.setItem(k, JSON.stringify(v)); }
+      };
+
+      function getUser(){ return ST.getJSON(ST.keyUser, null); }
+      function saveUser(u){ ST.setJSON(ST.keyUser, u); }
+      function isLoggedIn(){ const u=getUser(); return !!(u && u.loggedIn); }
+      function getPoints(){ return parseInt(localStorage.getItem(ST.keyPoints) || "0", 10); }
+      function setPoints(n){ localStorage.setItem(ST.keyPoints, String(n)); }
+      function getOrders(){ return ST.getJSON(ST.keyOrders, []); }
+      function setOrders(a){ ST.setJSON(ST.keyOrders, a); }
+      function getNotifs(){ return ST.getJSON(ST.keyNotifs, []); }
+      function setNotifs(a){ ST.setJSON(ST.keyNotifs, a); }
+
+      // seed demo orders (only once)
+      if(!localStorage.getItem("__st_seeded")){
+        const demo = [
+          {id:"ORD-"+ST.uuid().slice(0,8), tipe:"Cuci AC", tanggal:ST.todayISO(), total:150000, status:"Selesai", pembayaran:[{tanggal:ST.todayISO(), metode:"Tunai", jumlah:150000, status:"Lunas"}], garansi:{mulai:ST.todayISO(), bulan:1}},
+          {id:"ORD-"+ST.uuid().slice(0,8), tipe:"Instalasi AC", tanggal:ST.todayISO(), total:1200000, status:"Proses", pembayaran:[{tanggal:ST.todayISO(), metode:"BCA", jumlah:0, status:"Menunggu"}], garansi:{mulai:ST.todayISO(), bulan:12}}
+        ];
+        setOrders(demo);
+        localStorage.setItem("__st_seeded","1");
+      }
+
+      /* ---------- Small UI helpers (toast, confetti) ---------- */
+      let toastTimer=null;
+      function toast(msg){
+        let el = document.querySelector(".st-toast");
+        if(!el){ el = document.createElement("div"); el.className="st-toast"; el.style.cssText="position:fixed;left:50%;transform:translateX(-50%);bottom:20px;background:#111;color:#fff;padding:10px 14px;border-radius:10px;z-index:4000;opacity:0;transition:opacity .2s"; document.body.appendChild(el); }
+        el.textContent = msg; el.style.opacity="1";
+        clearTimeout(toastTimer);
+        toastTimer=setTimeout(()=> el.style.opacity="0", 2000);
+      }
+
+      function confettiBurst(){
+        // very simple confetti: colored divs falling
+        const wrap = document.createElement("div");
+        wrap.className="st-confetti";
+        wrap.style.cssText="pointer-events:none;position:fixed;inset:0;z-index:3500;overflow:hidden";
+        document.body.appendChild(wrap);
+        const colors = ["#ff6b6b","#ffd166","#06d6a0","#4d96ff","#a28cff"];
+        for(let i=0;i<80;i++){
+          const d = document.createElement("div");
+          d.style.cssText = `width:${6+Math.random()*8}px;height:${6+Math.random()*8}px;background:${colors[Math.floor(Math.random()*colors.length)]};position:absolute;left:${Math.random()*100}%;top:-10%;opacity:.95;transform:rotate(${Math.random()*360}deg);border-radius:2px;`;
+          const dur = 1500+Math.random()*1200;
+          const leftEnd = (Math.random()*120-10);
+          d.animate([
+            {transform:`translateY(0) rotate(${Math.random()*360}deg)`},
+            {transform:`translateY(${window.innerHeight+200}px) rotate(${Math.random()*720}deg)`}
+          ], {duration: dur, easing:"cubic-bezier(.2,.7,.2,1)", fill:"forwards"});
+          d.style.left = `${(Math.random()*100)}%`;
+          d.style.top = `${-Math.random()*20}%`;
+          wrap.appendChild(d);
+        }
+        setTimeout(()=> wrap.remove(), 3000);
+      }
+
+      /* ---------- Modal system (single modal) ---------- */
+      let stBackdrop=null, stModal=null;
+      function ensureStModal(){
+        if(!stBackdrop){
+          stBackdrop=document.createElement("div");
+          stBackdrop.style.cssText="position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;z-index:3000";
+          stBackdrop.addEventListener("click", closeStModal);
+          document.body.appendChild(stBackdrop);
+        }
+        if(!stModal){
+          stModal=document.createElement("div");
+          stModal.style.cssText="position:fixed;inset:0;display:none;align-items:center;justify-content:center;z-index:3001";
+          document.body.appendChild(stModal);
+        }
+      }
+      function openStModal(html, opts={}){
+        ensureStModal();
+        stModal.innerHTML = `<div style="max-width:720px;width:92%;background:#fff;border-radius:12px;padding:18px;position:relative;box-shadow:0 12px 30px rgba(0,0,0,.2)">${html}<button id="st_close_btn" style="position:absolute;right:12px;top:8px;border:none;background:transparent;font-size:22px;cursor:pointer;color:#999">&times;</button></div>`;
+        stBackdrop.style.display="block";
+        stModal.style.display="flex";
+        const cb = stModal.querySelector("#st_close_btn");
+        if(cb) cb.onclick = closeStModal;
+        if(opts.onOpen) opts.onOpen(stModal);
+      }
+      function closeStModal(){
+        if(stModal) stModal.style.display="none";
+        if(stBackdrop) stBackdrop.style.display="none";
+      }
+
+      /* ---------- Login / Signup UI ---------- */
+      function openPrettyRoute(type){
+        // create pretty url and push state, then open the right modal
+        const code = ST.uuid();
+        const pretty = `${type}-${code}.html`;
+        history.pushState({st:type, code}, "", pretty);
+        if(type==="signup") showSignupModal();
+        else showLoginModal();
+      }
+
+      function showSignupModal(){
+        const html = `
+          <div style="font-weight:700;color:var(--primary);font-size:20px;margin-bottom:8px">Daftar Member Sejuk Teknik</div>
+          <div style="color:#64748b;margin-bottom:12px">Dapatkan poin & akses fitur eksklusif.</div>
+          <div style="display:grid;gap:8px">
+            <input id="st_s_nama" placeholder="Nama lengkap" style="padding:10px;border-radius:8px;border:1px solid #e6e9ee">
+            <input id="st_s_hp" placeholder="Nomor HP (WA)" style="padding:10px;border-radius:8px;border:1px solid #e6e9ee">
+            <input id="st_s_email" placeholder="Email (opsional)" style="padding:10px;border-radius:8px;border:1px solid #e6e9ee">
+            <input id="st_s_alamat" placeholder="Alamat (opsional)" style="padding:10px;border-radius:8px;border:1px solid #e6e9ee">
+            <input id="st_s_pass" type="password" placeholder="Kata sandi" style="padding:10px;border-radius:8px;border:1px solid #e6e9ee">
+            <input id="st_s_pass2" type="password" placeholder="Ulangi kata sandi" style="padding:10px;border-radius:8px;border:1px solid #e6e9ee">
+          </div>
+          <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:12px">
+            <button id="st_cancel_signup" style="background:transparent;border:1px solid #ddd;padding:8px 12px;border-radius:999px">Batal</button>
+            <button id="st_submit_signup" style="background:var(--primary);color:#fff;border:none;padding:8px 12px;border-radius:999px">Daftar</button>
+          </div>
+        `;
+        openStModal(html, {onOpen(mod){
+          mod.querySelector("#st_cancel_signup").onclick = ()=> { closeStModal(); history.pushState({}, "", "index.html"); };
+          mod.querySelector("#st_submit_signup").onclick = ()=>{
+            const nama = mod.querySelector("#st_s_nama").value.trim();
+            const hp = mod.querySelector("#st_s_hp").value.trim();
+            const email = mod.querySelector("#st_s_email").value.trim();
+            const alamat = mod.querySelector("#st_s_alamat").value.trim();
+            const pass = mod.querySelector("#st_s_pass").value;
+            const pass2 = mod.querySelector("#st_s_pass2").value;
+            if(!nama || !hp || !pass){ toast("Nama, HP dan password wajib diisi"); return; }
+            if(pass !== pass2){ toast("Password tidak cocok"); return; }
+            // create user (store locally)
+            const user = { id:"USR-"+ST.uuid().slice(0,6), nama, hp, email, alamat, passHash:btoa(pass), loggedIn:true, created: new Date().toISOString() };
+            saveUser(user);
+            // initial points
+            setPoints(getPoints()+100);
+            closeStModal();
+            confettiBurst();
+            toast("Registrasi berhasil! +100 poin");
+            setTimeout(()=> history.pushState({}, "", "index.html"), 700);
+            renderFloating(); // refresh floating buttons
+            showPointsPopup();
+            autoFillOrderForm(); // autofill if forms exist
+          };
+        }});
+      }
+
+      function showLoginModal(){
+        const html = `
+          <div style="font-weight:700;color:var(--primary);font-size:20px;margin-bottom:8px">Login Member</div>
+          <div style="color:#64748b;margin-bottom:12px">Masuk untuk mengakses fitur member.</div>
+          <div style="display:grid;gap:8px">
+            <input id="st_l_id" placeholder="Nomor HP atau Email" style="padding:10px;border-radius:8px;border:1px solid #e6e9ee">
+            <input id="st_l_pass" type="password" placeholder="Kata sandi" style="padding:10px;border-radius:8px;border:1px solid #e6e9ee">
+          </div>
+          <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:12px">
+            <button id="st_cancel_login" style="background:transparent;border:1px solid #ddd;padding:8px 12px;border-radius:999px">Batal</button>
+            <button id="st_submit_login" style="background:var(--primary);color:#fff;border:none;padding:8px 12px;border-radius:999px">Login</button>
+          </div>
+        `;
+        openStModal(html, {onOpen(mod){
+          mod.querySelector("#st_cancel_login").onclick = ()=> { closeStModal(); history.pushState({}, "", "index.html"); };
+          mod.querySelector("#st_submit_login").onclick = ()=>{
+            const id = mod.querySelector("#st_l_id").value.trim();
+            const pass = mod.querySelector("#st_l_pass").value;
+            const u = getUser();
+            if(!u){ toast("Akun tidak ditemukan. Silakan daftar."); return; }
+            const match = (id===u.hp || (u.email && id===u.email)) && (u.passHash === btoa(pass));
+            if(!match){ toast("Data login tidak cocok"); return; }
+            u.loggedIn = true; saveUser(u);
+            closeStModal();
+            confettiBurst();
+            toast("Login sukses!");
+            setTimeout(()=> history.pushState({}, "", "index.html"), 700);
+            renderFloating();
+            showPointsPopup();
+            autoFillOrderForm();
+          };
+        }});
+      }
+
+      function logout(){
+        const u = getUser();
+        if(u){ u.loggedIn = false; saveUser(u); }
+        renderFloating();
+        toast("Anda telah logout");
+        // return to index.html URL
+        if(/\/(login|signup)-[a-f0-9-]+\.html$/i.test(location.pathname)){
+          history.pushState({}, "", "index.html");
+        }
+      }
+
+      /* ---------- Points popup (meriah) ---------- */
+      function showPointsPopup(){
+        const u = getUser();
+        if(!u || !u.loggedIn) return;
+        // show only once per session
+        if(sessionStorage.getItem("__st_pts_shown")) return;
+        sessionStorage.setItem("__st_pts_shown","1");
+        const pts = getPoints();
+        const html = `
+          <div style="text-align:center">
+            <div style="font-weight:700;color:var(--primary);font-size:20px">Selamat datang, ${u.nama || 'Member'}!</div>
+            <div style="color:#64748b;margin-top:6px">Anda memiliki <strong>${pts}</strong> poin.</div>
+            <div style="margin-top:12px;display:flex;gap:8px;justify-content:center">
+              <button id="st_open_panel" style="background:var(--primary);color:#fff;border:none;padding:8px 12px;border-radius:999px">Buka Panel Member</button>
+              <button id="st_later" style="background:#f3f4f6;border:none;padding:8px 12px;border-radius:999px">Nanti</button>
+            </div>
+          </div>
+        `;
+        openStModal(html, {onOpen(mod){
+          mod.querySelector("#st_open_panel").onclick = ()=>{ closeStModal(); openMemberPanel(); };
+          mod.querySelector("#st_later").onclick = ()=> closeStModal();
+          confettiBurst();
+        }});
+      }
+
+      /* ---------- Floating buttons (Login / Signup / Member) ---------- */
+      let floatWrap=null;
+      function renderFloating(){
+        if(floatWrap) floatWrap.remove();
+        floatWrap = document.createElement("div");
+        floatWrap.style.cssText="position:fixed;right:16px;bottom:16px;display:flex;flex-direction:column;gap:8px;z-index:2800";
+        if(isLoggedIn()){
+          const member = document.createElement("button");
+          member.className="st-fab-member";
+          member.style.cssText="background:var(--primary);color:#fff;border:none;padding:10px 14px;border-radius:999px;font-weight:700;cursor:pointer;box-shadow:0 10px 24px rgba(0,102,204,.25)";
+          member.innerHTML = "Panel Member";
+          member.onclick = openMemberPanel;
+          const out = document.createElement("button");
+          out.style.cssText="background:#fff;color:var(--primary);border:2px solid var(--primary);padding:8px 12px;border-radius:999px;cursor:pointer;font-weight:600";
+          out.textContent = "Logout";
+          out.onclick = logout;
+          floatWrap.appendChild(member);
+          floatWrap.appendChild(out);
+        } else {
+          const btnLogin = document.createElement("button");
+          btnLogin.style.cssText="background:var(--primary);color:#fff;border:none;padding:10px 14px;border-radius:999px;font-weight:700;cursor:pointer;box-shadow:0 10px 24px rgba(0,102,204,.25)";
+          btnLogin.textContent = "Login";
+          btnLogin.onclick = ()=> openPrettyRoute("login");
+          const btnSignup = document.createElement("button");
+          btnSignup.style.cssText="background:#fff;color:var(--primary);border:2px solid var(--primary);padding:8px 12px;border-radius:999px;cursor:pointer;font-weight:600";
+          btnSignup.textContent = "Sign Up";
+          btnSignup.onclick = ()=> openPrettyRoute("signup");
+          floatWrap.appendChild(btnLogin);
+          floatWrap.appendChild(btnSignup);
+        }
+        document.body.appendChild(floatWrap);
+      }
+
+      /* ---------- Member Panel (Pesanan, Pembayaran, Garansi, Notif, Profil) ---------- */
+      function openMemberPanel(defaultTab="pesanan"){
+        const u = getUser();
+        if(!u || !u.loggedIn){ openPrettyRoute("login"); return; }
+        const orders = getOrders();
+        const notifs = getNotifs();
+        const html = `
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <div>
+              <div style="font-weight:700;color:var(--primary);font-size:18px">Panel Member</div>
+              <div style="color:#64748b;font-size:13px">Hai, ${u.nama || 'Member'} • Poin: <strong>${getPoints()}</strong></div>
+            </div>
+            <div>
+              <button id="st_close_panel" style="background:transparent;border:1px solid #eee;padding:6px 10px;border-radius:999px">Tutup</button>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+            <button class="st_tab_btn" data-tab="pesanan" style="padding:8px 12px;border-radius:999px;border:1px solid #ddd;background:#fff">Pesanan</button>
+            <button class="st_tab_btn" data-tab="pembayaran" style="padding:8px 12px;border-radius:999px;border:1px solid #ddd;background:#fff">Pembayaran</button>
+            <button class="st_tab_btn" data-tab="garansi" style="padding:8px 12px;border-radius:999px;border:1px solid #ddd;background:#fff">Garansi</button>
+            <button class="st_tab_btn" data-tab="notifikasi" style="padding:8px 12px;border-radius:999px;border:1px solid #ddd;background:#fff">Notifikasi</button>
+            <button class="st_tab_btn" data-tab="profil" style="padding:8px 12px;border-radius:999px;border:1px solid #ddd;background:#fff">Profil</button>
+          </div>
+          <div id="st_member_body"></div>
+        `;
+        openStModal(html, {onOpen(mod){
+          mod.querySelector("#st_close_panel").onclick = closeStModal;
+          const tabs = mod.querySelectorAll(".st_tab_btn");
+          tabs.forEach(t=>{
+            t.onclick = ()=> {
+              tabs.forEach(x=>x.style.background="#fff");
+              t.style.background = "linear-gradient(90deg,var(--primary),#0088ff)";
+              t.style.color = "#fff";
+              renderTab(t.dataset.tab);
+            };
+          });
+          // click default
+          const defaultBtn = Array.from(tabs).find(b=>b.dataset.tab===defaultTab) || tabs[0];
+          defaultBtn.click();
+
+          function renderTab(tab){
+            const body = mod.querySelector("#st_member_body");
+            if(tab==="pesanan"){
+              const rows = orders.map(o=>`
+                <tr>
+                  <td>${o.id}</td>
+                  <td>${o.tipe}</td>
+                  <td>${o.tanggal}</td>
+                  <td>Rp ${o.total.toLocaleString('id-ID')}</td>
+                  <td>${o.status}</td>
+                  <td><button data-id="${o.id}" class="st_view">Lihat</button></td>
+                </tr>
+              `).join("");
+              body.innerHTML = `
+                <div style="overflow:auto">
+                  <table style="width:100%;border-collapse:collapse">
+                    <thead><tr style="text-align:left"><th>ID</th><th>Layanan</th><th>Tanggal</th><th>Total</th><th>Status</th><th>Aksi</th></tr></thead>
+                    <tbody>${rows}</tbody>
+                  </table>
+                </div>
+                <div style="margin-top:12px;display:flex;gap:8px;justify-content:flex-end">
+                  <button id="st_new_order" style="padding:8px 12px;border-radius:999px;border:1px solid #ddd">Buat Pesanan Baru (Demo)</button>
+                </div>
+              `;
+              body.querySelectorAll(".st_view").forEach(b=>{
+                b.onclick = ()=>{
+                  const id = b.dataset.id;
+                  const o = orders.find(x=>x.id===id);
+                  openOrderDetails(o);
+                };
+              });
+              body.querySelector("#st_new_order").onclick = ()=>{
+                // create demo order and add points
+                const newOrd = { id:"ORD-"+ST.uuid().slice(0,8), tipe:"Cuci AC", tanggal:ST.todayISO(), total:150000, status:"Menunggu", pembayaran:[], garansi:{mulai:ST.todayISO(), bulan:1} };
+                orders.unshift(newOrd); setOrders(orders);
+                // award points
+                setPoints(getPoints()+10);
+                toast("Pesanan dibuat (demo). +10 poin");
+                renderTab("pesanan"); // refresh
+              };
+            }
+            else if(tab==="pembayaran"){
+              // list of payments in orders
+              let content = orders.map(o=>{
+                const payStr = (o.pembayaran||[]).map(p=>`${p.tanggal} • ${p.metode} • Rp ${p.jumlah.toLocaleString('id-ID')} • ${p.status}`).join("<br>") || "-";
+                return `<tr><td>${o.id}</td><td>${o.tipe}</td><td>Rp ${o.total.toLocaleString('id-ID')}</td><td>${payStr}</td></tr>`;
+              }).join("");
+              body.innerHTML = `<div style="overflow:auto"><table style="width:100%"><thead><tr><th>ID</th><th>Layanan</th><th>Total</th><th>Pembayaran</th></tr></thead><tbody>${content}</tbody></table></div>`;
+            }
+            else if(tab==="garansi"){
+              const rows = orders.map(o=>{
+                const start = o.garansi?.mulai || "-";
+                const months = o.garansi?.bulan || 0;
+                let end = "-";
+                if(start!=="-"){
+                  const d = new Date(start); d.setMonth(d.getMonth() + months);
+                  end = d.toISOString().slice(0,10);
+                }
+                return `<tr><td>${o.id}</td><td>${o.tipe}</td><td>${start}</td><td>${end}</td><td>${months} bulan</td><td><button class="st_claim" data-id="${o.id}">Klaim</button></td></tr>`;
+              }).join("");
+              body.innerHTML = `<div style="overflow:auto"><table style="width:100%"><thead><tr><th>ID</th><th>Layanan</th><th>Mulai</th><th>Selesai</th><th>Durasi</th><th>Aksi</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+              body.querySelectorAll(".st_claim").forEach(b=>{
+                b.onclick = ()=>{
+                  const id = b.dataset.id;
+                  const o = orders.find(x=>x.id===id);
+                  // simple rule: if within garansi end date allow claim
+                  const start = o.garansi?.mulai;
+                  const months = o.garansi?.bulan || 0;
+                  if(!start){ toast("Tidak ada garansi untuk pesanan ini"); return; }
+                  const end = new Date(start); end.setMonth(end.getMonth()+months);
+                  if(new Date() <= end){
+                    o.status = "Dalam Klaim Garansi";
+                    setOrders(orders);
+                    toast("Klaim garansi diterima. Kami akan menghubungi Anda.");
+                    renderTab("garansi");
+                  } else {
+                    toast("Garansi telah habis.");
+                  }
+                };
+              });
+            }
+            else if(tab==="notifikasi"){
+              let content = getNotifs();
+              if(!content || !content.length) body.innerHTML = `<div style="color:#64748b">Belum ada notifikasi.</div>
+                <div style="margin-top:12px;display:flex;gap:8px"><button id="st_new_reminder" style="padding:8px 12px;border-radius:999px;border:1px solid #ddd">Buat Reminder Service</button></div>`;
+              else {
+                const rows = content.map(n=>`<div style="padding:10px;border-bottom:1px solid #f1f5f9"><div style="font-weight:600">${n.title}</div><div style="color:#64748b">${n.date} • ${n.note||""}</div></div>`).join("");
+                body.innerHTML = `<div>${rows}</div><div style="margin-top:12px;display:flex;gap:8px"><button id="st_new_reminder" style="padding:8px 12px;border-radius:999px;border:1px solid #ddd">Buat Reminder Service</button></div>`;
+              }
+              body.querySelector("#st_new_reminder").onclick = ()=> {
+                // create sample reminder 3 months from now
+                const d = new Date(); d.setMonth(d.getMonth()+3);
+                const newN = { id:"N-"+ST.uuid().slice(0,6), title:"Reminder Cuci AC", date: d.toISOString().slice(0,10), note:"Jadwal cuci AC berkala" };
+                const arr = getNotifs(); arr.unshift(newN); setNotifs(arr);
+                toast("Reminder dibuat. Kami akan menampilkan di panel.");
+                renderTab("notifikasi");
+              };
+            }
+            else if(tab==="profil"){
+              // show user profile and saved data (auto-fill)
+              body.innerHTML = `
+                <div style="display:grid;gap:8px">
+                  <input id="st_p_nama" placeholder="Nama" value="${u.nama||''}" style="padding:10px;border-radius:8px;border:1px solid #e6e9ee">
+                  <input id="st_p_hp" placeholder="HP" value="${u.hp||''}" style="padding:10px;border-radius:8px;border:1px solid #e6e9ee">
+                  <input id="st_p_email" placeholder="Email" value="${u.email||''}" style="padding:10px;border-radius:8px;border:1px solid #e6e9ee">
+                  <input id="st_p_alamat" placeholder="Alamat" value="${u.alamat||''}" style="padding:10px;border-radius:8px;border:1px solid #e6e9ee">
+                </div>
+                <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
+                  <button id="st_save_profile" style="padding:8px 12px;border-radius:999px;border:1px solid #ddd">Simpan</button>
+                </div>
+              `;
+              body.querySelector("#st_save_profile").onclick = ()=>{
+                u.nama = body.querySelector("#st_p_nama").value.trim();
+                u.hp = body.querySelector("#st_p_hp").value.trim();
+                u.email = body.querySelector("#st_p_email").value.trim();
+                u.alamat = body.querySelector("#st_p_alamat").value.trim();
+                saveUser(u);
+                toast("Profil disimpan. Data akan terisi otomatis pada pesanan berikutnya.");
+                autoFillOrderForm();
+              };
+            }
+          }
+        }});
+      }
+
+      function openOrderDetails(o){
+        if(!o) return;
+        const payHtml = (o.pembayaran||[]).map(p=>`<div>${p.tanggal} • ${p.metode} • Rp ${p.jumlah.toLocaleString('id-ID')} • ${p.status}</div>`).join("") || "<div>-</div>";
+        const html = `
+          <div style="font-weight:700;color:var(--primary);margin-bottom:8px">${o.id} — ${o.tipe}</div>
+          <div style="color:#64748b;margin-bottom:8px">Tanggal: ${o.tanggal} • Status: <strong>${o.status}</strong></div>
+          <div style="margin-bottom:8px">Total: <strong>Rp ${o.total.toLocaleString('id-ID')}</strong></div>
+          <div style="margin-bottom:8px"><div style="font-weight:600">Pembayaran:</div>${payHtml}</div>
+          <div style="display:flex;gap:8px;justify-content:flex-end">
+            <button id="st_close_order" style="padding:8px 12px;border-radius:999px;border:1px solid #ddd">Tutup</button>
+          </div>
+        `;
+        openStModal(html, {onOpen(mod){
+          mod.querySelector("#st_close_order").onclick = closeStModal;
+        }});
+      }
+
+      /* ---------- Autofill order form if inputs exist (#nama, #alamat, #hp, .input-nama etc) ---------- */
+      function autoFillOrderForm(){
+        const u = getUser();
+        if(!u || !u.loggedIn) return;
+        // attempt to fill common field ids/names
+        const selectors = ['#nama','#nama-lengkap','#st_nama','input[name="nama"]','input[name="customer_name"]','#alamat','#alamat-lengkap','#st_alamat','input[name="alamat"]','#hp','#telepon','input[name="hp"]','input[name="phone"]'];
+        selectors.forEach(sel=>{
+          const el = document.querySelector(sel);
+          if(el && el.tagName.toLowerCase()==='input') {
+            if(sel.includes('nama')) el.value = u.nama || el.value;
+            if(sel.includes('alamat')) el.value = u.alamat || el.value;
+            if(sel.includes('hp') || sel.includes('telepon') || sel.includes('phone')) el.value = u.hp || el.value;
+          }
+        });
+      }
+
+      /* ---------- Gating 3D AC Placement Planner ---------- */
+      function interceptPlanner(){
+        // find anchors linking to AC-Placement-Planner.html and intercept
+        const links = Array.from(document.querySelectorAll('a[href*="AC-Placement-Planner"]'));
+        links.forEach(a=>{
+          a.addEventListener('click', function(evt){
+            const href = a.getAttribute('href');
+            if(!isLoggedIn()){
+              evt.preventDefault();
+              // show member-only popup
+              const html = `
+                <div style="font-weight:700;color:var(--primary);font-size:18px;margin-bottom:6px">Akses Terbatas</div>
+                <div style="color:#64748b;margin-bottom:12px">3D AC Placement Planner versi penuh hanya untuk member. Silakan login atau daftar untuk mengakses.</div>
+                <div style="display:flex;gap:8px;justify-content:center;margin-top:8px">
+                  <button id="st_pl_login" style="padding:8px 12px;border-radius:999px;background:var(--primary);color:#fff;border:none">Login</button>
+                  <button id="st_pl_signup" style="padding:8px 12px;border-radius:999px;border:2px solid var(--primary);background:#fff;color:var(--primary)">Sign Up</button>
+                </div>
+              `;
+              openStModal(html, {onOpen(mod){
+                mod.querySelector("#st_pl_login").onclick = ()=> { closeStModal(); openPrettyRoute("login"); };
+                mod.querySelector("#st_pl_signup").onclick = ()=> { closeStModal(); openPrettyRoute("signup"); };
+              }});
+            } else {
+              // If logged in, continue to the planner (allow link)
+            }
+          });
+        });
+      }
+
+      /* ---------- Intercept floating action / add buttons render ---------- */
+      renderFloating();
+      interceptPlanner();
+      // run autofill in case user already logged in
+      document.addEventListener("DOMContentLoaded", () => {
+        autoFillOrderForm();
+        // show points popup if just logged in via URL state
+        if(isLoggedIn()) showPointsPopup();
+      });
+
+      // ensure planner intercept if DOM changes
+      new MutationObserver(()=> interceptPlanner()).observe(document.body, {childList:true, subtree:true});
+
+      // handle back/forward for pretty routes: if user visits login-<uuid>.html (history), open corresponding modal
+      window.addEventListener("popstate", (ev)=>{
+        const path = location.pathname.split("/").pop() || "";
+        if(/^login-[a-f0-9-]+\.html$/i.test(path)) showLoginModal();
+        if(/^signup-[a-f0-9-]+\.html$/i.test(path)) showSignupModal();
+      });
+
+      // If user manually navigates to a generated pretty URL directly (e.g., bookmark),
+      // we attempt to show the modal automatically:
+      (function checkInitialPretty(){
+        const p = location.pathname.split("/").pop() || "";
+        if(/^login-[a-f0-9-]+\.html$/i.test(p)) showLoginModal();
+        if(/^signup-[a-f0-9-]+\.html$/i.test(p)) showSignupModal();
+      })();
+
+      /* Expose some functions on window for debug or integration (optional) */
+      window.SEJUK = {
+        openLogin: ()=> openPrettyRoute("login"),
+        openSignup: ()=> openPrettyRoute("signup"),
+        openMemberPanel,
+        getUser,
+        logout
+      };
+
+    })();
     </script>
   </body>
 </html>

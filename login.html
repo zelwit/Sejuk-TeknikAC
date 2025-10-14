@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login — Sejuk Teknik AC</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center h-screen">
+  <div class="bg-white p-8 rounded-xl shadow-md text-center">
+    <h1 class="text-2xl font-bold mb-6 text-blue-700">Login ke Sejuk Teknik AC</h1>
+    <button id="googleLogin" class="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-md w-full">
+      Login dengan Google
+    </button>
+  </div>
+
+  <script type="module">
+    import { auth, provider, signInWithPopup } from "./firebase.js";
+
+    document.getElementById('googleLogin').onclick = async () => {
+      try {
+        await signInWithPopup(auth, provider);
+        alert("Login berhasil!");
+        window.location.href = "https://zelwit.github.io/Sejuk-TeknikAC/index.html";
+      } catch (e) {
+        alert("Gagal login: " + e.message);
+      }
+    };
+  </script>
+</body>
+</html>

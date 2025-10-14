@@ -7,23 +7,69 @@
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 flex items-center justify-center h-screen">
-  <div class="bg-white p-8 rounded-xl shadow-md text-center">
-    <h1 class="text-2xl font-bold mb-6 text-blue-700">Login ke Sejuk Teknik AC</h1>
-    <button id="googleLogin" class="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-md w-full">
-      Login dengan Google
-    </button>
+  <div class="bg-white p-8 rounded-xl shadow-md w-full max-w-sm">
+    <h1 class="text-2xl font-bold mb-6 text-center text-blue-700">Login / Daftar</h1>
+
+    <!-- Login Form -->
+    <div id="loginForm" class="space-y-4">
+      <input id="email" type="email" placeholder="Email" class="w-full px-4 py-2 border rounded-md" />
+      <input id="password" type="password" placeholder="Password" class="w-full px-4 py-2 border rounded-md" />
+      <button id="loginBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-md">Login</button>
+      <p class="text-sm text-center mt-2">
+        Belum punya akun? <a href="#" id="showSignUp" class="text-blue-500">Daftar di sini</a>
+      </p>
+    </div>
+
+    <!-- Sign Up Form -->
+    <div id="signUpForm" class="space-y-4 hidden">
+      <input id="signUpEmail" type="email" placeholder="Email" class="w-full px-4 py-2 border rounded-md" />
+      <input id="signUpPassword" type="password" placeholder="Password" class="w-full px-4 py-2 border rounded-md" />
+      <button id="signUpBtn" class="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded-md">Daftar</button>
+      <p class="text-sm text-center mt-2">
+        Sudah punya akun? <a href="#" id="showLogin" class="text-blue-500">Login di sini</a>
+      </p>
+    </div>
   </div>
 
   <script type="module">
-    import { auth, provider, signInWithPopup } from "./firebase.js";
+    import { auth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "./firebase.js";
 
-    document.getElementById('googleLogin').onclick = async () => {
+    const loginForm = document.getElementById("loginForm");
+    const signUpForm = document.getElementById("signUpForm");
+
+    document.getElementById("showSignUp").onclick = () => {
+      loginForm.classList.add("hidden");
+      signUpForm.classList.remove("hidden");
+    };
+
+    document.getElementById("showLogin").onclick = () => {
+      signUpForm.classList.add("hidden");
+      loginForm.classList.remove("hidden");
+    };
+
+    // Login handler
+    document.getElementById("loginBtn").onclick = async () => {
+      const email = document.getElementById("email").value;
+      const pass = document.getElementById("password").value;
       try {
-        await signInWithPopup(auth, provider);
+        await signInWithEmailAndPassword(auth, email, pass);
         alert("Login berhasil!");
         window.location.href = "https://zelwit.github.io/Sejuk-TeknikAC/index.html";
       } catch (e) {
         alert("Gagal login: " + e.message);
+      }
+    };
+
+    // Sign Up handler
+    document.getElementById("signUpBtn").onclick = async () => {
+      const email = document.getElementById("signUpEmail").value;
+      const pass = document.getElementById("signUpPassword").value;
+      try {
+        await createUserWithEmailAndPassword(auth, email, pass);
+        alert("Akun berhasil dibuat!");
+        window.location.href = "https://zelwit.github.io/Sejuk-TeknikAC/index.html";
+      } catch (e) {
+        alert("Gagal daftar: " + e.message);
       }
     };
   </script>

@@ -1282,7 +1282,8 @@
           <span class="star" data-rating="4">★</span>
           <span class="star" data-rating="5">★</span>
         </div>
-        <div class="rating-percentage">0.0%</div>
+        <!-- Persentase diubah menjadi skor / 5.0 -->
+        <div class="rating-percentage">0.0/5</div>
       </div>
     </header>
     <div class="promo-banner">
@@ -1395,31 +1396,9 @@
         <h2>Testimoni Pelanggan</h2>
         <p>Apa kata mereka tentang layanan kami</p>
       </div>
-      <div class="testimonials">
-        <div class="testimonial">
-          <p>AC rumah saya dingin banget sekarang! Pelayanan cepat dan teknisi ramah. Harga juga bersaing dibanding tempat lain.</p>
-          <div class="author">— Budi, Bekasi</div>
-        </div>
-        <div class="testimonial">
-          <p>Harga bersahabat dan hasil kerja rapi. Sudah 3 kali panggil untuk cuci AC rutin, selalu puas dengan hasilnya. Recommended!</p>
-          <div class="author">— Siti, Jakarta Timur</div>
-        </div>
-        <div class="testimonial">
-          <p>Teknisi datang tepat waktu dan pekerjaan selesai dengan cepat. AC yang tadinya bermasalah sekarang berjalan normal kembali. Terima kasih Sejuk Teknik!</p>
-          <div class="author">— Andi, Depok</div>
-        </div>
-        <div class="testimonial">
-          <p>Pemasangan AC baru untuk kantor kami sangat rapi dan profesional. Tidak ada kebocoran atau masalah setelah pemasangan. Sangat memuaskan!</p>
-          <div class="author">— Rina, Jakarta Selatan</div>
-        </div>
-        <div class="testimonial">
-          <p>Service AC rumah sakit kami ditangani dengan baik. Teknisi memahami kebutuhan khusus di lingkungan medis. Sangat profesional!</p>
-          <div class="author">— Dr. Ahmad, Tangerang</div>
-        </div>
-        <div class="testimonial">
-          <p>Sewa AC untuk acara pernikahan berjalan lancar. Unit yang disediakan dingin dan teknisi membantu setup dengan baik. Terima kasih!</p>
-          <div class="author">— Dian, Bogor</div>
-        </div>
+      <!-- Tempat Testimoni Dinamis dari Firestore -->
+      <div class="testimonials" id="dynamicTestimonials">
+        <p style="text-align: center; color: var(--gray);">Memuat testimoni terbaru...</p>
       </div>
     </section>
     <section class="content">
@@ -2176,11 +2155,109 @@
         document.getElementById('confirmModal').style.display = 'none';
       }
       
+      // ===============================================
+      // FUNGSI BARU: Load Testimoni Positif ke Section
+      // ===============================================
+      function loadTestimonials() {
+          const container = document.getElementById('dynamicTestimonials');
+          container.innerHTML = '<p style="text-align: center; color: var(--gray);">Memuat testimoni terbaru...</p>';
+          
+          // Ambil ulasan terbaru
+          db.collection('reviews') // Mengambil dari koleksi 'reviews'
+              .orderBy('timestamp', 'desc')
+              .limit(50) 
+              .get()
+              .then(snapshot => {
+                  container.innerHTML = '';
+                  let count = 0;
+                  const maxTestimonials = 6; // Hanya tampilkan 6
+
+                  snapshot.forEach(doc => {
+                      const review = doc.data();
+                      const rating = review.rating || 0;
+                      
+                      // FILTER: Hanya ambil yang ratingnya 4 atau 5 (positif)
+                      if (rating >= 4 && count < maxTestimonials) {
+                          const testimonial = document.createElement('div');
+                          testimonial.classList.add('testimonial');
+                          
+                          // Tampilkan nama dan rating
+                          testimonial.innerHTML = `
+                              <p>${review.reviewText}</p>
+                              <div class="author">— ${review.reviewerName || 'Anonim'}, ${rating} Bintang</div>
+                          `;
+                          container.appendChild(testimonial);
+                          count++;
+                      }
+                  });
+
+                  if (count === 0) {
+                      container.innerHTML = '<p style="text-align: center; color: var(--gray);">Belum ada testimoni positif (Rating 4 atau 5) yang tersedia.</p>';
+                  }
+              })
+              .catch(error => {
+                  console.error("Error loading testimonials:", error);
+                  container.innerHTML = '<p style="text-align: center; color: red;">Gagal memuat testimoni.</p>';
+              });
+      }
+
+
+      // ===============================================
+      // FUNGSI BARU: Update Rating Header (Menggunakan 'reviews')
+      // ===============================================
+      function updateRatingDisplay() {
+          // UBAH DARI 'ratings' KE 'reviews'
+          db.collection('reviews').get().then((snapshot) => { 
+              if (snapshot.empty) {
+                  document.querySelector('.rating-percentage').textContent = '0.0/5';
+                  return;
+              }
+              
+              let totalRating = 0;
+              let ratingCount = 0;
+              
+              snapshot.forEach((doc) => {
+                  // Pastikan field 'rating' ada dan bertipe number di Firestore
+                  totalRating += doc.data().rating || 0; 
+                  ratingCount++;
+              });
+              
+              const averageRating = totalRating / ratingCount;
+              const formattedScore = averageRating.toFixed(1).replace('.', ',');
+               
+              // Update skor / 5.0
+              document.querySelector('.rating-percentage').textContent = formattedScore + '/5';
+              
+              const stars = document.querySelectorAll('.star');
+              const roundedRating = Math.round(averageRating);
+              
+              stars.forEach((star, index) => {
+                star.classList.remove('filled');
+                // Isi bintang sesuai rata-rata yang dibulatkan
+                if (index < roundedRating) {
+                  star.classList.add('filled');
+                }
+              });
+          }).catch((error) => {
+              console.error('Error getting ratings:', error);
+          });
+      }
+      
       // Main script on DOMContentLoaded
       document.addEventListener('DOMContentLoaded', function() {
         const authButtonsContainer = document.querySelector('.auth-buttons');
         const loginModal = document.getElementById('loginModal');
         const signupModal = document.getElementById('signupModal');
+        
+        // ... (Fungsi-fungsi AuthUI, Modals, Login/Signup lainnya ada di sini)
+        
+        // Panggil fungsi testimoni
+        loadTestimonials(); 
+        
+        // Panggil fungsi update rating
+        updateRatingDisplay();
+        
+        // ... kode lama lainnya
         
         // Function to update UI based on auth state
         const updateAuthUI = (user) => {
@@ -2528,43 +2605,11 @@
         // Success button (Menggantikan alur notifikasi popup)
         document.getElementById('successButton').addEventListener('click', handleSuccessAction);
         
-        // Hapus event listener lama yang mengaktifkan notificationPopup (sudah tidak relevan)
-        // document.getElementById('notificationClose').addEventListener('click', ...);
-        // document.getElementById('notificationClaim').addEventListener('click', ...);
-        // document.getElementById('notificationDismiss').addEventListener('click', ...);
       });
       
-      // Update rating display (jika ada data di Firestore)
-      function updateRatingDisplay() {
-        db.collection('ratings').get().then((snapshot) => {
-          if (snapshot.empty) return;
-          
-          let totalRating = 0;
-          let ratingCount = 0;
-          
-          snapshot.forEach((doc) => {
-            totalRating += doc.data().rating;
-            ratingCount++;
-          });
-          
-          const averageRating = totalRating / ratingCount;
-          const percentage = (averageRating / 5) * 100;
-           
-          document.querySelector('.rating-percentage').textContent = percentage.toFixed(1) + '%';
-          
-          const stars = document.querySelectorAll('.star');
-          stars.forEach((star, index) => {
-            star.classList.remove('filled');
-            if (index < averageRating) {
-              star.classList.add('filled');
-            }
-          });
-        }).catch((error) => {
-          console.error('Error getting ratings:', error);
-        });
-      }
       // Panggil fungsi saat halaman dimuat
       updateRatingDisplay();
+      loadTestimonials();
     </script>
   </body>
 </html>

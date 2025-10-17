@@ -572,6 +572,10 @@
         color: var(--primary);
         margin-bottom: 1rem;
       }
+      .service-content p {
+        color: var(--gray);
+        font-size: 0.95rem;
+      }
       .stats {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -915,6 +919,8 @@
         justify-content: center;
         font-size: 12px;
         font-weight: bold;
+        /* Start hidden/empty */
+        display: none; 
       }
       
       /* Loading Screen Styles */
@@ -1045,64 +1051,8 @@
         margin-right: 5px;
       }
       
-      /* Notification Popup */
-      .notification-popup {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        background-color: var(--white);
-        border-radius: 12px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        padding: 15px;
-        max-width: 300px;
-        z-index: 1000;
-        transform: translateX(120%);
-        transition: transform 0.3s ease-out;
-      }
-      .notification-popup.show {
-        transform: translateX(0);
-      }
-      .notification-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 10px;
-      }
-      .notification-title {
-        font-weight: 600;
-        color: var(--primary);
-      }
-      .notification-close {
-        background: none;
-        border: none;
-        font-size: 1.2rem;
-        cursor: pointer;
-        color: var(--gray);
-      }
-      .notification-content {
-        color: var(--dark);
-        margin-bottom: 15px;
-      }
-      .notification-actions {
-        display: flex;
-        gap: 10px;
-      }
-      .notification-btn {
-        padding: 5px 15px;
-        border-radius: 50px;
-        font-size: 0.9rem;
-        cursor: pointer;
-        border: none;
-      }
-      .notification-claim {
-        background-color: var(--primary);
-        color: white;
-      }
-      .notification-dismiss {
-        background-color: transparent;
-        color: var(--gray);
-        border: 1px solid var(--gray);
-      }
+      /* Notification Popup - Dihilangkan dari alur */
+      /* .notification-popup { ... } */
       
       /* Notification Page */
       .notification-page {
@@ -1275,8 +1225,8 @@
       <div class="loading-spinner"></div>
     </div>
     
-    <!-- Success Screen (hidden by default) -->
-    <div class="success-container" id="successContainer" style="display: none;">
+    <!-- Success Screen (hidden by default) - Ditambahkan data-new-user untuk deteksi alur hadiah -->
+    <div class="success-container" id="successContainer" style="display: none;" data-new-user="false">
       <div class="particles" id="particles"></div>
       <div class="success-text">Sip akun udh jadi!🙏🏻</div>
       <button class="success-button" id="successButton">Thanks!</button>
@@ -1288,20 +1238,8 @@
       <span id="sjcoinAmount">0</span> SJCoin
     </div>
     
-    <!-- Notification Popup (hidden by default) -->
-    <div class="notification-popup" id="notificationPopup">
-      <div class="notification-header">
-        <div class="notification-title">Selamat!</div>
-        <button class="notification-close" id="notificationClose">&times;</button>
-      </div>
-      <div class="notification-content">
-        🥳hore! 50 SJcoin untuk kamu!
-      </div>
-      <div class="notification-actions">
-        <button class="notification-btn notification-claim" id="notificationClaim">Klaim</button>
-        <button class="notification-btn notification-dismiss" id="notificationDismiss">Hapus</button>
-      </div>
-    </div>
+    <!-- Notification Popup (Dihilangkan dari alur, tapi element tetap ada) -->
+    <!-- <div class="notification-popup" id="notificationPopup"> ... </div> -->
     
     <!-- Notification Page (hidden by default) -->
     <div class="notification-page" id="notificationPage">
@@ -1368,7 +1306,8 @@
           <a href="https://maps.app.goo.gl/uTFSMLiKuWcCRUMa6" target="_blank"><i class="fas fa-map-marker-alt"></i> Lokasi</a>
           <button class="notification-btn" id="notificationButton">
             <i class="fas fa-bell"></i>
-            <span class="notification-badge">3</span>
+            <!-- Badge akan diisi dan disembunyikan/ditampilkan oleh Javascript -->
+            <span class="notification-badge" id="notificationBadge"></span>
           </button>
         </div>
         <div class="auth-buttons">
@@ -1508,7 +1447,7 @@
         <p>Kami melayani berbagai area di Jabodetabek</p>
       </div>
       <div class="map-container">
-        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.521260322283!2d106.8195613506864!3d-6.194741395493371!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNsKwMTEnNDEuMSJTIDEwNsKwNDknMTAuMyJF!5e0!3m2!1sen!2sid!4v1621234567890!5m2!1sen!2sid" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.521260322283!2d106.8195613506864!3d-6.194741395493371!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNsKwMTAnNDEuMSJTIDEwNsKwNDknMTAuMyJF!5e0!3m2!1sen!2sid!4v1621234567890!5m2!1sen!2sid" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
       </div>
     </section>
     <section class="content">
@@ -1849,6 +1788,9 @@
       let lastLogoutTime = 0;
       const COOLDOWN_TIME = 5000; // 5 seconds
       
+      // Variable Global untuk melacak apakah ini adalah pendaftaran pertama user
+      let isFirstSignup = false; 
+      
       // Animate stats counters
       function animateCounters() {
         const counters = document.querySelectorAll('.stat-number');
@@ -1857,7 +1799,7 @@
         counters.forEach(counter => {
           const updateCount = () => {
             const target = +counter.getAttribute('data-count');
-            const count = +counter.innerText;
+            const count = +counter.innerText.replace('+', ''); // Hapus '+'
             const increment = target / speed;
 
             if (count < target) {
@@ -2030,9 +1972,10 @@
         document.getElementById('loadingScreen').style.display = 'none';
       }
       
-      // Show success screen
-      function showSuccessScreen() {
+      // Show success screen (dengan flag untuk new user)
+      function showSuccessScreen(isNewUser = false) {
         document.getElementById('successContainer').style.display = 'flex';
+        document.getElementById('successContainer').setAttribute('data-new-user', isNewUser); // Store the flag
         createParticles();
       }
       
@@ -2041,14 +1984,47 @@
         document.getElementById('successContainer').style.display = 'none';
       }
       
-      // Show notification popup
-      function showNotificationPopup() {
-        document.getElementById('notificationPopup').classList.add('show');
+      // Logic setelah klik 'Thanks!'
+      function handleSuccessAction() {
+        const container = document.getElementById('successContainer');
+        const isNewUser = container.getAttribute('data-new-user') === 'true';
+        hideSuccessScreen();
+        
+        if (isNewUser) {
+            // Tampilkan alert khusus untuk pengguna baru
+            alert('hadiah user baru udh di kirim di notif kamu yah cek gih!');
+            container.setAttribute('data-new-user', 'false'); // Reset flag
+        }
+        
+        // Pastikan badge notifikasi di update setelah action
+        updateNotificationBadge();
       }
       
-      // Hide notification popup
-      function hideNotificationPopup() {
-        document.getElementById('notificationPopup').classList.remove('show');
+      // Fungsi untuk mengupdate badge notifikasi
+      const notificationBadge = document.getElementById('notificationBadge');
+
+      function updateNotificationBadge() {
+          const user = auth.currentUser;
+          if (!user) {
+              notificationBadge.textContent = '';
+              notificationBadge.style.display = 'none';
+              return;
+          }
+
+          db.collection('notifications')
+            .where('userId', '==', user.uid)
+            .where('read', '==', false)
+            .get()
+            .then(snapshot => {
+                const count = snapshot.size;
+                notificationBadge.textContent = count > 0 ? count : '';
+                notificationBadge.style.display = count > 0 ? 'flex' : 'none';
+            })
+            .catch(error => {
+                console.error('Error updating badge:', error);
+                notificationBadge.textContent = '';
+                notificationBadge.style.display = 'none';
+            });
       }
       
       // Show notification page
@@ -2067,89 +2043,114 @@
         const notificationList = document.getElementById('notificationList');
         notificationList.innerHTML = '<p style="text-align: center; color: #666;">Memuat notifikasi...</p>';
         
-        // Get current user
         const user = auth.currentUser;
         if (!user) {
           notificationList.innerHTML = '<p style="text-align: center; color: #666;">Silakan login untuk melihat notifikasi</p>';
           return;
         }
         
-        // Get notifications for this user
-        db.collection('notifications')
-          .where('userId', '==', user.uid)
-          .orderBy('timestamp', 'desc')
-          .get()
-          .then((querySnapshot) => {
-            notificationList.innerHTML = '';
-            
-            if (querySnapshot.empty) {
-              notificationList.innerHTML = '<p style="text-align: center; color: #666;">Tidak ada notifikasi</p>';
-              return;
-            }
-            
-            querySnapshot.forEach((doc) => {
-              const notification = doc.data();
-              const notificationItem = document.createElement('div');
-              notificationItem.classList.add('notification-item');
-              
-              if (!notification.read) {
-                notificationItem.classList.add('unread');
-              }
-              
-              const date = new Date(notification.timestamp.toDate());
-              const formattedDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()} ${date.getHours()}:${date.getMinutes().toString().padStart(2, '0')}`;
-              
-              notificationItem.innerHTML = `
-                <div class="notification-item-header">
-                  <div class="notification-item-title">${notification.title}</div>
-                  <div class="notification-item-time">${formattedDate}</div>
-                </div>
-                <div class="notification-item-content">${notification.content}</div>
-                <div class="notification-item-actions">
-                  <button class="notification-btn notification-claim" onclick="claimNotification('${doc.id}')">Klaim</button>
-                  <button class="notification-btn notification-dismiss" onclick="dismissNotification('${doc.id}')">Hapus</button>
-                </div>
-              `;
-              
-              notificationList.appendChild(notificationItem);
+        // Update semua notifikasi user menjadi 'read: true' (Mark all as read)
+        db.collection('notifications').where('userId', '==', user.uid).where('read', '==', false).get().then(snapshot => {
+            const batch = db.batch();
+            snapshot.docs.forEach(doc => {
+                batch.update(doc.ref, { read: true });
             });
-          })
-          .catch((error) => {
-            console.error('Error loading notifications:', error);
-            notificationList.innerHTML = '<p style="text-align: center; color: #666;">Gagal memuat notifikasi</p>';
-          });
+            return batch.commit();
+        }).then(() => {
+            // Setelah semua notifikasi ditandai sudah dibaca, muat daftar notifikasi
+            db.collection('notifications')
+              .where('userId', '==', user.uid)
+              .orderBy('timestamp', 'desc')
+              .get()
+              .then((querySnapshot) => {
+                notificationList.innerHTML = '';
+                
+                if (querySnapshot.empty) {
+                  notificationList.innerHTML = '<p style="text-align: center; color: #666;">Tidak ada notifikasi</p>';
+                  updateNotificationBadge(); // Update badge to 0
+                  return;
+                }
+                
+                querySnapshot.forEach((doc) => {
+                  const notification = doc.data();
+                  const notificationItem = document.createElement('div');
+                  notificationItem.classList.add('notification-item');
+                  
+                  // Karena sudah di mark as read di awal, tidak perlu cek .unread lagi
+                  
+                  const date = notification.timestamp ? new Date(notification.timestamp.toDate()) : new Date();
+                  const formattedDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()} ${date.getHours()}:${date.getMinutes().toString().padStart(2, '0')}`;
+                  
+                  let actionButtons = '';
+                  if (notification.claimed) {
+                      actionButtons = '<button class="notification-btn" disabled style="background-color: #ddd; color: #777; padding: 5px 15px; border-radius: 50px; font-size: 0.9rem;">Sudah Diklaim</button>';
+                  } else if (notification.coinReward) {
+                      actionButtons = `
+                          <button class="notification-btn notification-claim" onclick="claimNotification('${doc.id}', ${notification.coinReward})">Klaim</button>
+                          <button class="notification-btn notification-dismiss" onclick="dismissNotification('${doc.id}')">Hapus</button>
+                      `;
+                  } else {
+                      actionButtons = `<button class="notification-btn notification-dismiss" onclick="dismissNotification('${doc.id}')">Hapus</button>`;
+                  }
+                  
+                  notificationItem.innerHTML = `
+                    <div class="notification-item-header">
+                      <div class="notification-item-title">${notification.title}</div>
+                      <div class="notification-item-time">${formattedDate}</div>
+                    </div>
+                    <div class="notification-item-content">${notification.content}</div>
+                    <div class="notification-item-actions">
+                      ${actionButtons}
+                    </div>
+                  `;
+                  
+                  notificationList.appendChild(notificationItem);
+                });
+                updateNotificationBadge(); // Update badge to 0 setelah semua dibaca
+              })
+              .catch((error) => {
+                console.error('Error loading notifications:', error);
+                notificationList.innerHTML = '<p style="text-align: center; color: #666;">Gagal memuat notifikasi</p>';
+              });
+        }).catch(error => {
+            console.error('Error batch updating notifications:', error);
+        });
       }
       
       // Claim notification
-      function claimNotification(notificationId) {
+      function claimNotification(notificationId, coinReward) {
         const user = auth.currentUser;
-        if (!user) return;
+        if (!user || !coinReward) return;
         
-        // Mark notification as read and claimed
+        // Ambil elemen tombol untuk menghindari double click
+        const claimBtn = document.querySelector(`.notification-claim[onclick*="${notificationId}"]`);
+        if (claimBtn) claimBtn.disabled = true;
+
+        // 1. Update notifikasi: tandai sudah diklaim
         db.collection('notifications').doc(notificationId).update({
-          read: true,
           claimed: true
         }).then(() => {
-          // Update user's SJCoin if applicable
-          db.collection('notifications').doc(notificationId).get().then(doc => {
-            const notification = doc.data();
-            if (notification.coinReward) {
-              // Add coins to user
-              db.collection('users').doc(user.uid).get().then(userDoc => {
-                const currentCoins = userDoc.data().sjcoin || 0;
-                db.collection('users').doc(user.uid).update({
-                  sjcoin: currentCoins + notification.coinReward
-                }).then(() => {
-                  // Update SJCoin display
-                  document.getElementById('sjcoinAmount').textContent = currentCoins + notification.coinReward;
-                  alert(`Anda mendapatkan ${notification.coinReward} SJCoin!`);
-                });
-              });
-            }
+          // 2. Tambahkan koin ke user
+          return db.collection('users').doc(user.uid).get().then(userDoc => {
+            const currentCoins = userDoc.data().sjcoin || 0;
+            return db.collection('users').doc(user.uid).update({
+              sjcoin: currentCoins + coinReward
+            }).then(() => currentCoins + coinReward);
           });
+        })
+        .then((newCoins) => {
+          // 3. Update UI
+          document.getElementById('sjcoinAmount').textContent = newCoins;
+          alert(`Anda mendapatkan ${coinReward} SJCoin! Total SJCoin Anda: ${newCoins}`);
           
-          // Reload notifications
-          loadNotifications();
+          // Muat ulang notifikasi untuk menampilkan tombol 'Sudah Diklaim'
+          loadNotifications(); 
+          
+        })
+        .catch((error) => {
+            if (claimBtn) claimBtn.disabled = false;
+            console.error('Error claiming notification:', error);
+            alert('Gagal mengklaim hadiah. Silakan coba lagi.');
         });
       }
       
@@ -2260,7 +2261,10 @@
         };
         
         // Auth state observer
-        auth.onAuthStateChanged(updateAuthUI);
+        auth.onAuthStateChanged((user) => {
+            updateAuthUI(user);
+            updateNotificationBadge(); // Panggil saat status auth berubah
+        });
 
         // Auth modals setup
         const switchToSignup = document.getElementById('switchToSignup');
@@ -2271,6 +2275,7 @@
           e.preventDefault();
           loginModal.style.display = 'none';
           signupModal.style.display = 'block';
+          goToStep(1); // Kembali ke step 1
         });
 
         switchToLogin.addEventListener('click', (e) => {
@@ -2352,12 +2357,14 @@
             return;
           }
           
-          // Show loading screen
           showLoadingScreen();
           
           auth.createUserWithEmailAndPassword(email, password)
             .then((userCredential) => {
               const user = userCredential.user;
+              // Set isFirstSignup = true karena user baru dibuat
+              isFirstSignup = true; 
+              
               return db.collection('users').doc(user.uid).set({
                 name: name,
                 address: address,
@@ -2365,18 +2372,11 @@
                 email: email,
                 sjcoin: 0,
                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
-              });
+              }).then(() => user); // Lanjutkan dengan objek user
             })
-            .then(() => {
-              // Hide loading screen
-              hideLoadingScreen();
-              
-              // Show success screen
-              showSuccessScreen();
-              
-              // Create notification for bonus coins
-              const user = auth.currentUser;
-              if (user) {
+            .then((user) => {
+              // Jika ini adalah first signup, kirim notifikasi hadiah
+              if (isFirstSignup) {
                 db.collection('notifications').add({
                   userId: user.uid,
                   title: 'Selamat Bergabung!',
@@ -2387,12 +2387,14 @@
                   coinReward: 50
                 });
               }
+              
+              hideLoadingScreen();
+              signupModal.style.display = 'none';
+              showSuccessScreen(isFirstSignup); // Kirim flag ke success screen
+              isFirstSignup = false; // Reset flag
             })
             .catch((error) => {
-              // Hide loading screen
               hideLoadingScreen();
-              
-              // Memberikan pesan error yang lebih spesifik
               if (error.code == 'auth/email-already-in-use') {
                   alert('Email ini sudah terdaftar. Silakan gunakan email lain atau login.');
               } else {
@@ -2419,27 +2421,17 @@
             return;
           }
           
-          // Show loading screen
           showLoadingScreen();
           
           auth.signInWithEmailAndPassword(email, password)
             .then(() => {
-              // Update last login time
               lastLoginTime = new Date().getTime();
-              
-              // Hide loading screen
               hideLoadingScreen();
-              
-              // Show success screen
-              showSuccessScreen();
-              
-              // Close login modal
               loginModal.style.display = 'none';
+              showSuccessScreen(false); // Bukan new user, kirim false
             })
             .catch((error) => {
-              // Hide loading screen
               hideLoadingScreen();
-              
                if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
                    alert('Email atau kata sandi yang Anda masukkan salah.');
                } else {
@@ -2452,99 +2444,61 @@
         // --- GOOGLE AUTH ---
         const googleProvider = new firebase.auth.GoogleAuthProvider();
         
-        document.getElementById('googleLoginBtn').addEventListener('click', () => {
-          // Check cooldown
-          const currentTime = new Date().getTime();
-          if (currentTime - lastLoginTime < COOLDOWN_TIME) {
-            alert('Tunggu beberapa saat sebelum login lagi');
-            return;
-          }
-          
-          // Show loading screen
-          showLoadingScreen();
-          
-          auth.signInWithPopup(googleProvider)
-            .then(() => {
-              // Update last login time
-              lastLoginTime = new Date().getTime();
-              
-              // Hide loading screen
-              hideLoadingScreen();
-              
-              // Show success screen
-              showSuccessScreen();
-              
-              // Close login modal
-              loginModal.style.display = 'none';
-            })
-            .catch((error) => {
-              // Hide loading screen
-              hideLoadingScreen();
-              
-              console.error("Google Login Error:", error);
-              alert('Gagal login dengan Google: ' + error.message);
-            });
-        });
-
-        document.getElementById('googleSignupBtn').addEventListener('click', () => {
-          // Check cooldown
-          const currentTime = new Date().getTime();
-          if (currentTime - lastLoginTime < COOLDOWN_TIME) {
-            alert('Tunggu beberapa saat sebelum mencoba lagi');
-            return;
-          }
-          
-          // Show loading screen
-          showLoadingScreen();
-          
-          auth.signInWithPopup(googleProvider)
+        function handleGoogleAuth(isSignupAttempt) {
+            const currentTime = new Date().getTime();
+            if (currentTime - lastLoginTime < COOLDOWN_TIME) {
+                alert('Tunggu beberapa saat sebelum mencoba lagi');
+                return;
+            }
+            showLoadingScreen();
+            
+            auth.signInWithPopup(googleProvider)
             .then((result) => {
-              const user = result.user;
-              // Update last login time
-              lastLoginTime = new Date().getTime();
-              
-              // Simpan data jika pengguna baru
-              const userRef = db.collection('users').doc(user.uid);
-              return userRef.get().then(doc => {
-                  if (!doc.exists) { // Hanya set data jika user baru
-                      userRef.set({
-                          name: user.displayName,
-                          email: user.email,
-                          sjcoin: 0,
-                          createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                      }).then(() => {
-                        // Create notification for bonus coins
-                        db.collection('notifications').add({
-                          userId: user.uid,
-                          title: 'Selamat Bergabung!',
-                          content: '🥳hore! 50 SJcoin untuk kamu!',
-                          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                          read: false,
-                          claimed: false,
-                          coinReward: 50
+                const user = result.user;
+                lastLoginTime = new Date().getTime();
+                
+                // Cek apakah user sudah ada di koleksi 'users'
+                const userRef = db.collection('users').doc(user.uid);
+                return userRef.get().then(doc => {
+                    const isNewUser = !doc.exists;
+                    
+                    if (isNewUser) { 
+                        // Jika user benar-benar baru, buat dokumen dan kirim notifikasi
+                        userRef.set({
+                            name: user.displayName,
+                            email: user.email,
+                            sjcoin: 0,
+                            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                        }).then(() => {
+                            db.collection('notifications').add({
+                                userId: user.uid,
+                                title: 'Selamat Bergabung!',
+                                content: '🥳hore! 50 SJcoin untuk kamu!',
+                                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                                read: false,
+                                claimed: false,
+                                coinReward: 50
+                            });
                         });
-                      });
-                  }
-              });
+                    }
+                    return isNewUser; // Return status new user
+                });
             })
-            .then(() => {
-                // Hide loading screen
+            .then((isNewUser) => {
                 hideLoadingScreen();
-                
-                // Show success screen
-                showSuccessScreen();
-                
-                // Close signup modal
+                loginModal.style.display = 'none';
                 signupModal.style.display = 'none';
+                showSuccessScreen(isNewUser); // Kirim flag ke success screen
             })
             .catch((error) => {
-              // Hide loading screen
-              hideLoadingScreen();
-              
-              console.error("Google Signup Error:", error);
-              alert('Gagal daftar dengan Google: ' + error.message);
+                hideLoadingScreen();
+                console.error("Google Auth Error:", error);
+                alert('Gagal autentikasi dengan Google: ' + error.message);
             });
-        });
+        }
+        
+        document.getElementById('googleLoginBtn').addEventListener('click', () => handleGoogleAuth(false));
+        document.getElementById('googleSignupBtn').addEventListener('click', () => handleGoogleAuth(true));
 
         // --- Password Toggle ---
         function setupPasswordToggle(toggleId, inputId) {
@@ -2571,42 +2525,13 @@
           hideNotificationPage();
         });
         
-        // Success button
-        document.getElementById('successButton').addEventListener('click', () => {
-          hideSuccessScreen();
-          showNotificationPopup();
-        });
+        // Success button (Menggantikan alur notifikasi popup)
+        document.getElementById('successButton').addEventListener('click', handleSuccessAction);
         
-        // Notification popup buttons
-        document.getElementById('notificationClose').addEventListener('click', () => {
-          hideNotificationPopup();
-        });
-        
-        document.getElementById('notificationClaim').addEventListener('click', () => {
-          // Get current user
-          const user = auth.currentUser;
-          if (!user) {
-            alert('Silakan login terlebih dahulu');
-            return;
-          }
-          
-          // Add coins to user
-          db.collection('users').doc(user.uid).get().then(doc => {
-            const currentCoins = doc.data().sjcoin || 0;
-            db.collection('users').doc(user.uid).update({
-              sjcoin: currentCoins + 50
-            }).then(() => {
-              // Update SJCoin display
-              document.getElementById('sjcoinAmount').textContent = currentCoins + 50;
-              alert('Anda mendapatkan 50 SJCoin!');
-              hideNotificationPopup();
-            });
-          });
-        });
-        
-        document.getElementById('notificationDismiss').addEventListener('click', () => {
-          hideNotificationPopup();
-        });
+        // Hapus event listener lama yang mengaktifkan notificationPopup (sudah tidak relevan)
+        // document.getElementById('notificationClose').addEventListener('click', ...);
+        // document.getElementById('notificationClaim').addEventListener('click', ...);
+        // document.getElementById('notificationDismiss').addEventListener('click', ...);
       });
       
       // Update rating display (jika ada data di Firestore)

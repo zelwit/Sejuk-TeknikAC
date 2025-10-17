@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rating & Ulasan | Sejuk Teknik AC</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    <style>
+      :root {
+        --primary: #0066cc;
+        --primary-light: #e6f2ff;
+        --secondary: #ff7a00;
+        --dark: #2d3748;
+        --light: #f8fafc;
+        --gray: #718096;
+        --white: #ffffff;
+        --coin: #ffd700;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: "Poppins", sans-serif;
+        color: var(--dark);
+        line-height: 1.6;
+        background-color: var(--light);
+      }
+      header {
+        background: linear-gradient(135deg, var(--primary), #004c99);
+        color: var(--white);
+        padding: 2rem 1rem;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+      }
+      header h1 {
+        margin: 0;
+        font-size: 2.5rem;
+        font-weight: 700;
+      }
+      header p {
+        font-size: 1.1rem;
+        margin-top: 0.5rem;
+        opacity: 0.9;
+      }
+      nav {
+        background-color: var(--white);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+      .nav-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+      }
+      .logo {
+        font-weight: 700;
+        color: var(--primary);
+        font-size: 1.2rem;
+        text-decoration: none;
+      }
+      .nav-links {
+        display: flex;
+        gap: 1.5rem;
+      }
+      nav a {
+        color: var(--dark);
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        position: relative;
+      }
+      nav a:hover {
+        color: var(--primary);
+      }
+      nav a.active {
+        color: var(--primary);
+      }
+      nav a.active::after {
+        content: "";
+        position: absolute;
+        width: 100%;
+        height: 2px;
+        bottom: -5px;
+        left: 0;
+        background-color: var(--primary);
+      }
+      .auth-buttons {
+        display: flex;
+        gap: 10px;
+      }
+      .auth-btn {
+        padding: 8px 16px;
+        border-radius: 50px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: none;
+      }
+      .login-btn {
+        background-color: transparent;
+        color: var(--primary);
+        border: 2px solid var(--primary);
+      }
+      .login-btn:hover {
+        background-color: var(--primary);
+        color: white;
+      }
+      .signup-btn {
+        background-color: var(--primary);
+        color: white;
+      }
+      .signup-btn:hover {
+        background-color: #0052a3;
+      }
+      .content {
+        padding: 2rem 1rem;
+        max-width: 1000px;
+        margin: 0 auto;
+      }
+      .section-title {
+        text-align: center;
+        margin-bottom: 2rem;
+      }
+      .section-title h2 {
+        font-size: 2rem;
+        color: var(--primary);
+        margin-bottom: 1rem;
+      }
+      .btn {
+        display: inline-block;
+        background-color: var(--primary);
+        color: var(--white);
+        padding: 0.8rem 1.8rem;
+        border-radius: 50px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 10px rgba(0, 102, 204, 0.3);
+        border: 2px solid var(--primary);
+        cursor: pointer;
+      }
+      .btn:hover {
+        background-color: transparent;
+        color: var(--primary);
+        box-shadow: none;
+      }
+      .form-group {
+        margin-bottom: 1rem;
+      }
+      .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+      }
+      .form-group input,
+      .form-group textarea,
+      .form-group select {
+        width: 100%;
+        padding: 0.8rem;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-family: "Poppins", sans-serif;
+      }
+      
+      /* --- RATING SPECIFIC STYLES --- */
+      .rating-summary {
+        background: var(--primary-light);
+        padding: 2rem;
+        border-radius: 12px;
+        margin-bottom: 2rem;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+      }
+      .average-rating {
+        text-align: center;
+      }
+      .average-rating h3 {
+        font-size: 3.5rem;
+        color: var(--primary);
+        margin-bottom: 0.5rem;
+        line-height: 1;
+      }
+      .total-reviews {
+        color: var(--gray);
+        font-size: 0.9rem;
+      }
+      .star-rating-display {
+        color: #ffc107;
+        font-size: 1.5rem;
+      }
+      .rating-breakdown {
+        width: 60%;
+      }
+      .rating-bar {
+        display: flex;
+        align-items: center;
+        margin-bottom: 5px;
+        font-size: 0.9rem;
+        color: var(--dark);
+      }
+      .rating-bar span:first-child {
+        width: 30px;
+        text-align: right;
+        margin-right: 5px;
+      }
+      .bar-container {
+        flex-grow: 1;
+        height: 8px;
+        background-color: #eee;
+        border-radius: 4px;
+        margin: 0 10px;
+        overflow: hidden;
+      }
+      .bar-fill {
+        height: 100%;
+        background-color: var(--primary);
+      }
+      
+      /* --- Review Form --- */
+      .review-form-container {
+        background: var(--white);
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        margin-bottom: 2rem;
+      }
+      .star-picker {
+        display: flex;
+        gap: 5px;
+        font-size: 2rem;
+        color: var(--gray);
+        margin-bottom: 1rem;
+        cursor: pointer;
+      }
+      .star-picker i {
+        transition: color 0.2s;
+      }
+      .star-picker i.selected {
+        color: #ffc107;
+      }
+      
+      /* --- Review List & Filters --- */
+      .filter-buttons {
+        text-align: center;
+        margin-bottom: 2rem;
+      }
+      .filter-btn {
+        background-color: var(--light);
+        color: var(--dark);
+        border: 1px solid #ddd;
+        margin: 0 5px;
+        padding: 8px 15px;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .filter-btn.active {
+        background-color: var(--primary);
+        color: var(--white);
+        border-color: var(--primary);
+      }
+      
+      .review-card {
+        background: var(--white);
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        margin-bottom: 1.5rem;
+      }
+      .review-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+      }
+      .reviewer-info {
+        font-weight: 600;
+        color: var(--primary);
+        display: flex;
+        align-items: center;
+      }
+      .reviewer-info i {
+        margin-right: 10px;
+        font-size: 1.2rem;
+      }
+      .review-stars {
+        color: #ffc107;
+        font-size: 1.1rem;
+      }
+      .review-body {
+        font-size: 1rem;
+        color: var(--dark);
+        margin-bottom: 1rem;
+      }
+      .review-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.85rem;
+      }
+      .sentiment-tag {
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-weight: 500;
+        color: var(--white);
+      }
+      .tag-positif {
+        background-color: #4caf50;
+      }
+      .tag-negatif {
+        background-color: #f44336;
+      }
+      .tag-netral {
+        background-color: #ff9800;
+      }
+      .time-ago {
+        color: var(--gray);
+      }
+
+      /* Modal and other shared styles from index (simplified) */
+      .notification-btn {
+        /* simplified or removed as they are not needed on this page */
+        display: none; 
+      }
+      
+      @media (max-width: 768px) {
+        .rating-summary {
+          flex-direction: column;
+        }
+        .rating-breakdown {
+          width: 90%;
+          margin-top: 1rem;
+        }
+        .filter-buttons {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
+        }
+        .filter-btn {
+          margin: 5px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Simplified Navigation for rating page consistency -->
+    <nav>
+      <div class="nav-container">
+        <a href="index.html" class="logo">Sejuk Teknik</a>
+        <div class="nav-links">
+          <a href="index.html"><i class="fas fa-home"></i> Beranda</a>
+          <a href="layanan.html"><i class="fas fa-tools"></i> Layanan</a>
+          <a href="AC-Placement-Planner.html"><i class="fas fa-cube"></i> 3D AC Planner</a>
+          <a href="tentang.html"><i class="fas fa-info-circle"></i> Tentang</a>
+          <a href="https://wa.me/6285817818216"><i class="fas fa-envelope"></i> Kontak</a>
+          <a href="faq.html"><i class="fas fa-question-circle"></i> FAQ</a>
+          <a href="rating-ulasan.html" class="active"><i class="fas fa-star"></i> Rating & Ulasan</a>
+          <a href="https://maps.app.goo.gl/uTFSMLiKuWcCRUMa6" target="_blank"><i class="fas fa-map-marker-alt"></i> Lokasi</a>
+        </div>
+        <div class="auth-buttons">
+          <!-- Auth buttons will be populated by JS -->
+        </div>
+      </div>
+    </nav>
+
+    <section class="content">
+      <div class="section-title">
+        <h2>Rating dan Ulasan Pelanggan</h2>
+        <p>Lihat pengalaman mereka sebelum Anda memesan layanan terbaik kami.</p>
+      </div>
+
+      <!-- Rating Summary Section -->
+      <div class="rating-summary">
+        <div class="average-rating">
+          <div class="star-rating-display" id="summaryStars">
+            <i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
+          </div>
+          <h3 id="averageScore">0.0</h3>
+          <p class="total-reviews" id="totalReviewsText">0 Ulasan Total</p>
+        </div>
+        <div class="rating-breakdown" id="ratingBreakdown">
+          <!-- Breakdown bars will be generated here by JS -->
+        </div>
+      </div>
+
+      <!-- Review Form (Hidden by default, shown when logged in) -->
+      <div class="review-form-container" id="reviewFormContainer" style="display: none;">
+        <h3>Berikan Ulasan Anda</h3>
+        <p>Anda telah login sebagai <span id="reviewerName" style="color: var(--primary); font-weight: 600;"></span></p>
+        <form id="reviewForm">
+          <div class="form-group">
+            <label>Rating Anda:</label>
+            <div class="star-picker" id="starPicker">
+              <i class="far fa-star" data-rating="1"></i>
+              <i class="far fa-star" data-rating="2"></i>
+              <i class="far fa-star" data-rating="3"></i>
+              <i class="far fa-star" data-rating="4"></i>
+              <i class="far fa-star" data-rating="5"></i>
+            </div>
+            <input type="hidden" id="selectedRating" value="0" required />
+          </div>
+          <div class="form-group">
+            <label for="reviewText">Ulasan Anda:</label>
+            <textarea id="reviewText" rows="4" placeholder="Tuliskan pengalaman Anda secara detail..."></textarea>
+          </div>
+          <button type="submit" class="btn" id="submitReviewBtn">Kirim Ulasan</button>
+        </form>
+      </div>
+
+      <!-- Login Warning (Shown when not logged in) -->
+      <div class="review-form-container" id="loginWarning" style="text-align: center;">
+        <h3>Ingin Memberi Ulasan?</h3>
+        <p>Silakan **Login** atau **Sign Up** terlebih dahulu untuk berbagi pengalaman Anda.</p>
+        <button class="btn login-btn" onclick="alert('Buka modal Login/Signup')">Login / Daftar</button>
+      </div>
+
+      <!-- Review Filter Buttons -->
+      <div class="filter-buttons">
+        <button class="filter-btn active" data-filter="all">Semua Ulasan (<span id="countAll">0</span>)</button>
+        <button class="filter-btn" data-filter="positif">Positif (<span id="countPositif">0</span>)</button>
+        <button class="filter-btn" data-filter="netral">Netral (<span id="countNetral">0</span>)</button>
+        <button class="filter-btn" data-filter="negatif">Negatif (<span id="countNegatif">0</span>)</button>
+      </div>
+
+      <!-- Review List -->
+      <div id="reviewsList">
+        <p style="text-align: center; color: var(--gray);">Memuat ulasan...</p>
+        <!-- Reviews will be loaded here -->
+      </div>
+    </section>
+
+    <!-- Footer (Simplified, adjust as needed) -->
+    <footer class="footer" style="background-color: var(--dark); color: white; padding: 2rem; text-align: center; margin-top: 4rem;">
+        <p>© 2025 Sejuk Teknik AC. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+      // Initialize Firebase (MUST match your index.html config)
+      const firebaseConfig = {
+        apiKey: "AIzaSyDtLHSz7-KU97ALJTQvLRQTG5yj7brcsvc", 
+        authDomain: "sejuk-teknik.firebaseapp.com",
+        projectId: "sejuk-teknik",
+        storageBucket: "sejuk-teknik.appspot.com",
+        messagingSenderId: "733860478343",
+        appId: "1:733860478343:web:172838a08e702d129ae722",
+        measurementId: "G-EDJ6Y6J7GC"
+      };
+      
+      firebase.initializeApp(firebaseConfig);
+      const auth = firebase.auth();
+      const db = firebase.firestore();
+
+      let currentFilter = 'all';
+      let allReviews = []; // Cache semua ulasan
+      let reviewCounts = { all: 0, positif: 0, netral: 0, negatif: 0 };
+
+      // Utility: Konversi timestamp ke "x days ago"
+      function timeSince(date) {
+          const seconds = Math.floor((new Date() - date) / 1000);
+          let interval = seconds / 31536000;
+          if (interval > 1) return Math.floor(interval) + " tahun lalu";
+          interval = seconds / 2592000;
+          if (interval > 1) return Math.floor(interval) + " bulan lalu";
+          interval = seconds / 86400;
+          if (interval > 1) return Math.floor(interval) + " hari lalu";
+          interval = seconds / 3600;
+          if (interval > 1) return Math.floor(interval) + " jam lalu";
+          interval = seconds / 60;
+          if (interval > 1) return Math.floor(interval) + " menit lalu";
+          return Math.floor(seconds) + " detik lalu";
+      }
+
+      // Utility: Mendapatkan sentimen berdasarkan rating
+      function getSentiment(rating) {
+          if (rating >= 4) return 'positif';
+          if (rating === 3) return 'netral';
+          return 'negatif';
+      }
+
+      // Utility: Merender bintang
+      function renderStars(rating) {
+          let starsHtml = '';
+          for (let i = 1; i <= 5; i++) {
+              starsHtml += `<i class="fa-star ${i <= rating ? 'fas' : 'far'}"></i>`;
+          }
+          return `<div class="review-stars">${starsHtml}</div>`;
+      }
+
+      // Fungsi untuk merender daftar ulasan
+      function renderReviews(filter) {
+          const list = document.getElementById('reviewsList');
+          list.innerHTML = '';
+          let filteredReviews = allReviews;
+
+          if (filter !== 'all') {
+              filteredReviews = allReviews.filter(review => review.sentiment === filter);
+          }
+
+          if (filteredReviews.length === 0) {
+              list.innerHTML = `<p style="text-align: center; color: var(--gray);">Belum ada ulasan untuk kategori ${filter}.</p>`;
+              return;
+          }
+
+          filteredReviews.forEach(review => {
+              const reviewCard = document.createElement('div');
+              reviewCard.classList.add('review-card');
+
+              const reviewDate = review.timestamp ? review.timestamp.toDate() : new Date();
+              const timeString = timeSince(reviewDate);
+              const sentiment = review.sentiment;
+
+              reviewCard.innerHTML = `
+                  <div class="review-header">
+                      <div class="reviewer-info">
+                          <i class="fas fa-user-circle"></i>
+                          ${review.reviewerName || 'Anonim'}
+                      </div>
+                      ${renderStars(review.rating)}
+                  </div>
+                  <div class="review-body">${review.reviewText}</div>
+                  <div class="review-footer">
+                      <span class="sentiment-tag tag-${sentiment}">${sentiment.toUpperCase()}</span>
+                      <span class="time-ago">${timeString}</span>
+                  </div>
+              `;
+              list.appendChild(reviewCard);
+          });
+      }
+
+      // Fungsi untuk mengupdate ringkasan rating dan bar breakdown
+      function updateSummary() {
+          const totalCount = allReviews.length;
+          let totalRatingSum = 0;
+          const ratingFrequencies = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+          
+          // Reset counts
+          reviewCounts = { all: totalCount, positif: 0, netral: 0, negatif: 0 };
+
+          allReviews.forEach(review => {
+              totalRatingSum += review.rating;
+              ratingFrequencies[review.rating]++;
+              reviewCounts[getSentiment(review.rating)]++;
+          });
+
+          const averageScore = totalCount > 0 ? (totalRatingSum / totalCount).toFixed(1) : 0.0;
+          const avgStarRating = Math.round(averageScore);
+
+          // Update Summary Header
+          document.getElementById('averageScore').textContent = averageScore;
+          document.getElementById('totalReviewsText').textContent = `${totalCount} Ulasan Total`;
+          document.getElementById('summaryStars').innerHTML = renderStars(avgStarRating);
+          
+          // Update Filter Counts
+          document.getElementById('countAll').textContent = reviewCounts.all;
+          document.getElementById('countPositif').textContent = reviewCounts.positif;
+          document.getElementById('countNetral').textContent = reviewCounts.netral;
+          document.getElementById('countNegatif').textContent = reviewCounts.negatif;
+
+
+          // Update Breakdown Bars
+          const breakdownContainer = document.getElementById('ratingBreakdown');
+          breakdownContainer.innerHTML = '';
+
+          for (let i = 5; i >= 1; i--) {
+              const count = ratingFrequencies[i] || 0;
+              const percentage = totalCount > 0 ? (count / totalCount) * 100 : 0;
+
+              const barHtml = `
+                  <div class="rating-bar">
+                      <span>${i} <i class="fas fa-star" style="color: #ffc107;"></i></span>
+                      <div class="bar-container">
+                          <div class="bar-fill" style="width: ${percentage.toFixed(0)}%;"></div>
+                      </div>
+                      <span>${count}</span>
+                  </div>
+              `;
+              breakdownContainer.innerHTML += barHtml;
+          }
+      }
+
+      // Fungsi utama: Memuat semua ulasan dari Firestore
+      function loadReviews() {
+          db.collection('reviews')
+            .orderBy('timestamp', 'desc')
+            .get()
+            .then(snapshot => {
+                allReviews = snapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data(),
+                    sentiment: getSentiment(doc.data().rating) // Tambahkan sentiment ke objek
+                }));
+                
+                updateSummary();
+                renderReviews(currentFilter);
+            })
+            .catch(error => {
+                console.error("Error loading reviews:", error);
+                document.getElementById('reviewsList').innerHTML = '<p style="text-align: center; color: red;">Gagal memuat ulasan. Silakan cek koneksi atau rules Firebase Anda.</p>';
+            });
+      }
+
+      // Handle Submission
+      document.getElementById('reviewForm').addEventListener('submit', function(e) {
+          e.preventDefault();
+          const user = auth.currentUser;
+          if (!user) {
+              alert('Anda harus login untuk mengirim ulasan.');
+              return;
+          }
+
+          const rating = parseInt(document.getElementById('selectedRating').value);
+          const reviewText = document.getElementById('reviewText').value.trim();
+
+          if (rating === 0) {
+              alert('Silakan pilih jumlah bintang.');
+              return;
+          }
+          if (reviewText.length < 10) {
+              alert('Ulasan minimal harus 10 karakter.');
+              return;
+          }
+
+          document.getElementById('submitReviewBtn').disabled = true;
+          document.getElementById('submitReviewBtn').textContent = 'Mengirim...';
+
+          // Dapatkan nama pengguna dari dokumen 'users' jika ada, jika tidak, gunakan display name
+          let reviewerName = user.displayName || 'Anonim';
+          db.collection('users').doc(user.uid).get().then(doc => {
+              if (doc.exists && doc.data().name) {
+                  reviewerName = doc.data().name;
+              }
+
+              return db.collection('reviews').add({
+                  userId: user.uid,
+                  reviewerName: reviewerName,
+                  rating: rating,
+                  reviewText: reviewText,
+                  timestamp: firebase.firestore.FieldValue.serverTimestamp()
+              });
+          })
+          .then(() => {
+              alert('Ulasan Anda berhasil dikirim! Terima kasih.');
+              document.getElementById('reviewForm').reset();
+              document.getElementById('selectedRating').value = '0';
+              document.getElementById('starPicker').querySelectorAll('i').forEach(star => star.classList.remove('selected'));
+              
+              document.getElementById('submitReviewBtn').disabled = false;
+              document.getElementById('submitReviewBtn').textContent = 'Kirim Ulasan';
+              
+              loadReviews(); // Reload data
+          })
+          .catch(error => {
+              console.error("Error writing document: ", error);
+              alert('Gagal mengirim ulasan: ' + error.message);
+              document.getElementById('submitReviewBtn').disabled = false;
+              document.getElementById('submitReviewBtn').textContent = 'Kirim Ulasan';
+          });
+      });
+
+
+      document.addEventListener('DOMContentLoaded', function() {
+          loadReviews(); // Initial load
+
+          // Star Picker Logic
+          document.getElementById('starPicker').addEventListener('mouseover', function(e) {
+              const stars = this.querySelectorAll('i');
+              if (e.target.classList.contains('fa-star')) {
+                  const hoverRating = parseInt(e.target.getAttribute('data-rating'));
+                  stars.forEach(star => {
+                      star.classList.remove('fas', 'far');
+                      star.classList.add(parseInt(star.getAttribute('data-rating')) <= hoverRating ? 'fas' : 'far');
+                  });
+              }
+          });
+
+          document.getElementById('starPicker').addEventListener('click', function(e) {
+              if (e.target.classList.contains('fa-star')) {
+                  const rating = parseInt(e.target.getAttribute('data-rating'));
+                  document.getElementById('selectedRating').value = rating;
+                  this.querySelectorAll('i').forEach(star => {
+                       star.classList.remove('selected');
+                      if (parseInt(star.getAttribute('data-rating')) <= rating) {
+                          star.classList.add('selected');
+                      }
+                  });
+                   // Tetapkan bintang permanen setelah klik
+                   this.querySelectorAll('i').forEach(star => {
+                      star.classList.remove('fas', 'far');
+                      star.classList.add(parseInt(star.getAttribute('data-rating')) <= rating ? 'fas' : 'far');
+                  });
+              }
+          });
+
+          document.getElementById('starPicker').addEventListener('mouseout', function(e) {
+              const selectedRating = parseInt(document.getElementById('selectedRating').value);
+              this.querySelectorAll('i').forEach(star => {
+                  star.classList.remove('fas', 'far');
+                  star.classList.add(parseInt(star.getAttribute('data-rating')) <= selectedRating ? 'fas' : 'far');
+              });
+          });
+          
+          // Filter Button Logic
+          document.querySelectorAll('.filter-btn').forEach(button => {
+              button.addEventListener('click', function() {
+                  document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+                  this.classList.add('active');
+                  currentFilter = this.getAttribute('data-filter');
+                  renderReviews(currentFilter);
+              });
+          });
+
+          // Auth State Check (Show/Hide Form)
+          auth.onAuthStateChanged((user) => {
+              const formContainer = document.getElementById('reviewFormContainer');
+              const loginWarning = document.getElementById('loginWarning');
+
+              if (user) {
+                  // Logged in: Show form, hide warning
+                  formContainer.style.display = 'block';
+                  loginWarning.style.display = 'none';
+                  // Display reviewer name (ambil dari email sebelum dapet dari firestore)
+                  document.getElementById('reviewerName').textContent = user.displayName || user.email;
+                  
+                  // Perbarui nama di form setelah mendapatkan data dari Firestore
+                  db.collection('users').doc(user.uid).get().then(doc => {
+                     if (doc.exists && doc.data().name) {
+                          document.getElementById('reviewerName').textContent = doc.data().name;
+                      }
+                  });
+              } else {
+                  // Not logged in: Hide form, show warning
+                  formContainer.style.display = 'none';
+                  loginWarning.style.display = 'block';
+              }
+          });
+      });
+    </script>
+  </body>
+</html>

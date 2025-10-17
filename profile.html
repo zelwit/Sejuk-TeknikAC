@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profil Pengguna | Sejuk Teknik AC</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <!-- Pastikan konfigurasi Firebase di bawah ini SAMA PERSIS dengan index.html -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    <style>
+      :root {
+        --primary: #0066cc;
+        --primary-light: #e6f2ff;
+        --dark: #2d3748;
+        --white: #ffffff;
+        --coin: #ffd700;
+        --gray: #718096;
+      }
+      body {
+        font-family: "Poppins", sans-serif;
+        background-color: var(--primary-light);
+        color: var(--dark);
+        padding: 20px;
+      }
+      .container {
+        max-width: 600px;
+        margin: 50px auto;
+        background: var(--white);
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      }
+      h1 {
+        color: var(--primary);
+        margin-bottom: 20px;
+        border-bottom: 2px solid var(--primary-light);
+        padding-bottom: 10px;
+      }
+      .info-item {
+        margin-bottom: 15px;
+        padding: 10px;
+        border-bottom: 1px dashed #ddd;
+        display: flex; /* Untuk tata letak yang rapi */
+        align-items: center;
+      }
+      .info-item i {
+        margin-right: 10px;
+        color: var(--primary);
+        width: 20px;
+        text-align: center;
+      }
+      .info-item strong {
+        display: inline-block;
+        width: 120px;
+        color: var(--primary);
+      }
+      .info-item span {
+        flex-grow: 1;
+        color: var(--dark);
+      }
+      .btn {
+        padding: 10px 20px;
+        border-radius: 50px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: none;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+      }
+      .logout-btn {
+        background-color: #f44336;
+        color: white;
+        margin-top: 20px;
+      }
+      .edit-btn {
+        background-color: var(--primary);
+        color: white;
+        margin-right: 10px;
+      }
+      .back-btn {
+        background-color: var(--gray);
+        color: white;
+      }
+
+      .loading-text {
+        text-align: center;
+        color: var(--gray);
+        font-style: italic;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1><i class="fas fa-user-circle"></i> Profil Akun</h1>
+      <div id="profileContent">
+        <div class="info-item">
+          <i class="fas fa-id-badge"></i> <strong>UID:</strong>
+          <span id="profileUid" class="loading-text">Memuat...</span>
+        </div>
+        <div class="info-item">
+          <i class="fas fa-user"></i> <strong>Nama Lengkap:</strong>
+          <span id="profileName" class="loading-text">Memuat...</span>
+        </div>
+        <div class="info-item">
+          <i class="fas fa-envelope"></i> <strong>Email:</strong>
+          <span id="profileEmail" class="loading-text">Memuat...</span>
+        </div>
+        <div class="info-item">
+          <i class="fas fa-phone"></i> <strong>Telepon:</strong>
+          <span id="profilePhone" class="loading-text">Memuat...</span>
+        </div>
+        <div class="info-item">
+          <i class="fas fa-map-marker-alt"></i> <strong>Alamat:</strong>
+          <span id="profileAddress" class="loading-text">Memuat...</span>
+        </div>
+        <div class="info-item">
+          <i class="fas fa-coins" style="color: var(--coin)"></i>
+          <strong>SJCoin:</strong>
+          <span id="profileCoin" class="loading-text">Memuat...</span>
+        </div>
+      </div>
+
+      <button
+        class="btn edit-btn"
+        onclick="alert('Fitur Edit Data akan hadir!')"
+      >
+        <i class="fas fa-edit"></i> Edit Data
+      </button>
+      <button class="btn logout-btn" id="logoutBtn">
+        <i class="fas fa-sign-out-alt"></i> Logout
+      </button>
+      <a href="index.html" class="btn back-btn"
+        ><i class="fas fa-arrow-left"></i> Kembali</a
+      >
+    </div>
+
+    <script>
+      // Konfigurasi Firebase (HARUS SAMA PERSIS dengan index.html)
+      const firebaseConfig = {
+        apiKey: "AIzaSyDtLHSz7-KU97ALJTQvLRQTG5yj7brcsvc",
+        authDomain: "sejuk-teknik.firebaseapp.com",
+        projectId: "sejuk-teknik",
+        storageBucket: "sejuk-teknik.appspot.com",
+        messagingSenderId: "733860478343",
+        appId: "1:733860478343:web:172838a08e702d129ae722",
+        measurementId: "G-EDJ6Y6J7GC",
+      };
+      if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+      }
+      const auth = firebase.auth();
+      const db = firebase.firestore();
+
+      auth.onAuthStateChanged((user) => {
+        if (user) {
+          loadProfile(user.uid, user);
+        } else {
+          alert(
+            "Sesi Anda berakhir. Anda harus login untuk melihat halaman ini."
+          );
+          window.location.href = "index.html"; // Redirect ke halaman login
+        }
+      });
+
+      function loadProfile(uid, user) {
+        // Tampilkan UID dan Email segera (dari Auth object)
+        document.getElementById("profileUid").textContent = uid;
+        document.getElementById("profileEmail").textContent =
+          user.email || "N/A";
+
+        // Hapus loading class dari UID dan Email
+        document.getElementById("profileUid").classList.remove("loading-text");
+        document
+          .getElementById("profileEmail")
+          .classList.remove("loading-text");
+
+        // Ambil data detail dari Firestore
+        db.collection("users")
+          .doc(uid)
+          .get()
+          .then((doc) => {
+            // Hapus loading class dari semua span
+            document
+              .querySelectorAll("#profileContent span")
+              .forEach((span) => span.classList.remove("loading-text"));
+
+            if (doc.exists) {
+              const data = doc.data();
+              document.getElementById("profileName").textContent =
+                data.name || user.displayName || user.email.split("@")[0];
+              document.getElementById("profilePhone").textContent =
+                data.phone || "Belum diisi";
+              document.getElementById("profileAddress").textContent =
+                data.address || "Belum diisi";
+              document.getElementById("profileCoin").textContent =
+                data.sjcoin || 0;
+            } else {
+              // Jika dokumen users belum terbuat sempurna (atau ada error)
+              document.getElementById("profileName").textContent =
+                user.displayName || user.email.split("@")[0];
+              document.getElementById("profilePhone").textContent =
+                "Belum diisi";
+              document.getElementById("profileAddress").textContent =
+                "Belum diisi";
+              document.getElementById("profileCoin").textContent = 0;
+              console.warn(
+                "Dokumen users tidak ditemukan. Menggunakan data dari Firebase Auth."
+              );
+            }
+          })
+          .catch((error) => {
+            // Cek error permission (Security Rules)
+            console.error("FIREBASE ERROR:", error);
+            alert(
+              `Gagal memuat data detail. Cek Security Rules Anda: ${error.message}`
+            );
+            document.getElementById("profileName").textContent =
+              "ERROR MEMUAT DATA";
+          });
+      }
+
+      document.getElementById("logoutBtn").addEventListener("click", () => {
+        if (confirm("Apakah Anda yakin ingin logout?")) {
+          auth
+            .signOut()
+            .then(() => {
+              // Clear session storage untuk memastikan notif anonim muncul lagi di layanan.html
+              sessionStorage.clear();
+              window.location.href = "index.html";
+            })
+            .catch((error) => {
+              console.error("Logout Error:", error);
+              alert("Gagal melakukan logout.");
+            });
+        }
+      });
+    </script>
+  </body>
+</html>

@@ -13,6 +13,10 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
     />
+    <!-- Tambahkan Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <!-- End Firebase SDK -->
     <style>
       :root {
         --primary: #0066cc;
@@ -39,6 +43,101 @@
         scroll-behavior: smooth;
         position: relative;
         overflow-x: hidden;
+      }
+
+      /* --- NEW: Pop-up Modal Login/Anonim --- */
+      .anonim-modal {
+        display: none; /* Disembunyikan secara default */
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7); /* Blur hitam transparan */
+        z-index: 9999;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .anonim-content {
+        background-color: var(--white);
+        padding: 2.5rem;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        text-align: center;
+        max-width: 400px;
+        width: 90%;
+        animation: modalSlideIn 0.3s ease-out;
+      }
+
+      @keyframes modalSlideIn {
+        from {
+          opacity: 0;
+          transform: translateY(-50px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .anonim-title {
+        font-size: 1.5rem;
+        color: var(--primary);
+        margin-bottom: 0.5rem;
+      }
+      
+      .anonim-message {
+        font-size: 1.1rem;
+        margin-bottom: 2rem;
+      }
+
+      .anonim-button-group {
+        display: flex;
+        justify-content: space-around;
+        gap: 10px;
+      }
+      
+      .anonim-btn {
+        padding: 10px 20px;
+        border-radius: 50px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: none;
+        width: 100%;
+      }
+      
+      .anonim-btn-primary {
+        background-color: var(--primary);
+        color: var(--white);
+      }
+      
+      .anonim-btn-secondary {
+        background-color: var(--light);
+        color: var(--dark);
+        border: 1px solid var(--gray);
+      }
+      
+      /* Tambahkan Overlay Disabled pada Card */
+      .card.disabled::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255, 255, 255, 0.8);
+        cursor: not-allowed;
+        z-index: 10;
+        border-radius: 12px;
+        pointer-events: auto;
+      }
+      /* Sembunyikan semua tombol di card yang disabled */
+      .card.disabled .btn {
+          pointer-events: none;
+          opacity: 0.5;
       }
 
       /* Snow Animation */
@@ -68,46 +167,7 @@
         }
       }
 
-      /* Custom Cursors */
-      .cursor-snowflake {
-        cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><text x='0' y='20' style='font-size: 20px;'>❄️</text></svg>"),
-          auto;
-      }
-
-      .cursor-wrench {
-        cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><text x='0' y='20' style='font-size: 20px;'>🔧</text></svg>"),
-          auto;
-      }
-
-      .cursor-bolt {
-        cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><text x='0' y='20' style='font-size: 20px;'>⚡</text></svg>"),
-          auto;
-      }
-
-      .cursor-gear {
-        cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><text x='0' y='20' style='font-size: 20px;'>⚙️</text></svg>"),
-          auto;
-      }
-
-      .cursor-calendar {
-        cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><text x='0' y='20' style='font-size: 20px;'>📅</text></svg>"),
-          auto;
-      }
-
-      .cursor-exchange {
-        cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><text x='0' y='20' style='font-size: 20px;'>🔄</text></svg>"),
-          auto;
-      }
-
-      .cursor-bell {
-        cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><text x='0' y='20' style='font-size: 20px;'>🔔</text></svg>"),
-          auto;
-      }
-
-      .cursor-sliders {
-        cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><text x='0' y='20' style='font-size: 20px;'>🎚️</text></svg>"),
-          auto;
-      }
+      /* Custom Cursors - Dihapus untuk kesederhanaan, menggunakan default */
 
       /* Modal Styles */
       .modal {
@@ -537,6 +597,7 @@
         width: 100%;
         text-align: center;
         margin-bottom: 0.5rem;
+        cursor: pointer; /* Pastikan ini ada */
       }
 
       .btn:hover {
@@ -632,6 +693,10 @@
         .modal-footer {
           flex-direction: column;
         }
+        
+        .anonim-content {
+            margin: 10% auto;
+        }
       }
 
       @keyframes fadeInDown {
@@ -688,6 +753,19 @@
     </style>
   </head>
   <body>
+    <!-- NEW: Anonim Warning/Login Modal -->
+    <div id="anonimModal" class="anonim-modal" style="display: none;">
+        <div class="anonim-content">
+            <h3 class="anonim-title" id="anonimTitle"></h3>
+            <p class="anonim-message" id="anonimMessage"></p>
+            <div class="anonim-button-group">
+                <button class="anonim-btn anonim-btn-secondary" id="anonimDismiss">Dismiss</button>
+                <button class="anonim-btn anonim-btn-primary" id="anonimAction">Oke / Login</button>
+            </div>
+        </div>
+    </div>
+    <!-- End NEW Modal -->
+
     <!-- Snow Animation -->
     <div class="snow" id="snow"></div>
 
@@ -787,7 +865,7 @@
             <a href="#" class="btn btn-detail" data-service="cuci-ac"
               >Lihat Detail</a
             >
-            <a href="cuci-ac.html" class="btn">Cuci AC Sekarang</a>
+            <a href="cuci-ac.html" class="btn btn-action">Cuci AC Sekarang</a>
           </div>
         </div>
 
@@ -801,7 +879,7 @@
             <a href="#" class="btn btn-detail" data-service="tukar-tambah"
               >Lihat Detail</a
             >
-            <a href="tukar-tambah.html" class="btn">Pasang Sekarang</a>
+            <a href="tukar-tambah.html" class="btn btn-action">Pasang Sekarang</a>
           </div>
         </div>
 
@@ -815,7 +893,7 @@
             <a href="#" class="btn btn-detail" data-service="repair-ac"
               >Lihat Detail</a
             >
-            <a href="repair-ac.html" class="btn">Perbaiki Sekarang</a>
+            <a href="repair-ac.html" class="btn btn-action">Perbaiki Sekarang</a>
           </div>
         </div>
 
@@ -829,7 +907,7 @@
             <a href="#" class="btn btn-detail" data-service="bongkar-pasang"
               >Lihat Detail</a
             >
-            <a href="bongkar-pasang.html" class="btn">Pesan Sekarang</a>
+            <a href="bongkar-pasang.html" class="btn btn-action">Pesan Sekarang</a>
           </div>
         </div>
 
@@ -843,7 +921,7 @@
             <a href="#" class="btn btn-detail" data-service="kontrak-ac"
               >Lihat Detail</a
             >
-            <a href="kontrak-ac.html" class="btn">Ajukan Sekarang</a>
+            <a href="kontrak-ac.html" class="btn btn-action">Ajukan Sekarang</a>
           </div>
         </div>
 
@@ -858,7 +936,7 @@
             <a href="#" class="btn btn-detail" data-service="sewa-ac"
               >Lihat Detail</a
             >
-            <a href="sewa-ac.html" class="btn">Sewa Sekarang</a>
+            <a href="sewa-ac.html" class="btn btn-action">Sewa Sekarang</a>
           </div>
         </div>
 
@@ -872,7 +950,7 @@
             <a href="#" class="btn btn-detail" data-service="panel-motor"
               >Lihat Detail</a
             >
-            <a href="panel-motor.html" class="btn">Buat Sekarang</a>
+            <a href="panel-motor.html" class="btn btn-action">Buat Sekarang</a>
           </div>
         </div>
 
@@ -886,7 +964,7 @@
             <a href="#" class="btn btn-detail" data-service="panel-distribusi"
               >Lihat Detail</a
             >
-            <a href="panel-distribusi.html" class="btn">Pesan Sekarang</a>
+            <a href="panel-distribusi.html" class="btn btn-action">Pesan Sekarang</a>
           </div>
         </div>
 
@@ -900,7 +978,7 @@
             <a href="#" class="btn btn-detail" data-service="gulung-dinamo"
               >Lihat Detail</a
             >
-            <a href="gulung-dinamo.html" class="btn">Servis Sekarang</a>
+            <a href="gulung-dinamo.html" class="btn btn-action">Servis Sekarang</a>
           </div>
         </div>
       </div>
@@ -926,261 +1004,316 @@
     </footer>
 
     <script>
-      // Service data
+      // --- Firebase Configuration (HARUS SAMA DENGAN INDEX.HTML) ---
+      const firebaseConfig = {
+        apiKey: "AIzaSyDtLHSz7-KU97ALJTQvLRQTG5yj7brcsvc", 
+        authDomain: "sejuk-teknik.firebaseapp.com",
+        projectId: "sejuk-teknik",
+        storageBucket: "sejuk-teknik.appspot.com", 
+        messagingSenderId: "733860478343",
+        appId: "1:733860478343:web:172838a08e702d129ae722",
+        measurementId: "G-EDJ6Y6J7GC"
+      };
+      
+      // Cek apakah Firebase sudah diinisialisasi
+      if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+      }
+      const auth = firebase.auth();
+      
+      // --- Status & Elemen ---
+      let isLoggedIn = false;
+      const anonimModal = document.getElementById('anonimModal');
+      const anonimTitle = document.getElementById('anonimTitle');
+      const anonimMessage = document.getElementById('anonimMessage');
+      const anonimDismiss = document.getElementById('anonimDismiss');
+      const anonimAction = document.getElementById('anonimAction');
+      const allCards = document.querySelectorAll('.card');
+      const allActionButtons = document.querySelectorAll('.btn-action');
+      
+      // --- Data Services ---
       const services = {
+        // (Data services Anda di sini)
         "cuci-ac": {
           title: "Service / Cuci AC",
-          description:
-            "Layanan cuci AC profesional untuk menjaga kinerja optimal AC Anda. Membersihkan semua komponen penting termasuk evaporator, kondensor, filter, dan saluran udara.",
-          features: [
-            "Pembersihan evaporator dan kondensor",
-            "Pembersihan filter udara",
-            "Pengecekan freon dan tekanan",
-            "Pelumasan bagian yang bergerak",
-            "Pengecekan sistem drainase",
-            "Garansi 30 hari untuk pekerjaan",
-          ],
+          description: "Layanan cuci AC profesional...",
+          features: ["Pembersihan evaporator...", "Garansi 30 hari..."],
           price: "Rp70.000 - Rp150.000 (tergantung PK AC)",
-          whatsapp:
-            "https://wa.me/6285817818216?text=Saya%20ingin%20pesan%20layanan%20Cuci%20AC",
+          whatsapp: "https://wa.me/6285817818216?text=Saya%20ingin%20pesan%20layanan%20Cuci%20AC",
         },
         "tukar-tambah": {
           title: "Tukar Tambah AC",
-          description:
-            "Layanan tukar tambah AC lama Anda dengan AC baru yang lebih hemat energi dan berteknologi terbaru. Dapatkan nilai terbaik untuk AC lama Anda.",
-          features: [
-            "Penilaian profesional untuk AC lama",
-            "Berbagai pilihan AC baru dari merek ternama",
-            "Pemasangan gratis untuk AC baru",
-            "Penghapusan AC lama yang ramah lingkungan",
-            "Garansi produk dan pemasangan",
-            "Pembayaran fleksibel",
-          ],
+          description: "Layanan tukar tambah AC lama Anda...",
+          features: ["Penilaian profesional...", "Pembayaran fleksibel"],
           price: "Harga bervariasi tergantung model AC",
-          whatsapp:
-            "https://wa.me/6285817818216?text=Saya%20ingin%20info%20tukar%20tambah%20AC",
+          whatsapp: "https://wa.me/6285817818216?text=Saya%20ingin%20info%20tukar%20tambah%20AC",
         },
         "repair-ac": {
           title: "Repair / Perbaikan AC",
-          description:
-            "Perbaikan komprehensif untuk semua masalah AC termasuk tidak dingin, kebocoran, suara berisik, dan masalah komponen lainnya.",
-          features: [
-            "Diagnosis masalah secara profesional",
-            "Perbaikan komponen elektronik",
-            "Penggantian part jika diperlukan",
-            "Pengisian freon",
-            "Perbaikan kebocoran",
-            "Garansi 90 hari untuk perbaikan",
-          ],
+          description: "Perbaikan komprehensif untuk semua masalah AC...",
+          features: ["Diagnosis masalah...", "Garansi 90 hari..."],
           price: "Rp150.000 - Rp1.500.000 (tergantung kerusakan)",
-          whatsapp:
-            "https://wa.me/6285817818216?text=Saya%20butuh%20layanan%20perbaikan%20AC",
+          whatsapp: "https://wa.me/6285817818216?text=Saya%20butuh%20layanan%20perbaikan%20AC",
         },
         "bongkar-pasang": {
           title: "Bongkar Pasang AC",
-          description:
-            "Layanan bongkar pasang AC untuk relokasi unit ke lokasi baru dengan aman dan profesional tanpa merusak unit atau properti Anda.",
-          features: [
-            "Penanganan profesional unit AC",
-            "Penyimpanan sementara jika diperlukan",
-            "Pemasangan di lokasi baru",
-            "Pengujian sistem setelah pemasangan",
-            "Pembersihan unit sebelum pemasangan",
-            "Garansi 60 hari untuk pemasangan",
-          ],
+          description: "Layanan bongkar pasang AC untuk relokasi unit...",
+          features: ["Penanganan profesional...", "Garansi 60 hari..."],
           price: "Rp250.000 - Rp500.000 per unit",
-          whatsapp:
-            "https://wa.me/6285817818216?text=Saya%20butuh%20layanan%20bongkar%20pasang%20AC",
+          whatsapp: "https://wa.me/6285817818216?text=Saya%20butuh%20layanan%20bongkar%20pasang%20AC",
         },
         "kontrak-ac": {
           title: "Kontrak Perawatan AC",
-          description:
-            "Paket perawatan rutin untuk kantor, sekolah, atau gedung komersial dengan jadwal yang fleksibel dan harga kompetitif.",
-          features: [
-            "Pembersihan rutin bulanan/triwulan",
-            "Pengecekan performa sistem",
-            "Pelaporan kondisi AC",
-            "Prioritas perbaikan darurat",
-            "Diskon untuk sparepart",
-            "Teknisi yang sama untuk konsistensi",
-          ],
+          description: "Paket perawatan rutin untuk kantor...",
+          features: ["Pembersihan rutin...", "Prioritas perbaikan darurat"],
           price: "Mulai dari Rp500.000/bulan (tergantung jumlah unit)",
-          whatsapp:
-            "https://wa.me/6285817818216?text=Saya%20ingin%20info%20kontrak%20perawatan%20AC",
+          whatsapp: "https://wa.me/6285817818216?text=Saya%20ingin%20info%20kontrak%20perawatan%20AC",
         },
         "sewa-ac": {
           title: "Sewa AC",
-          description:
-            "Layanan sewa AC jangka pendek atau panjang untuk acara, kantor sementara, atau kebutuhan lainnya. Unit terawat dengan pemasangan profesional.",
-          features: [
-            "Berbagai tipe AC (Split, Standing, dll)",
-            "Pemasangan dan bongkar gratis",
-            "Perawatan rutin untuk sewa jangka panjang",
-            "Penggantian unit jika ada masalah",
-            "Harga all-inclusive",
-            "Fleksibel durasi sewa",
-          ],
+          description: "Layanan sewa AC jangka pendek atau panjang...",
+          features: ["Berbagai tipe AC...", "Harga all-inclusive"],
           price: "Mulai dari Rp190.000/hari (minimal 3 hari)",
           whatsapp: "https://wa.me/6285817818216?text=Saya%20ingin%20sewa%20AC",
         },
         "panel-motor": {
           title: "Panel Kontrol Motor",
-          description:
-            "Pembuatan panel kontrol motor listrik custom untuk berbagai aplikasi industri dengan standar keamanan tinggi dan kualitas terbaik.",
-          features: [
-            "Desain sesuai kebutuhan",
-            "Komponen berkualitas tinggi",
-            "Pengujian ketat sebelum serah terima",
-            "Dokumentasi diagram lengkap",
-            "Garansi 1 tahun",
-            "Layanan purna jual",
-          ],
+          description: "Pembuatan panel kontrol motor listrik custom...",
+          features: ["Desain sesuai kebutuhan", "Garansi 1 tahun"],
           price: "Mulai dari Rp2.500.000 (tergantung kompleksitas)",
-          whatsapp:
-            "https://wa.me/6285817818216?text=Saya%20butuh%20panel%20kontrol%20motor",
+          whatsapp: "https://wa.me/6285817818216?text=Saya%20butuh%20panel%20kontrol%20motor",
         },
         "panel-distribusi": {
           title: "Panel Distribusi & Lampu",
-          description:
-            "Pemasangan dan perbaikan panel distribusi listrik serta panel kontrol lampu untuk gedung komersial dan industri.",
-          features: [
-            "Pengecekan sistem kelistrikan",
-            "Pemasangan sesuai standar PUIL",
-            "Penggunaan MCB/MCCB berkualitas",
-            "Pengujian beban penuh",
-            "Labeling yang jelas",
-            "Garansi 1 tahun",
-          ],
+          description: "Pemasangan dan perbaikan panel distribusi listrik...",
+          features: ["Pengecekan sistem...", "Garansi 1 tahun"],
           price: "Mulai dari Rp3.000.000 (tergantung ukuran panel)",
-          whatsapp:
-            "https://wa.me/6285817818216?text=Saya%20butuh%20panel%20distribusi%20listrik",
+          whatsapp: "https://wa.me/6285817818216?text=Saya%20butuh%20panel%20distribusi%20listrik",
         },
         "gulung-dinamo": {
           title: "Gulung Dinamo",
-          description:
-            "Servis gulung ulang dinamo motor listrik 1 phase dan 3 phase dengan presisi tinggi menggunakan bahan berkualitas.",
-          features: [
-            "Diagnosis kerusakan awal",
-            "Pembersihan komponen",
-            "Penggulungan ulang dengan kawat tembaga grade A",
-            "Pengujian beban dan isolasi",
-            "Pelumasan bearing",
-            "Garansi 3 bulan",
-          ],
+          description: "Servis gulung ulang dinamo motor listrik...",
+          features: ["Diagnosis kerusakan...", "Garansi 3 bulan"],
           price: "Mulai dari Rp350.000 (tergantung ukuran dinamo)",
-          whatsapp:
-            "https://wa.me/6285817818216?text=Saya%20butuh%20servis%20gulung%20dinamo",
+          whatsapp: "https://wa.me/6285817818216?text=Saya%20butuh%20servis%20gulung%20dinamo",
         },
       };
 
-      // Snow animation
-      function createSnow() {
-        const snowContainer = document.getElementById("snow");
-        const snowflakeCount = 50;
-
-        for (let i = 0; i < snowflakeCount; i++) {
-          const snowflake = document.createElement("div");
-          snowflake.classList.add("snowflake");
-
-          // Random size between 2px and 6px
-          const size = Math.random() * 4 + 2;
-          snowflake.style.width = `${size}px`;
-          snowflake.style.height = `${size}px`;
-
-          // Random position
-          snowflake.style.left = `${Math.random() * 100}%`;
-
-          // Random animation duration between 5s and 15s
-          const duration = Math.random() * 10 + 5;
-          snowflake.style.animationDuration = `${duration}s`;
-
-          // Random delay
-          snowflake.style.animationDelay = `${Math.random() * 5}s`;
-
-          snowContainer.appendChild(snowflake);
+      // --- Fungsi Modal Anonim ---
+      
+      /**
+       * Menampilkan modal anonim dengan pesan kustom
+       * @param {string} type - 'initial' atau 'action'
+       */
+      function showAnonimModal(type) {
+        if (type === 'initial') {
+          // Pesan saat pertama kali masuk (anonim)
+          anonimTitle.textContent = "Kamu Terdaftar Anonim Nih!👋";
+          anonimMessage.innerHTML = "Kita gak tau identitas mu😅 **Login/Sign Up** dulu yah! Sampai jumpa lagi anonim!👋";
+          anonimAction.textContent = "Oke, Balik ke Index";
+          anonimDismiss.style.display = 'inline-block';
+          
+          // Action akan mengarahkan ke index
+          anonimAction.onclick = () => { window.location.href = 'index.html'; };
+          
+          // Dismiss akan menutup modal dan membiarkan di halaman ini (tapi layanan tetap disable)
+          anonimDismiss.onclick = hideAnonimModal;
+          
+          // Setelah pesan awal, disable semua kartu
+          allCards.forEach(card => card.classList.add('disabled'));
+          
+        } else if (type === 'action') {
+          // Pesan saat mencoba klik tombol Aksi/WhatsApp
+          anonimTitle.textContent = "Duh, Aku Gak Tau Identitas Mu!🙁";
+          anonimMessage.innerHTML = "Daftar/Login dulu gih untuk melakukan transaksi✨";
+          anonimAction.textContent = "Login/Sign Up";
+          anonimDismiss.style.display = 'none'; // Sembunyikan dismiss
+          
+          // Action akan mengarahkan ke index (di mana modal login ada)
+          anonimAction.onclick = () => { window.location.href = 'index.html'; }; 
         }
+        
+        anonimModal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+      }
+      
+      function hideAnonimModal() {
+          anonimModal.style.display = 'none';
+          document.body.style.overflow = 'auto';
       }
 
-      // Create snow when page loads
-      window.addEventListener("load", createSnow);
+      // --- Fungsi Utama UI Control ---
+      function updateServiceUI(user) {
+        if (user) {
+          // User sudah login
+          isLoggedIn = true;
+          allCards.forEach(card => card.classList.remove('disabled')); // Enable semua kartu
+          // Pasang kembali event listener klik langsung ke tombol aksi
+          setupActionListener();
+        } else {
+          // User belum login
+          isLoggedIn = false;
+          // Nonaktifkan semua kartu
+          allCards.forEach(card => card.classList.add('disabled'));
+          // Tambahkan event listener untuk memunculkan modal peringatan
+          setupAnonimClickListener();
 
-      // Card animation
-      const cards = document.querySelectorAll(".card");
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              entry.target.classList.add("visible");
-            }
-          });
-        },
-        { threshold: 0.1 }
-      );
-      cards.forEach((card) => observer.observe(card));
-
-      // Shake effect for popular cards
-      const popularCards = document.querySelectorAll(".popular-card");
-      popularCards.forEach((card) => {
-        card.addEventListener("mouseenter", () => {
-          card.style.animation = "shake 0.5s infinite";
+          // Tampilkan modal peringatan awal HANYA JIKA ini kali pertama masuk (atau belum didismiss)
+          if (!sessionStorage.getItem('anonimDismissed')) {
+              showAnonimModal('initial');
+              // Set session storage agar tidak muncul lagi kecuali session browser ditutup
+              sessionStorage.setItem('anonimDismissed', 'true');
+          }
+        }
+      }
+      
+      // --- Setup Event Listeners ---
+      
+      // Setup listener untuk tombol aksi di card (hanya dipasang saat login)
+      function setupActionListener() {
+        allActionButtons.forEach(button => {
+            button.onclick = null; // Hapus listener lama (jika ada)
+            // Biarkan tombol menjalankan href aslinya (link ke halaman detail/transaksi)
         });
-        card.addEventListener("mouseleave", () => {
-          card.style.animation = "";
-        });
-      });
+      }
 
-      // Modal functionality
-      const modal = document.getElementById("serviceModal");
-      const modalTitle = document.getElementById("modalTitle");
-      const modalDescription = document.getElementById("modalDescription");
-      const modalFeatures = document.getElementById("modalFeatures");
-      const modalPrice = document.getElementById("modalPrice");
-      const modalWhatsApp = document.getElementById("modalWhatsApp");
-      const closeButtons = document.querySelectorAll(".close-modal");
-
-      // Add click event to all detail buttons
-      document.querySelectorAll(".btn-detail").forEach((button) => {
-        button.addEventListener("click", function (e) {
-          e.preventDefault();
-          const serviceId = this.getAttribute("data-service");
-          const service = services[serviceId];
-
-          if (service) {
-            modalTitle.textContent = service.title;
-            modalDescription.textContent = service.description;
-            modalPrice.textContent = `Harga mulai dari: ${service.price}`;
-            modalWhatsApp.href = service.whatsapp;
-
-            // Clear existing features
-            modalFeatures.innerHTML = "";
-
-            // Add new features
-            service.features.forEach((feature) => {
-              const li = document.createElement("li");
-              li.textContent = feature;
-              modalFeatures.appendChild(li);
+      // Setup listener untuk card yang disabled (dipasang saat anonim)
+      function setupAnonimClickListener() {
+        allCards.forEach(card => {
+            // Hapus semua event listener yang mungkin ada di tombol detail atau action di dalam card
+            card.querySelectorAll('.btn-action, .btn-detail').forEach(button => {
+                button.onclick = (e) => {
+                    e.preventDefault();
+                    showAnonimModal('action'); // Tampilkan modal peringatan
+                };
             });
+            
+            // Tambahkan listener langsung ke card untuk memunculkan modal action (jika card di-klik)
+            card.onclick = () => {
+                 showAnonimModal('action');
+            };
+        });
+      }
 
-            // Show modal
-            modal.style.display = "block";
-            document.body.style.overflow = "hidden";
+
+      // --- Inisialisasi ---
+      document.addEventListener("DOMContentLoaded", function() {
+        // Cek status autentikasi saat halaman dimuat
+        auth.onAuthStateChanged(updateServiceUI);
+        
+        // --- Kode lama lainnya ---
+        
+        // Snow animation
+        function createSnow() {
+          const snowContainer = document.getElementById("snow");
+          const snowflakeCount = 50;
+
+          for (let i = 0; i < snowflakeCount; i++) {
+            const snowflake = document.createElement("div");
+            snowflake.classList.add("snowflake");
+
+            // Random size between 2px and 6px
+            const size = Math.random() * 4 + 2;
+            snowflake.style.width = `${size}px`;
+            snowflake.style.height = `${size}px`;
+
+            // Random position
+            snowflake.style.left = `${Math.random() * 100}%`;
+
+            // Random animation duration between 5s and 15s
+            const duration = Math.random() * 10 + 5;
+            snowflake.style.animationDuration = `${duration}s`;
+
+            // Random delay
+            snowflake.style.animationDelay = `${Math.random() * 5}s`;
+
+            snowContainer.appendChild(snowflake);
+          }
+        }
+        window.addEventListener("load", createSnow);
+
+        // Card animation
+        const cards = document.querySelectorAll(".card");
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add("visible");
+              }
+            });
+          },
+          { threshold: 0.1 }
+        );
+        cards.forEach((card) => observer.observe(card));
+
+        // Shake effect for popular cards
+        const popularCards = document.querySelectorAll(".popular-card");
+        popularCards.forEach((card) => {
+          card.addEventListener("mouseenter", () => {
+            card.style.animation = "shake 0.5s infinite";
+          });
+          card.addEventListener("mouseleave", () => {
+            card.style.animation = "";
+          });
+        });
+
+        // Modal functionality
+        const modal = document.getElementById("serviceModal");
+        const modalTitle = document.getElementById("modalTitle");
+        const modalDescription = document.getElementById("modalDescription");
+        const modalFeatures = document.getElementById("modalFeatures");
+        const modalPrice = document.getElementById("modalPrice");
+        const modalWhatsApp = document.getElementById("modalWhatsApp");
+        const closeButtons = document.querySelectorAll(".close-modal");
+
+        // Add click event to all detail buttons (tetap berfungsi saat login/anonim)
+        document.querySelectorAll(".btn-detail").forEach((button) => {
+            button.addEventListener("click", function (e) {
+                e.preventDefault();
+                const serviceId = this.getAttribute("data-service");
+                const service = services[serviceId];
+
+                if (service) {
+                    modalTitle.textContent = service.title;
+                    modalDescription.textContent = service.description;
+                    modalPrice.textContent = `Harga mulai dari: ${service.price}`;
+                    modalWhatsApp.href = service.whatsapp;
+
+                    modalFeatures.innerHTML = "";
+                    service.features.forEach((feature) => {
+                        const li = document.createElement("li");
+                        li.textContent = feature;
+                        modalFeatures.appendChild(li);
+                    });
+
+                    modal.style.display = "block";
+                    document.body.style.overflow = "hidden";
+                }
+            });
+        });
+
+        // Close modal when clicking close button or outside
+        closeButtons.forEach((button) => {
+          button.addEventListener("click", () => {
+            modal.style.display = "none";
+            document.body.style.overflow = "auto";
+          });
+        });
+
+        window.addEventListener("click", (e) => {
+          if (e.target === modal) {
+            modal.style.display = "none";
+            document.body.style.overflow = "auto";
           }
         });
-      });
-
-      // Close modal when clicking close button or outside
-      closeButtons.forEach((button) => {
-        button.addEventListener("click", () => {
-          modal.style.display = "none";
-          document.body.style.overflow = "auto";
+        
+        // Pastikan modal anonim ditutup saat klik di luar area modal
+        window.addEventListener('click', (e) => {
+            if (e.target === anonimModal) {
+                hideAnonimModal();
+            }
         });
-      });
 
-      window.addEventListener("click", (e) => {
-        if (e.target === modal) {
-          modal.style.display = "none";
-          document.body.style.overflow = "auto";
-        }
       });
     </script>
   </body>

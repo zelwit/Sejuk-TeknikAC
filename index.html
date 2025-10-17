@@ -170,8 +170,10 @@
       nav a:hover::after {
         width: 100%;
       }
+      /* === NEW STYLE: AUTH INFO & BUTTONS === */
       .auth-buttons {
         display: flex;
+        align-items: center;
         gap: 10px;
       }
       .auth-btn {
@@ -181,6 +183,7 @@
         cursor: pointer;
         transition: all 0.3s ease;
         border: none;
+        white-space: nowrap; /* Mencegah teks terpotong */
       }
       .login-btn {
         background-color: transparent;
@@ -198,6 +201,39 @@
       .signup-btn:hover {
         background-color: #0052a3;
       }
+      .profile-info {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+      .user-details-link {
+        color: var(--dark);
+        text-decoration: none;
+        font-size: 0.95rem;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        cursor: pointer;
+        transition: color 0.3s;
+      }
+      .user-details-link:hover {
+        color: var(--primary);
+      }
+      .user-details-text {
+        display: flex;
+        flex-direction: column;
+        line-height: 1.2;
+      }
+      .user-name {
+        font-weight: 600;
+        color: var(--primary);
+      }
+      .user-phone {
+        font-size: 0.8rem;
+        color: var(--gray);
+      }
+      /* === END NEW STYLE === */
       .hero {
         background: linear-gradient(145deg, var(--primary), #0088ff);
         color: var(--white);
@@ -310,6 +346,7 @@
         transition: transform 0.3s ease, box-shadow 0.3s ease;
         opacity: 0;
         transform: translateY(30px);
+        position: relative; /* Penting untuk disable overlay */
       }
       .card.visible {
         opacity: 1;
@@ -318,6 +355,29 @@
       .card:hover {
         transform: translateY(-5px);
         box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      }
+      /* NEW: Disable Overlay Style */
+      .card.disabled {
+        pointer-events: none;
+        opacity: 0.6;
+        filter: grayscale(100%);
+      }
+      .card.disabled::after {
+        content: "Login untuk Memesan";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: rgba(255, 255, 255, 0.7);
+        color: var(--primary);
+        font-weight: 700;
+        font-size: 1.2rem;
+        z-index: 5;
+        cursor: not-allowed;
       }
       .card-icon {
         background-color: var(--primary-light);
@@ -498,7 +558,7 @@
         padding: 0.8rem;
         border: 1px solid #ddd;
         border-radius: 8px;
-        font-family: 'Poppins', sans-serif;
+        font-family: "Poppins", sans-serif;
       }
       .result {
         background: var(--primary-light);
@@ -534,7 +594,7 @@
       }
       .testimonial p {
         font-style: italic;
-         margin-bottom: 1rem;
+        margin-bottom: 1rem;
         position: relative;
         z-index: 1;
       }
@@ -546,7 +606,7 @@
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
         gap: 2rem;
-       margin: 3rem 0;
+        margin: 3rem 0;
       }
       .service-card {
         background: var(--white);
@@ -876,7 +936,7 @@
         cursor: pointer;
         width: 100%;
       }
-      .file-upload input[type=file] {
+      .file-upload input[type="file"] {
         position: absolute;
         opacity: 0;
         width: 100%;
@@ -920,9 +980,69 @@
         font-size: 12px;
         font-weight: bold;
         /* Start hidden/empty */
-        display: none; 
+        display: none;
       }
-      
+      /* === NEW STYLE: CONFIRMATION MODAL === */
+      .confirm-account-modal {
+        display: none;
+        position: fixed;
+        z-index: 3000; /* Lebih tinggi dari modal auth */
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.8);
+        justify-content: center;
+        align-items: center;
+      }
+      .confirm-account-content {
+        background-color: #fefefe;
+        padding: 30px;
+        border-radius: 10px;
+        max-width: 500px;
+        width: 90%;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      }
+      .confirm-account-content h3 {
+        color: var(--primary);
+        margin-bottom: 20px;
+      }
+      .confirm-details {
+        text-align: left;
+        margin-bottom: 20px;
+        padding: 15px;
+        background-color: var(--primary-light);
+        border-radius: 8px;
+        font-size: 0.95rem;
+      }
+      .confirm-details p {
+        margin: 5px 0;
+      }
+      .confirm-account-buttons {
+        display: flex;
+        justify-content: space-around;
+        gap: 15px;
+      }
+      .confirm-account-btn {
+        padding: 10px 20px;
+        border-radius: 50px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: none;
+        width: 50%;
+      }
+      .confirm-yes-btn {
+        background-color: #4caf50;
+        color: white;
+      }
+      .confirm-no-btn {
+        background-color: #f44336;
+        color: white;
+      }
+
       /* Loading Screen Styles */
       .loading-screen {
         position: fixed;
@@ -953,9 +1073,11 @@
         animation: spin 1s ease-in-out infinite;
       }
       @keyframes spin {
-        to { transform: rotate(360deg); }
+        to {
+          transform: rotate(360deg);
+        }
       }
-      
+
       /* Success Animation Styles */
       .success-container {
         position: fixed;
@@ -964,7 +1086,7 @@
         width: 100%;
         height: 100%;
         background-color: rgba(0, 0, 0, 0.8);
-        display: flex;
+        display: none; /* Ubah kembali ke none */
         flex-direction: column;
         justify-content: center;
         align-items: center;
@@ -998,7 +1120,7 @@
           transform: scale(1);
         }
       }
-      
+
       /* Particle Animation */
       .particles {
         position: absolute;
@@ -1031,7 +1153,7 @@
           transform: translateY(-100px) scale(0.5);
         }
       }
-      
+
       /* SJCoin Display */
       .sjcoin-display {
         position: absolute;
@@ -1050,10 +1172,7 @@
       .sjcoin-display i {
         margin-right: 5px;
       }
-      
-      /* Notification Popup - Dihilangkan dari alur */
-      /* .notification-popup { ... } */
-      
+
       /* Notification Page */
       .notification-page {
         display: none;
@@ -1108,7 +1227,7 @@
         display: flex;
         gap: 10px;
       }
-      
+
       /* Confirmation Modal */
       .confirm-modal {
         display: none;
@@ -1163,7 +1282,7 @@
         color: var(--primary);
         border: 2px solid var(--primary);
       }
-      
+
       @media (max-width: 768px) {
         .nav-container {
           flex-direction: column;
@@ -1176,6 +1295,7 @@
         .auth-buttons {
           width: 100%;
           justify-content: center;
+          margin-top: 10px;
         }
         header h1 {
           font-size: 2rem;
@@ -1220,41 +1340,78 @@
   </head>
   <body>
     <!-- Loading Screen (hidden by default) -->
-    <div class="loading-screen" id="loadingScreen" style="display: none;">
+    <div class="loading-screen" id="loadingScreen" style="display: none">
       <div class="loading-text">Tunggu siapain akun kamu!👤</div>
       <div class="loading-spinner"></div>
     </div>
-    
-    <!-- Success Screen (hidden by default) - Ditambahkan data-new-user untuk deteksi alur hadiah -->
-    <div class="success-container" id="successContainer" style="display: none;" data-new-user="false">
+
+    <!-- Success Screen (hidden by default) -->
+    <div class="success-container" id="successContainer" data-new-user="false">
       <div class="particles" id="particles"></div>
       <div class="success-text">Sip akun udh jadi!🙏🏻</div>
       <button class="success-button" id="successButton">Thanks!</button>
     </div>
-    
+
+    <!-- Konfirmasi Akun Modal (NEW) -->
+    <div
+      class="confirm-account-modal"
+      id="confirmationModal"
+      style="display: none"
+    >
+      <div class="confirm-account-content">
+        <h3>Konfirmasi Akun Dulu Yah!</h3>
+        <div class="confirm-details">
+          <p>Nama Lengkap: <strong id="confirmName"></strong></p>
+          <p>Email: <strong id="confirmEmail"></strong></p>
+          <p>Alamat: <strong id="confirmAddress"></strong></p>
+          <p>Nomor Telepon: <strong id="confirmPhone"></strong></p>
+        </div>
+        <div class="confirm-account-buttons">
+          <button
+            class="confirm-account-btn confirm-yes-btn"
+            id="confirmYesAccount"
+          >
+            Bener Akunku!✅
+          </button>
+          <button
+            class="confirm-account-btn confirm-no-btn"
+            id="confirmNoAccount"
+          >
+            Bukan Akunku!❎
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- SJCoin Display (hidden by default) -->
     <div class="sjcoin-display" id="sjcoinDisplay">
       <i class="fas fa-coins"></i>
       <span id="sjcoinAmount">0</span> SJCoin
     </div>
-    
-    <!-- Notification Popup (Dihilangkan dari alur, tapi element tetap ada) -->
-    <!-- <div class="notification-popup" id="notificationPopup"> ... </div> -->
-    
+
     <!-- Notification Page (hidden by default) -->
     <div class="notification-page" id="notificationPage">
       <div class="notification-header-page">
-        <button id="backButton" style="background: none; border: none; color: white; font-size: 1.5rem;">
+        <button
+          id="backButton"
+          style="
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+          "
+        >
           <i class="fas fa-arrow-left"></i>
         </button>
-        <h2>Notifikasi</h2>
-        <div></div> <!-- Spacer for alignment -->
+        <h2>Inbox</h2>
+        <div></div>
+        <!-- Spacer for alignment -->
       </div>
       <div class="notification-list" id="notificationList">
         <!-- Notifications will be loaded here -->
       </div>
     </div>
-    
+
     <!-- Confirmation Modal (hidden by default) -->
     <div class="confirm-modal" id="confirmModal">
       <div class="confirm-content">
@@ -1266,7 +1423,7 @@
         </div>
       </div>
     </div>
-    
+
     <header>
       <div class="language-switcher">
         <button class="language-btn">🇮🇩</button>
@@ -1288,9 +1445,15 @@
     </header>
     <div class="promo-banner">
       <marquee>
-        <a href="https://zelwit.github.io/Sejuk-TeknikAC/cuci-ac.html">🔥 Diskon 10% untuk Instalasi AC Baru sampai 31 Agustus! 🔥</a>
-        <a href="https://zelwit.github.io/Sejuk-TeknikAC/cuci-ac.html">💧 Cuci AC Hemat - Mulai dari Rp 150.000! 💧</a>
-        <a href="https://zelwit.github.io/Sejuk-TeknikAC/sewa-ac.html">❄️ Sewa AC Murah - Mulai Rp 500.000/bulan ❄️</a>
+        <a href="https://zelwit.github.io/Sejuk-TeknikAC/cuci-ac.html"
+          >🔥 Diskon 10% untuk Instalasi AC Baru sampai 31 Agustus! 🔥</a
+        >
+        <a href="https://zelwit.github.io/Sejuk-TeknikAC/cuci-ac.html"
+          >💧 Cuci AC Hemat - Mulai dari Rp 150.000! 💧</a
+        >
+        <a href="https://zelwit.github.io/Sejuk-TeknikAC/sewa-ac.html"
+          >❄️ Sewa AC Murah - Mulai Rp 500.000/bulan ❄️</a
+        >
       </marquee>
     </div>
     <nav>
@@ -1299,17 +1462,20 @@
         <div class="nav-links">
           <a href="index.html"><i class="fas fa-home"></i> Beranda</a>
           <a href="layanan.html"><i class="fas fa-tools"></i> Layanan</a>
-          <a href="AC-Placement-Planner.html"><i class="fas fa-tools"></i> 3D AC Placement Planner</a>
+          <a href="AC-Placement-Planner.html"
+            ><i class="fas fa-tools"></i> 3D AC Placement Planner</a
+          >
           <a href="tentang.html"><i class="fas fa-info-circle"></i> Tentang</a>
-          <a href="https://wa.me/6285817818216"><i class="fas fa-envelope"></i> Kontak</a>
+          <a href="https://wa.me/6285817818216"
+            ><i class="fas fa-envelope"></i> Kontak</a
+          >
           <a href="faq.html"><i class="fas fa-question-circle"></i> FAQ</a>
-          <a href="rating-ulasan.html"><i class="fas fa-star"></i> Rating & Ulasan</a>
-          <a href="https://maps.app.goo.gl/uTFSMLiKuWcCRUMa6" target="_blank"><i class="fas fa-map-marker-alt"></i> Lokasi</a>
-          <button class="notification-btn" id="notificationButton">
-            <i class="fas fa-bell"></i>
-            <!-- Badge akan diisi dan disembunyikan/ditampilkan oleh Javascript -->
-            <span class="notification-badge" id="notificationBadge"></span>
-          </button>
+          <a href="rating-ulasan.html"
+            ><i class="fas fa-star"></i> Rating & Ulasan</a
+          >
+          <a href="https://maps.app.goo.gl/uTFSMLiKuWcCRUMa6" target="_blank"
+            ><i class="fas fa-map-marker-alt"></i> Lokasi</a
+          >
         </div>
         <div class="auth-buttons">
           <button class="auth-btn login-btn" id="loginBtn">Login</button>
@@ -1320,7 +1486,9 @@
     <section class="hero">
       <div class="hero-content">
         <h1>Selamat Datang di Sejuk Teknik AC</h1>
-        <p>Layanan terpercaya & profesional untuk rumah dan tempat usaha Anda</p>
+        <p>
+          Layanan terpercaya & profesional untuk rumah dan tempat usaha Anda
+        </p>
         <div class="visi-misi">
           <p>
             Kami siap memberikan solusi terbaik dalam pemasangan, perawatan, dan
@@ -1328,41 +1496,57 @@
             berpengalaman dan harga transparan.
           </p>
         </div>
-        <a href="https://wa.me/6285817818216" class="btn btn-whatsapp" target="_blank">
+        <a
+          href="https://wa.me/6285817818216"
+          class="btn btn-whatsapp"
+          target="_blank"
+        >
           <i class="fab fa-whatsapp"></i> Hubungi Kami
         </a>
       </div>
     </section>
     <section class="content">
       <div class="service-highlights">
-        <div class="service-card">
+        <div class="service-card" data-service-type="cuci-ac">
           <div class="service-icon">
             <i class="fas fa-air-conditioner"></i>
           </div>
           <div class="service-content">
             <h3>Service AC</h3>
             <p>perbaiki AC anda dengan profesional</p>
-            <a href="https://zelwit.github.io/Sejuk-TeknikAC/cuci-ac.html" class="btn">Pesan Sekarang</a>
+            <a
+              href="https://zelwit.github.io/Sejuk-TeknikAC/cuci-ac.html"
+              class="btn"
+              >Pesan Sekarang</a
+            >
           </div>
         </div>
-        <div class="service-card">
+        <div class="service-card" data-service-type="cuci-ac">
           <div class="service-icon">
             <i class="fas fa-broom"></i>
           </div>
           <div class="service-content">
             <h3>Cuci AC</h3>
             <p>Perawatan rutin untuk performa AC optimal</p>
-            <a href="https://zelwit.github.io/Sejuk-TeknikAC/cuci-ac.html" class="btn">Pesan Sekarang</a>
+            <a
+              href="https://zelwit.github.io/Sejuk-TeknikAC/cuci-ac.html"
+              class="btn"
+              >Pesan Sekarang</a
+            >
           </div>
         </div>
-        <div class="service-card">
+        <div class="service-card" data-service-type="sewa-ac">
           <div class="service-icon">
             <i class="fas fa-snowflake"></i>
           </div>
           <div class="service-content">
             <h3>Sewa AC</h3>
             <p>Sewa AC berkualitas untuk acara Anda</p>
-            <a href="https://zelwit.github.io/Sejuk-TeknikAC/sewa-ac.html" class="btn">Pesan Sekarang</a>
+            <a
+              href="https://zelwit.github.io/Sejuk-TeknikAC/sewa-ac.html"
+              class="btn"
+              >Pesan Sekarang</a
+            >
           </div>
         </div>
       </div>
@@ -1381,11 +1565,11 @@
         </div>
         <div class="form-group">
           <label for="pipa">Panjang Pipa (meter)</label>
-          <input type="number" id="pipa" min="1" max="20" value="5">
+          <input type="number" id="pipa" min="1" max="20" value="5" />
         </div>
         <div class="form-group">
           <label for="ruangan">Luas Ruangan (m²)</label>
-          <input type="number" id="ruangan" min="5" max="50" value="15">
+          <input type="number" id="ruangan" min="5" max="50" value="15" />
         </div>
         <button class="btn" onclick="calculatePrice()">Hitung Estimasi</button>
         <div class="result" id="result"></div>
@@ -1398,7 +1582,9 @@
       </div>
       <!-- Tempat Testimoni Dinamis dari Firestore -->
       <div class="testimonials" id="dynamicTestimonials">
-        <p style="text-align: center; color: var(--gray);">Memuat testimoni terbaru...</p>
+        <p style="text-align: center; color: var(--gray)">
+          Memuat testimoni terbaru...
+        </p>
       </div>
     </section>
     <section class="content">
@@ -1426,7 +1612,14 @@
         <p>Kami melayani berbagai area di Jabodetabek</p>
       </div>
       <div class="map-container">
-        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.521260322283!2d106.8195613506864!3d-6.194741395493371!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNsKwMTAnNDEuMSJTIDEwNsKwNDknMTAuMyJF!5e0!3m2!1sen!2sid!4v1621234567890!5m2!1sen!2sid" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.521260322283!2d106.8195613506864!3d-6.194741395493371!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNsKwMTAnNDEuMSJTIDEwNsKwNDknMTAuMyJF!5e0!3m2!1sen!2sid!4v1621234567890!5m2!1sen!2sid"
+          width="100%"
+          height="100%"
+          style="border: 0"
+          allowfullscreen=""
+          loading="lazy"
+        ></iframe>
       </div>
     </section>
     <section class="content">
@@ -1441,8 +1634,13 @@
           </div>
           <div class="blog-content">
             <h3>5 Tanda AC Kamu Butuh Diservice</h3>
-            <p>Ketahui tanda-tanda ketika AC Anda membutuhkan perawatan profesional sebelum masalah menjadi lebih serius.</p>
-            <button class="btn read-more-btn" data-modal="modal1">Baca Selengkapnya</button>
+            <p>
+              Ketahui tanda-tanda ketika AC Anda membutuhkan perawatan
+              profesional sebelum masalah menjadi lebih serius.
+            </p>
+            <button class="btn read-more-btn" data-modal="modal1">
+              Baca Selengkapnya
+            </button>
           </div>
         </div>
         <div class="blog-card">
@@ -1451,8 +1649,13 @@
           </div>
           <div class="blog-content">
             <h3>Perbedaan Freon R32 vs R410A</h3>
-            <p>Memahami perbedaan antara dua jenis freon yang umum digunakan dalam AC modern saat ini.</p>
-            <button class="btn read-more-btn" data-modal="modal2">Baca Selengkapnya</button>
+            <p>
+              Memahami perbedaan antara dua jenis freon yang umum digunakan
+              dalam AC modern saat ini.
+            </p>
+            <button class="btn read-more-btn" data-modal="modal2">
+              Baca Selengkapnya
+            </button>
           </div>
         </div>
         <div class="blog-card">
@@ -1461,8 +1664,13 @@
           </div>
           <div class="blog-content">
             <h3>Cara Merawat AC Agar Tahan Lama</h3>
-            <p>Tips sederhana untuk merawat AC Anda agar tetap berfungsi optimal dengan usia pakai yang panjang.</p>
-            <button class="btn read-more-btn" data-modal="modal3">Baca Selengkapnya</button>
+            <p>
+              Tips sederhana untuk merawat AC Anda agar tetap berfungsi optimal
+              dengan usia pakai yang panjang.
+            </p>
+            <button class="btn read-more-btn" data-modal="modal3">
+              Baca Selengkapnya
+            </button>
           </div>
         </div>
       </div>
@@ -1471,23 +1679,49 @@
       <div class="modal-content">
         <span class="close-btn">&times;</span>
         <h3>5 Tanda AC Kamu Butuh Diservice</h3>
-        <p>AC yang berfungsi dengan baik adalah kenyamanan yang sering kita anggap remeh, sampai tiba-tiba berhenti bekerja. Berikut adalah 5 tanda bahwa AC Anda membutuhkan perhatian profesional:</p>
+        <p>
+          AC yang berfungsi dengan baik adalah kenyamanan yang sering kita
+          anggap remeh, sampai tiba-tiba berhenti bekerja. Berikut adalah 5
+          tanda bahwa AC Anda membutuhkan perhatian profesional:
+        </p>
         <ol>
-          <li><strong>Udara tidak sedingin biasanya</strong> - Jika AC Anda tidak lagi mendinginkan ruangan seperti dulu, mungkin ada masalah dengan kompresor atau level freon.</li>
-          <li><strong>Suara aneh atau berisik</strong> - Bunyi berdecit, berderak, atau bergetar keras bisa menandakan masalah mekanis.</li>
-          <li><strong>Bau tidak sedap</strong> - Bau apek bisa berarti ada jamur di saluran, sementara bau terbakar bisa menandakan masalah listrik.</li>
-          <li><strong>Kebocoran air</strong> - Air yang menetes dari unit dalam bisa berarti saluran pembuangan tersumbat.</li>
-          <li><strong>Tagihan listrik melonjak</strong> - AC yang bekerja terlalu keras akan mengonsumsi lebih banyak energi.</li>
+          <li>
+            <strong>Udara tidak sedingin biasanya</strong> - Jika AC Anda tidak
+            lagi mendinginkan ruangan seperti dulu, mungkin ada masalah dengan
+            kompresor atau level freon.
+          </li>
+          <li>
+            <strong>Suara aneh atau berisik</strong> - Bunyi berdecit, berderak,
+            atau bergetar keras bisa menandakan masalah mekanis.
+          </li>
+          <li>
+            <strong>Bau tidak sedap</strong> - Bau apek bisa berarti ada jamur
+            di saluran, sementara bau terbakar bisa menandakan masalah listrik.
+          </li>
+          <li>
+            <strong>Kebocoran air</strong> - Air yang menetes dari unit dalam
+            bisa berarti saluran pembuangan tersumbat.
+          </li>
+          <li>
+            <strong>Tagihan listrik melonjak</strong> - AC yang bekerja terlalu
+            keras akan mengonsumsi lebih banyak energi.
+          </li>
         </ol>
-        <p>Jangan tunda perbaikan AC Anda. Hubungi teknisi profesional Sejuk Teknik untuk diagnosis dan perbaikan yang tepat.</p>
+        <p>
+          Jangan tunda perbaikan AC Anda. Hubungi teknisi profesional Sejuk
+          Teknik untuk diagnosis dan perbaikan yang tepat.
+        </p>
       </div>
     </div>
     <div id="modal2" class="modal">
       <div class="modal-content">
         <span class="close-btn">&times;</span>
         <h3>Perbedaan Freon R32 vs R410A</h3>
-        <p>Freon adalah zat pendingin yang digunakan dalam sistem AC. Dua jenis yang umum saat ini adalah R32 dan R410A. Berikut perbedaannya:</p>
-        
+        <p>
+          Freon adalah zat pendingin yang digunakan dalam sistem AC. Dua jenis
+          yang umum saat ini adalah R32 dan R410A. Berikut perbedaannya:
+        </p>
+
         <h4>Freon R410A</h4>
         <ul>
           <li>Campuran dari dua zat (R32 dan R125)</li>
@@ -1495,7 +1729,7 @@
           <li>Potensi pemanasan global (GWP) 2088</li>
           <li>Lebih banyak digunakan di AC produksi lama</li>
         </ul>
-        
+
         <h4>Freon R32</h4>
         <ul>
           <li>Zat tunggal (tidak campuran)</li>
@@ -1504,37 +1738,67 @@
           <li>Lebih ramah lingkungan</li>
           <li>Membutuhkan lebih sedikit isi (sekitar 30% lebih sedikit)</li>
         </ul>
-        
-        <p>Kebanyakan AC baru sekarang menggunakan R32 karena lebih efisien dan ramah lingkungan. Namun, pengisian harus dilakukan oleh teknisi bersertifikat karena sifatnya yang mudah terbakar.</p>
+
+        <p>
+          Kebanyakan AC baru sekarang menggunakan R32 karena lebih efisien dan
+          ramah lingkungan. Namun, pengisian harus dilakukan oleh teknisi
+          bersertifikat karena sifatnya yang mudah terbakar.
+        </p>
       </div>
     </div>
     <div id="modal3" class="modal">
       <div class="modal-content">
         <span class="close-btn">&times;</span>
         <h3>Cara Merawat AC Agar Tahan Lama</h3>
-        <p>Dengan perawatan yang tepat, AC Anda bisa bertahan hingga 10-15 tahun. Berikut tips merawat AC Anda:</p>
-        
+        <p>
+          Dengan perawatan yang tepat, AC Anda bisa bertahan hingga 10-15 tahun.
+          Berikut tips merawat AC Anda:
+        </p>
+
         <h4>Perawatan Rutin</h4>
         <ul>
-          <li><strong>Cuci filter</strong> setiap 1-2 bulan. Filter kotor mengurangi aliran udara dan membuat AC bekerja lebih keras.</li>
-          <li><strong>Bersihkan unit outdoor</strong> dari daun, debu, dan kotoran yang bisa menyumbat sirip pendingin.</li>
-          <li><strong>Service profesional</strong> setahun sekali untuk pemeriksaan menyeluruh dan pembersihan bagian dalam.</li>
+          <li>
+            <strong>Cuci filter</strong> setiap 1-2 bulan. Filter kotor
+            mengurangi aliran udara dan membuat AC bekerja lebih keras.
+          </li>
+          <li>
+            <strong>Bersihkan unit outdoor</strong> dari daun, debu, dan kotoran
+            yang bisa menyumbat sirip pendingin.
+          </li>
+          <li>
+            <strong>Service profesional</strong> setahun sekali untuk
+            pemeriksaan menyeluruh dan pembersihan bagian dalam.
+          </li>
         </ul>
-        
+
         <h4>Penggunaan Bijak</h4>
         <ul>
-          <li>Atur suhu ideal (24-26°C). Setiap 1°C lebih dingin meningkatkan konsumsi energi 6%.</li>
+          <li>
+            Atur suhu ideal (24-26°C). Setiap 1°C lebih dingin meningkatkan
+            konsumsi energi 6%.
+          </li>
           <li>Gunakan timer atau fitur sleep mode di malam hari.</li>
-          <li>Tutup pintu/jendela saat AC menyala untuk mempertahankan suhu.</li>
+          <li>
+            Tutup pintu/jendela saat AC menyala untuk mempertahankan suhu.
+          </li>
         </ul>
-        
+
         <h4>Ketika Musim Hujan</h4>
         <ul>
-          <li>Nyalakan AC setidaknya 15 menit seminggu sekali untuk mencegah kompresor macet.</li>
-          <li>Jika tidak digunakan dalam waktu lama, tutup unit outdoor untuk melindungi dari hujan dan debu.</li>
+          <li>
+            Nyalakan AC setidaknya 15 menit seminggu sekali untuk mencegah
+            kompresor macet.
+          </li>
+          <li>
+            Jika tidak digunakan dalam waktu lama, tutup unit outdoor untuk
+            melindungi dari hujan dan debu.
+          </li>
         </ul>
-        
-        <p>Dengan perawatan rutin, AC Anda akan bekerja lebih efisien, lebih tahan lama, dan menghemat biaya listrik bulanan.</p>
+
+        <p>
+          Dengan perawatan rutin, AC Anda akan bekerja lebih efisien, lebih
+          tahan lama, dan menghemat biaya listrik bulanan.
+        </p>
       </div>
     </div>
     <section class="content">
@@ -1571,17 +1835,26 @@
         <h3><i class="fas fa-stethoscope"></i> Diagnosa Masalah AC</h3>
         <p>Pilih gejala yang Anda alami:</p>
         <div class="diagnosis-options">
-          <div class="diagnosis-option" onclick="showDiagnosis('tidak-dingin')">AC tidak dingin</div>
-          <div class="diagnosis-option" onclick="showDiagnosis('keluar-air')">Keluar air</div>
-          <div class="diagnosis-option" onclick="showDiagnosis('berisik')">Berisik</div>
-          <div class="diagnosis-option" onclick="showDiagnosis('mati-total')">Mati total</div>
+          <div class="diagnosis-option" onclick="showDiagnosis('tidak-dingin')">
+            AC tidak dingin
+          </div>
+          <div class="diagnosis-option" onclick="showDiagnosis('keluar-air')">
+            Keluar air
+          </div>
+          <div class="diagnosis-option" onclick="showDiagnosis('berisik')">
+            Berisik
+          </div>
+          <div class="diagnosis-option" onclick="showDiagnosis('mati-total')">
+            Mati total
+          </div>
         </div>
         <div class="diagnosis-result" id="diagnosis-result"></div>
       </div>
     </section>
     <section class="content">
       <div class="security-banner">
-        <i class="fas fa-lock"></i> Data Anda Aman – Kami tidak menyebarkan nomor HP atau foto properti Anda
+        <i class="fas fa-lock"></i> Data Anda Aman – Kami tidak menyebarkan
+        nomor HP atau foto properti Anda
       </div>
     </section>
     <footer class="footer">
@@ -1591,34 +1864,75 @@
             <i class="fas fa-snowflake"></i>
             Sejuk Teknik AC
           </div>
-          <p>Solusi AC dan kelistrikan profesional sejak 2020. Memberikan pelayanan terbaik dengan teknisi berpengalaman dan harga terjangkau.</p>
+          <p>
+            Solusi AC dan kelistrikan profesional sejak 2020. Memberikan
+            pelayanan terbaik dengan teknisi berpengalaman dan harga terjangkau.
+          </p>
         </div>
         <div class="footer-links">
           <h3>Menu</h3>
           <ul>
-            <li><a href="index.html"><i class="fas fa-home"></i> Beranda</a></li>
-            <li><a href="layanan.html"><i class="fas fa-tools"></i> Layanan</a></li>
-            <li><a href="AC-Placement-Planner.html"><i class="fas fa-cube"></i> 3D AC Planner</a></li>
-            <li><a href="tentang.html"><i class="fas fa-info-circle"></i> Tentang</a></li>
-            <li><a href="https://wa.me/6285817818216"><i class="fas fa-phone-alt"></i> Kontak</a></li>
+            <li>
+              <a href="index.html"><i class="fas fa-home"></i> Beranda</a>
+            </li>
+            <li>
+              <a href="layanan.html"><i class="fas fa-tools"></i> Layanan</a>
+            </li>
+            <li>
+              <a href="AC-Placement-Planner.html"
+                ><i class="fas fa-cube"></i> 3D AC Planner</a
+              >
+            </li>
+            <li>
+              <a href="tentang.html"
+                ><i class="fas fa-info-circle"></i> Tentang</a
+              >
+            </li>
+            <li>
+              <a href="https://wa.me/6285817818216"
+                ><i class="fas fa-phone-alt"></i> Kontak</a
+              >
+            </li>
           </ul>
         </div>
         <div class="footer-links">
           <h3>Layanan</h3>
           <ul>
-            <li><a href="#"><i class="fas fa-air-conditioner"></i> Instalasi AC</a></li>
-            <li><a href="cuci-ac.html"><i class="fas fa-broom"></i> Cuci AC</a></li>
-            <li><a href="cuci-ac.html"><i class="fas fa-tools"></i> Service AC</a></li>
-            <li><a href="panel-distribusi.html"><i class="fas fa-bolt"></i> Instalasi Listrik</a></li>
-            <li><a href="sewa-ac.html"><i class="fas fa-snowflake"></i> Sewa AC</a></li>
+            <li>
+              <a href="#"
+                ><i class="fas fa-air-conditioner"></i> Instalasi AC</a
+              >
+            </li>
+            <li>
+              <a href="cuci-ac.html"><i class="fas fa-broom"></i> Cuci AC</a>
+            </li>
+            <li>
+              <a href="cuci-ac.html"><i class="fas fa-tools"></i> Service AC</a>
+            </li>
+            <li>
+              <a href="panel-distribusi.html"
+                ><i class="fas fa-bolt"></i> Instalasi Listrik</a
+              >
+            </li>
+            <li>
+              <a href="sewa-ac.html"
+                ><i class="fas fa-snowflake"></i> Sewa AC</a
+              >
+            </li>
           </ul>
         </div>
         <div class="footer-contact">
           <h3>Kontak Kami</h3>
           <p><i class="fab fa-whatsapp"></i> WhatsApp: 85817818216</p>
-          <p><i class="fas fa-envelope"></i> Email: jayatehnikmandiri234@gmail.com</p>
+          <p>
+            <i class="fas fa-envelope"></i> Email:
+            jayatehnikmandiri234@gmail.com
+          </p>
           <p><i class="fas fa-clock"></i> Buka: 09:00 - 07:00 WIB</p>
-          <p><i class="fas fa-map-marker-alt"></i> Jl. Raya Perjuangan No.25 RT.16 RW.07, Tugu Selatan Koja</p>
+          <p>
+            <i class="fas fa-map-marker-alt"></i> Jl. Raya Perjuangan No.25
+            RT.16 RW.07, Tugu Selatan Koja
+          </p>
         </div>
       </div>
       <div class="footer-bottom">
@@ -1631,118 +1945,161 @@
         <span class="close-btn">&times;</span>
         <h2>Login ke Akun Anda</h2>
         <button class="google-btn" id="googleLoginBtn">
-            <i class="fab fa-google"></i> Masuk dengan Google
+          <i class="fab fa-google"></i> Masuk dengan Google
         </button>
         <div class="divider">
-            <div class="divider-line"></div>
-            <div class="divider-text">atau</div>
-            <div class="divider-line"></div>
+          <div class="divider-line"></div>
+          <div class="divider-text">atau</div>
+          <div class="divider-line"></div>
         </div>
         <div class="form-group">
-            <label for="loginEmail">Email</label>
-            <input type="email" id="loginEmail" placeholder="Email Anda">
+          <label for="loginEmail">Email</label>
+          <input type="email" id="loginEmail" placeholder="Email Anda" />
         </div>
         <div class="form-group">
-            <label for="loginPassword">Kata Sandi</label>
-            <div class="password-container">
-                <input type="password" id="loginPassword" placeholder="Kata sandi">
-                <button class="password-toggle" id="toggleLoginPassword">
-                    <i class="fas fa-eye"></i>
-                </button>
-            </div>
+          <label for="loginPassword">Kata Sandi</label>
+          <div class="password-container">
+            <input
+              type="password"
+              id="loginPassword"
+              placeholder="Kata sandi"
+            />
+            <button class="password-toggle" id="toggleLoginPassword">
+              <i class="fas fa-eye"></i>
+            </button>
+          </div>
         </div>
         <button class="btn" id="loginSubmitBtn">Login</button>
-        <p style="text-align: center; margin-top: 15px;">
-            Belum punya akun? <a href="#" id="switchToSignup">Daftar sekarang</a>
+        <p style="text-align: center; margin-top: 15px">
+          Belum punya akun? <a href="#" id="switchToSignup">Daftar sekarang</a>
         </p>
       </div>
     </div>
 
     <div id="signupModal" class="auth-modal">
-        <div class="auth-modal-content">
-            <span class="close-btn">&times;</span>
-            <div class="step-indicator">
-                <div class="step active" data-step="1">1</div>
-                <div class="step" data-step="2">2</div>
-                <div class="step" data-step="3">3</div>
-            </div>
-            
-            <div class="auth-step active" id="signupStep1">
-                <h2>Daftar Akun Baru</h2>
-                <button class="google-btn" id="googleSignupBtn">
-                    <i class="fab fa-google"></i> Daftar dengan Google
-                </button>
-                <div class="divider">
-                    <div class="divider-line"></div>
-                    <div class="divider-text">atau</div>
-                    <div class="divider-line"></div>
-                </div>
-                <div class="form-group">
-                    <label for="signupName">Nama Lengkap</label>
-                    <input type="text" id="signupName" placeholder="Nama lengkap Anda">
-                </div>
-                <button class="btn" id="signupStep1Btn">Lanjut</button>
-                <p style="text-align: center; margin-top: 15px;">
-                    Sudah punya akun? <a href="#" id="switchToLogin">Masuk sekarang</a>
-                </p>
-            </div>
-            
-            <div class="auth-step" id="signupStep2">
-                <h2>Informasi Tambahan</h2>
-                <div class="form-group">
-                    <label for="signupAddress">Alamat</label>
-                    <input type="text" id="signupAddress" placeholder="Alamat lengkap Anda">
-                </div>
-                <div class="form-group">
-                    <label for="signupPhone">Nomor Telepon</label>
-                    <input type="tel" id="signupPhone" placeholder="Nomor telepon aktif">
-                </div>
-                <div class="form-group">
-                    <label>Unggah Foto (Opsional)</label>
-                    <div class="file-upload">
-                        <input type="file" id="signupFile" accept="image/*">
-                        <label for="signupFile" class="file-upload-label">
-                            <i class="fas fa-cloud-upload-alt"></i> Klik untuk unggah foto
-                        </label>
-                    </div>
-                </div>
-                <div style="display: flex; justify-content: space-between;">
-                    <button class="btn" style="background-color: #ccc; color: #333;" id="signupBackBtn">Kembali</button>
-                    <button class="btn" id="signupStep2Btn">Lanjut</button>
-                </div>
-            </div>
-            
-            <div class="auth-step" id="signupStep3">
-                <h2>Buat Akun Anda</h2>
-                <div class="form-group">
-                    <label for="signupEmail">Email</label>
-                    <input type="email" id="signupEmail" placeholder="Masukkan email Anda">
-                </div>
-                <div class="form-group">
-                    <label for="signupPassword">Kata Sandi</label>
-                    <div class="password-container">
-                        <input type="password" id="signupPassword" placeholder="Buat kata sandi kuat">
-                        <button class="password-toggle" id="toggleSignupPassword">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                    </div>
-                    <small style="color: #666;">Gunakan minimal 8 karakter dengan kombinasi huruf, angka, dan simbol</small>
-                </div>
-                <div class="form-group">
-                    <label for="signupConfirmPassword">Konfirmasi Kata Sandi</label>
-                    <div class="password-container">
-                        <input type="password" id="signupConfirmPassword" placeholder="Konfirmasi kata sandi">
-                        <button class="password-toggle" id="toggleSignupConfirmPassword">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                    </div>
-                </div>
-                <div style="display: flex; justify-content: space-between;">
-                    <button class="btn" style="background-color: #ccc; color: #333;" id="signupBackBtn2">Kembali</button>
-                    <button class="btn" id="signupSubmitBtn">Daftar Sekarang</button>
-                </div>
-            </div>
+      <div class="auth-modal-content">
+        <span class="close-btn">&times;</span>
+        <div class="step-indicator">
+          <div class="step active" data-step="1">1</div>
+          <div class="step" data-step="2">2</div>
+          <div class="step" data-step="3">3</div>
         </div>
+
+        <div class="auth-step active" id="signupStep1">
+          <h2>Daftar Akun Baru</h2>
+          <button class="google-btn" id="googleSignupBtn">
+            <i class="fab fa-google"></i> Daftar dengan Google
+          </button>
+          <div class="divider">
+            <div class="divider-line"></div>
+            <div class="divider-text">atau</div>
+            <div class="divider-line"></div>
+          </div>
+          <div class="form-group">
+            <label for="signupName">Nama Lengkap</label>
+            <input
+              type="text"
+              id="signupName"
+              placeholder="Nama lengkap Anda"
+            />
+          </div>
+          <button class="btn" id="signupStep1Btn">Lanjut</button>
+          <p style="text-align: center; margin-top: 15px">
+            Sudah punya akun? <a href="#" id="switchToLogin">Masuk sekarang</a>
+          </p>
+        </div>
+
+        <div class="auth-step" id="signupStep2">
+          <h2>Informasi Tambahan</h2>
+          <div class="form-group">
+            <label for="signupAddress">Alamat</label>
+            <input
+              type="text"
+              id="signupAddress"
+              placeholder="Alamat lengkap Anda"
+            />
+          </div>
+          <div class="form-group">
+            <label for="signupPhone">Nomor Telepon</label>
+            <input
+              type="tel"
+              id="signupPhone"
+              placeholder="Nomor telepon aktif"
+            />
+          </div>
+          <div class="form-group">
+            <label>Unggah Foto (Opsional)</label>
+            <div class="file-upload">
+              <input type="file" id="signupFile" accept="image/*" />
+              <label for="signupFile" class="file-upload-label">
+                <i class="fas fa-cloud-upload-alt"></i> Klik untuk unggah foto
+              </label>
+            </div>
+          </div>
+          <div style="display: flex; justify-content: space-between">
+            <button
+              class="btn"
+              style="background-color: #ccc; color: #333"
+              id="signupBackBtn"
+            >
+              Kembali
+            </button>
+            <button class="btn" id="signupStep2Btn">Lanjut</button>
+          </div>
+        </div>
+
+        <div class="auth-step" id="signupStep3">
+          <h2>Buat Akun Anda</h2>
+          <div class="form-group">
+            <label for="signupEmail">Email</label>
+            <input
+              type="email"
+              id="signupEmail"
+              placeholder="Masukkan email Anda"
+            />
+          </div>
+          <div class="form-group">
+            <label for="signupPassword">Kata Sandi</label>
+            <div class="password-container">
+              <input
+                type="password"
+                id="signupPassword"
+                placeholder="Buat kata sandi kuat"
+              />
+              <button class="password-toggle" id="toggleSignupPassword">
+                <i class="fas fa-eye"></i>
+              </button>
+            </div>
+            <small style="color: #666"
+              >Gunakan minimal 8 karakter dengan kombinasi huruf, angka, dan
+              simbol</small
+            >
+          </div>
+          <div class="form-group">
+            <label for="signupConfirmPassword">Konfirmasi Kata Sandi</label>
+            <div class="password-container">
+              <input
+                type="password"
+                id="signupConfirmPassword"
+                placeholder="Konfirmasi kata sandi"
+              />
+              <button class="password-toggle" id="toggleSignupConfirmPassword">
+                <i class="fas fa-eye"></i>
+              </button>
+            </div>
+          </div>
+          <div style="display: flex; justify-content: space-between">
+            <button
+              class="btn"
+              style="background-color: #ccc; color: #333"
+              id="signupBackBtn2"
+            >
+              Kembali
+            </button>
+            <button class="btn" id="signupSubmitBtn">Daftar Sekarang</button>
+          </div>
+        </div>
+      </div>
     </div>
 
     <script>
@@ -1755,184 +2112,205 @@
         storageBucket: "sejuk-teknik.appspot.com", // pastikan ini benar
         messagingSenderId: "733860478343",
         appId: "1:733860478343:web:172838a08e702d129ae722",
-        measurementId: "G-EDJ6Y6J7GC"
+        measurementId: "G-EDJ6Y6J7GC",
       };
-      
+
       firebase.initializeApp(firebaseConfig);
       const auth = firebase.auth();
       const db = firebase.firestore();
-      
+
       // Cooldown variables
       let lastLoginTime = 0;
       let lastLogoutTime = 0;
       const COOLDOWN_TIME = 5000; // 5 seconds
-      
+
       // Variable Global untuk melacak apakah ini adalah pendaftaran pertama user
-      let isFirstSignup = false; 
-      
+      let isFirstSignup = false;
+      // Variable Global untuk menyimpan data user yang sedang diproses untuk konfirmasi
+      let pendingUserData = null;
+
       // Animate stats counters
       function animateCounters() {
-        const counters = document.querySelectorAll('.stat-number');
+        const counters = document.querySelectorAll(".stat-number");
         const speed = 200;
-        
-        counters.forEach(counter => {
+
+        counters.forEach((counter) => {
           const updateCount = () => {
-            const target = +counter.getAttribute('data-count');
-            const count = +counter.innerText.replace('+', ''); // Hapus '+'
+            const target = +counter.getAttribute("data-count");
+            const count = +counter.innerText.replace("+", ""); // Hapus '+'
             const increment = target / speed;
 
             if (count < target) {
               counter.innerText = Math.ceil(count + increment);
               setTimeout(updateCount, 1);
             } else {
-              counter.innerText = target + '+';
+              counter.innerText = target + "+";
             }
           };
           updateCount();
         });
       }
-      
+
       // Show counters when scrolled to
-      const statsSection = document.querySelector('.stats');
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            animateCounters();
-            observer.unobserve(entry.target);
-          }
-        });
-      }, { threshold: 0.5 });
+      const statsSection = document.querySelector(".stats");
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              animateCounters();
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.5 }
+      );
       if (statsSection) {
         observer.observe(statsSection);
       }
-      
+
       // Price calculator
       function calculatePrice() {
-        const acType = document.getElementById('ac-type').value;
-        const pipa = parseInt(document.getElementById('pipa').value);
-        const ruangan = parseInt(document.getElementById('ruangan').value);
-        
+        const acType = document.getElementById("ac-type").value;
+        const pipa = parseInt(document.getElementById("pipa").value);
+        const ruangan = parseInt(document.getElementById("ruangan").value);
+
         let basePrice;
-        switch(acType) {
-          case 'standard': basePrice = 500000; break;
-          case 'medium': basePrice = 650000; break;
-          case 'large': basePrice = 800000; break;
-          case 'xl': basePrice = 1200000; break;
-          default: basePrice = 500000;
-        }
-        
-        const pipaCost = Math.max(0, pipa - 5) * 30000;
-        const ruanganAdjustment = ruangan > 20 ? 100000 : 0;
-        
-        const total = basePrice + pipaCost + ruanganAdjustment;
-        document.getElementById('result').innerHTML = `
-          <p>Estimasi Biaya Pemasangan: <strong>Rp ${total.toLocaleString('id-ID')}</strong></p>
-          <small>* Harga dapat berubah setelah survey lokasi</small>
-        `;
-        document.getElementById('result').style.display = 'block';
-      }
-      
-      // AC Diagnosis
-      function showDiagnosis(problem) {
-        const resultDiv = document.getElementById('diagnosis-result');
-        let solution = '';
-        
-        switch(problem) {
-          case 'tidak-dingin':
-            solution = 'Kemungkinan: Freon habis atau kompresor bermasalah. Silakan cek layanan isi freon atau perbaikan kompresor.';
+        switch (acType) {
+          case "standard":
+            basePrice = 500000;
             break;
-          case 'keluar-air':
-            solution = 'Kemungkinan: Saluran pembuangan tersumbat atau instalasi tidak level. Kami menyediakan jasa pembersihan saluran dan perbaikan instalasi.';
+          case "medium":
+            basePrice = 650000;
             break;
-          case 'berisik':
-            solution = 'Kemungkinan: Kipas atau kompresor bermasalah, atau ada bagian yang longgar. Perlu pemeriksaan lebih lanjut oleh teknisi kami.';
+          case "large":
+            basePrice = 800000;
             break;
-          case 'mati-total':
-            solution = 'Kemungkinan: Masalah kelistrikan atau PCB rusak. Segera hubungi teknisi kami untuk diagnosis lebih akurat.';
+          case "xl":
+            basePrice = 1200000;
             break;
           default:
-            solution = 'Silakan pilih gejala yang dialami untuk diagnosa lebih lanjut.';
+            basePrice = 500000;
         }
-        
-        resultDiv.innerHTML = solution;
-        resultDiv.style.display = 'block';
+
+        const pipaCost = Math.max(0, pipa - 5) * 30000;
+        const ruanganAdjustment = ruangan > 20 ? 100000 : 0;
+
+        const total = basePrice + pipaCost + ruanganAdjustment;
+        document.getElementById("result").innerHTML = `
+          <p>Estimasi Biaya Pemasangan: <strong>Rp ${total.toLocaleString(
+            "id-ID"
+          )}</strong></p>
+          <small>* Harga dapat berubah setelah survey lokasi</small>
+        `;
+        document.getElementById("result").style.display = "block";
       }
-      
+
+      // AC Diagnosis
+      function showDiagnosis(problem) {
+        const resultDiv = document.getElementById("diagnosis-result");
+        let solution = "";
+
+        switch (problem) {
+          case "tidak-dingin":
+            solution =
+              "Kemungkinan: Freon habis atau kompresor bermasalah. Silakan cek layanan isi freon atau perbaikan kompresor.";
+            break;
+          case "keluar-air":
+            solution =
+              "Kemungkinan: Saluran pembuangan tersumbat atau instalasi tidak level. Kami menyediakan jasa pembersihan saluran dan perbaikan instalasi.";
+            break;
+          case "berisik":
+            solution =
+              "Kemungkinan: Kipas atau kompresor bermasalah, atau ada bagian yang longgar. Perlu pemeriksaan lebih lanjut oleh teknisi kami.";
+            break;
+          case "mati-total":
+            solution =
+              "Kemungkinan: Masalah kelistrikan atau PCB rusak. Segera hubungi teknisi kami untuk diagnosis lebih akurat.";
+            break;
+          default:
+            solution =
+              "Silakan pilih gejala yang dialami untuk diagnosa lebih lanjut.";
+        }
+
+        resultDiv.innerHTML = solution;
+        resultDiv.style.display = "block";
+      }
+
       // Card animation on scroll
-      const cards = document.querySelectorAll('.card');
+      const cards = document.querySelectorAll(".card");
       const cardObserver = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
             if (entry.isIntersecting) {
-              entry.target.classList.add('visible');
+              entry.target.classList.add("visible");
             }
           });
         },
         { threshold: 0.1 }
       );
-      
+
       cards.forEach((card) => cardObserver.observe(card));
-      
+
       // Language switcher
-      const languageBtns = document.querySelectorAll('.language-btn');
-      languageBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-          alert('Fitur ganti bahasa akan datang!');
+      const languageBtns = document.querySelectorAll(".language-btn");
+      languageBtns.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          alert("Fitur ganti bahasa akan datang!");
         });
       });
 
       // Modal functionality for blog posts
-      const modalBtns = document.querySelectorAll('.read-more-btn');
-      const modals = document.querySelectorAll('.modal');
-      const closeBtns = document.querySelectorAll('.modal .close-btn');
-      
-      modalBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-          const modalId = btn.getAttribute('data-modal');
-          document.getElementById(modalId).style.display = 'block';
+      const modalBtns = document.querySelectorAll(".read-more-btn");
+      const modals = document.querySelectorAll(".modal");
+      const closeBtns = document.querySelectorAll(".modal .close-btn");
+
+      modalBtns.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const modalId = btn.getAttribute("data-modal");
+          document.getElementById(modalId).style.display = "block";
         });
       });
 
-      closeBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-          btn.closest('.modal').style.display = 'none';
+      closeBtns.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          btn.closest(".modal").style.display = "none";
         });
       });
 
-      window.addEventListener('click', (e) => {
-        if (e.target.classList.contains('modal')) {
-          e.target.style.display = 'none';
+      window.addEventListener("click", (e) => {
+        if (e.target.classList.contains("modal")) {
+          e.target.style.display = "none";
         }
       });
-      
+
       // Create particle effect
       function createParticles() {
-        const particlesContainer = document.getElementById('particles');
+        const particlesContainer = document.getElementById("particles");
         const particleCount = 50;
-        
+
         for (let i = 0; i < particleCount; i++) {
           setTimeout(() => {
-            const particle = document.createElement('div');
-            particle.classList.add('particle');
-            
+            const particle = document.createElement("div");
+            particle.classList.add("particle");
+
             // Random size
             const size = Math.random() * 10 + 5;
             particle.style.width = `${size}px`;
             particle.style.height = `${size}px`;
-            
+
             // Random position
             const posX = Math.random() * window.innerWidth;
             const posY = Math.random() * window.innerHeight;
             particle.style.left = `${posX}px`;
             particle.style.top = `${posY}px`;
-            
+
             // Random color
-            const colors = ['#0066cc', '#ff7a00', '#ffd700', '#ff5252'];
+            const colors = ["#0066cc", "#ff7a00", "#ffd700", "#ff5252"];
             const color = colors[Math.floor(Math.random() * colors.length)];
             particle.style.backgroundColor = color;
-            
+
             particlesContainer.appendChild(particle);
-            
+
             // Remove particle after animation completes
             setTimeout(() => {
               particle.remove();
@@ -1940,138 +2318,160 @@
           }, i * 50);
         }
       }
-      
+
       // Show loading screen
       function showLoadingScreen() {
-        document.getElementById('loadingScreen').style.display = 'flex';
+        document.getElementById("loadingScreen").style.display = "flex";
       }
-      
+
       // Hide loading screen
       function hideLoadingScreen() {
-        document.getElementById('loadingScreen').style.display = 'none';
+        document.getElementById("loadingScreen").style.display = "none";
       }
-      
+
       // Show success screen (dengan flag untuk new user)
       function showSuccessScreen(isNewUser = false) {
-        document.getElementById('successContainer').style.display = 'flex';
-        document.getElementById('successContainer').setAttribute('data-new-user', isNewUser); // Store the flag
+        document.getElementById("successContainer").style.display = "flex";
+        document
+          .getElementById("successContainer")
+          .setAttribute("data-new-user", isNewUser); // Store the flag
         createParticles();
       }
-      
+
       // Hide success screen
       function hideSuccessScreen() {
-        document.getElementById('successContainer').style.display = 'none';
+        document.getElementById("successContainer").style.display = "none";
       }
-      
+
       // Logic setelah klik 'Thanks!'
       function handleSuccessAction() {
-        const container = document.getElementById('successContainer');
-        const isNewUser = container.getAttribute('data-new-user') === 'true';
+        const container = document.getElementById("successContainer");
+        const isNewUser = container.getAttribute("data-new-user") === "true";
         hideSuccessScreen();
-        
+
         if (isNewUser) {
-            // Tampilkan alert khusus untuk pengguna baru
-            alert('hadiah user baru udh di kirim di notif kamu yah cek gih!');
-            container.setAttribute('data-new-user', 'false'); // Reset flag
+          // Tampilkan alert khusus untuk pengguna baru
+          alert("hadiah user baru udh di kirim di notif kamu yah cek gih!");
+          container.setAttribute("data-new-user", "false"); // Reset flag
         }
-        
+
         // Pastikan badge notifikasi di update setelah action
         updateNotificationBadge();
       }
-      
+
       // Fungsi untuk mengupdate badge notifikasi
-      const notificationBadge = document.getElementById('notificationBadge');
+      const notificationBadge = document.getElementById("notificationBadge");
 
       function updateNotificationBadge() {
-          const user = auth.currentUser;
-          if (!user) {
-              notificationBadge.textContent = '';
-              notificationBadge.style.display = 'none';
-              return;
-          }
-
-          db.collection('notifications')
-            .where('userId', '==', user.uid)
-            .where('read', '==', false)
-            .get()
-            .then(snapshot => {
-                const count = snapshot.size;
-                notificationBadge.textContent = count > 0 ? count : '';
-                notificationBadge.style.display = count > 0 ? 'flex' : 'none';
-            })
-            .catch(error => {
-                console.error('Error updating badge:', error);
-                notificationBadge.textContent = '';
-                notificationBadge.style.display = 'none';
-            });
-      }
-      
-      // Show notification page
-      function showNotificationPage() {
-        document.getElementById('notificationPage').style.display = 'block';
-        loadNotifications();
-      }
-      
-      // Hide notification page
-      function hideNotificationPage() {
-        document.getElementById('notificationPage').style.display = 'none';
-      }
-      
-      // Load notifications from Firestore
-      function loadNotifications() {
-        const notificationList = document.getElementById('notificationList');
-        notificationList.innerHTML = '<p style="text-align: center; color: #666;">Memuat notifikasi...</p>';
-        
         const user = auth.currentUser;
         if (!user) {
-          notificationList.innerHTML = '<p style="text-align: center; color: #666;">Silakan login untuk melihat notifikasi</p>';
+          // notificationBadge.textContent = ''; // Tidak perlu di sini, UI di handle updateAuthUI
+          // notificationBadge.style.display = 'none';
           return;
         }
-        
+
+        db.collection("notifications")
+          .where("userId", "==", user.uid)
+          .where("read", "==", false)
+          .get()
+          .then((snapshot) => {
+            const count = snapshot.size;
+            const inboxBtn = document.getElementById("inboxButton");
+
+            if (inboxBtn) {
+              // Pastikan tombol Inbox ada (saat sudah login)
+              const badge = inboxBtn.querySelector(".notification-badge");
+              badge.textContent = count > 0 ? count : "";
+              badge.style.display = count > 0 ? "flex" : "none";
+            }
+          })
+          .catch((error) => {
+            console.error("Error updating badge:", error);
+          });
+      }
+
+      // Show notification page
+      function showNotificationPage() {
+        document.getElementById("notificationPage").style.display = "block";
+        loadNotifications();
+      }
+
+      // Hide notification page
+      function hideNotificationPage() {
+        document.getElementById("notificationPage").style.display = "none";
+      }
+
+      // Load notifications from Firestore
+      function loadNotifications() {
+        const notificationList = document.getElementById("notificationList");
+        notificationList.innerHTML =
+          '<p style="text-align: center; color: #666;">Memuat notifikasi...</p>';
+
+        const user = auth.currentUser;
+        if (!user) {
+          notificationList.innerHTML =
+            '<p style="text-align: center; color: #666;">Silakan login untuk melihat notifikasi</p>';
+          return;
+        }
+
         // Update semua notifikasi user menjadi 'read: true' (Mark all as read)
-        db.collection('notifications').where('userId', '==', user.uid).where('read', '==', false).get().then(snapshot => {
+        db.collection("notifications")
+          .where("userId", "==", user.uid)
+          .where("read", "==", false)
+          .get()
+          .then((snapshot) => {
             const batch = db.batch();
-            snapshot.docs.forEach(doc => {
-                batch.update(doc.ref, { read: true });
+            snapshot.docs.forEach((doc) => {
+              batch.update(doc.ref, { read: true });
             });
             return batch.commit();
-        }).then(() => {
+          })
+          .then(() => {
             // Setelah semua notifikasi ditandai sudah dibaca, muat daftar notifikasi
-            db.collection('notifications')
-              .where('userId', '==', user.uid)
-              .orderBy('timestamp', 'desc')
+            db.collection("notifications")
+              .where("userId", "==", user.uid)
+              .orderBy("timestamp", "desc")
               .get()
               .then((querySnapshot) => {
-                notificationList.innerHTML = '';
-                
+                notificationList.innerHTML = "";
+
                 if (querySnapshot.empty) {
-                  notificationList.innerHTML = '<p style="text-align: center; color: #666;">Tidak ada notifikasi</p>';
+                  notificationList.innerHTML =
+                    '<p style="text-align: center; color: #666;">Tidak ada notifikasi</p>';
                   updateNotificationBadge(); // Update badge to 0
                   return;
                 }
-                
+
                 querySnapshot.forEach((doc) => {
                   const notification = doc.data();
-                  const notificationItem = document.createElement('div');
-                  notificationItem.classList.add('notification-item');
-                  
+                  const notificationItem = document.createElement("div");
+                  notificationItem.classList.add("notification-item");
+
                   // Karena sudah di mark as read di awal, tidak perlu cek .unread lagi
-                  
-                  const date = notification.timestamp ? new Date(notification.timestamp.toDate()) : new Date();
-                  const formattedDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()} ${date.getHours()}:${date.getMinutes().toString().padStart(2, '0')}`;
-                  
-                  let actionButtons = '';
+
+                  const date = notification.timestamp
+                    ? new Date(notification.timestamp.toDate())
+                    : new Date();
+                  const formattedDate = `${date.getDate()}/${
+                    date.getMonth() + 1
+                  }/${date.getFullYear()} ${date.getHours()}:${date
+                    .getMinutes()
+                    .toString()
+                    .padStart(2, "0")}`;
+
+                  let actionButtons = "";
                   if (notification.claimed) {
-                      actionButtons = '<button class="notification-btn" disabled style="background-color: #ddd; color: #777; padding: 5px 15px; border-radius: 50px; font-size: 0.9rem;">Sudah Diklaim</button>';
+                    actionButtons =
+                      '<button class="notification-btn" disabled style="background-color: #ddd; color: #777; padding: 5px 15px; border-radius: 50px; font-size: 0.9rem;">Sudah Diklaim</button>';
                   } else if (notification.coinReward) {
-                      actionButtons = `
+                    actionButtons = `
                           <button class="notification-btn notification-claim" onclick="claimNotification('${doc.id}', ${notification.coinReward})">Klaim</button>
                           <button class="notification-btn notification-dismiss" onclick="dismissNotification('${doc.id}')">Hapus</button>
                       `;
                   } else {
-                      actionButtons = `<button class="notification-btn notification-dismiss" onclick="dismissNotification('${doc.id}')">Hapus</button>`;
+                    actionButtons = `<button class="notification-btn notification-dismiss" onclick="dismissNotification('${doc.id}')">Hapus</button>`;
                   }
-                  
+
                   notificationItem.innerHTML = `
                     <div class="notification-item-header">
                       <div class="notification-item-title">${notification.title}</div>
@@ -2082,534 +2482,667 @@
                       ${actionButtons}
                     </div>
                   `;
-                  
+
                   notificationList.appendChild(notificationItem);
                 });
                 updateNotificationBadge(); // Update badge to 0 setelah semua dibaca
               })
               .catch((error) => {
-                console.error('Error loading notifications:', error);
-                notificationList.innerHTML = '<p style="text-align: center; color: #666;">Gagal memuat notifikasi</p>';
+                console.error("Error loading notifications:", error);
+                notificationList.innerHTML =
+                  '<p style="text-align: center; color: #666;">Gagal memuat notifikasi</p>';
               });
-        }).catch(error => {
-            console.error('Error batch updating notifications:', error);
-        });
+          })
+          .catch((error) => {
+            console.error("Error batch updating notifications:", error);
+          });
       }
-      
+
       // Claim notification
       function claimNotification(notificationId, coinReward) {
         const user = auth.currentUser;
         if (!user || !coinReward) return;
-        
+
         // Ambil elemen tombol untuk menghindari double click
-        const claimBtn = document.querySelector(`.notification-claim[onclick*="${notificationId}"]`);
+        const claimBtn = document.querySelector(
+          `.notification-claim[onclick*="${notificationId}"]`
+        );
         if (claimBtn) claimBtn.disabled = true;
 
         // 1. Update notifikasi: tandai sudah diklaim
-        db.collection('notifications').doc(notificationId).update({
-          claimed: true
-        }).then(() => {
-          // 2. Tambahkan koin ke user
-          return db.collection('users').doc(user.uid).get().then(userDoc => {
-            const currentCoins = userDoc.data().sjcoin || 0;
-            return db.collection('users').doc(user.uid).update({
-              sjcoin: currentCoins + coinReward
-            }).then(() => currentCoins + coinReward);
-          });
-        })
-        .then((newCoins) => {
-          // 3. Update UI
-          document.getElementById('sjcoinAmount').textContent = newCoins;
-          alert(`Anda mendapatkan ${coinReward} SJCoin! Total SJCoin Anda: ${newCoins}`);
-          
-          // Muat ulang notifikasi untuk menampilkan tombol 'Sudah Diklaim'
-          loadNotifications(); 
-          
-        })
-        .catch((error) => {
+        db.collection("notifications")
+          .doc(notificationId)
+          .update({
+            claimed: true,
+          })
+          .then(() => {
+            // 2. Tambahkan koin ke user
+            return db
+              .collection("users")
+              .doc(user.uid)
+              .get()
+              .then((userDoc) => {
+                const currentCoins = userDoc.data().sjcoin || 0;
+                return db
+                  .collection("users")
+                  .doc(user.uid)
+                  .update({
+                    sjcoin: currentCoins + coinReward,
+                  })
+                  .then(() => currentCoins + coinReward);
+              });
+          })
+          .then((newCoins) => {
+            // 3. Update UI
+            document.getElementById("sjcoinAmount").textContent = newCoins;
+            alert(
+              `Anda mendapatkan ${coinReward} SJCoin! Total SJCoin Anda: ${newCoins}`
+            );
+
+            // Muat ulang notifikasi untuk menampilkan tombol 'Sudah Diklaim'
+            loadNotifications();
+          })
+          .catch((error) => {
             if (claimBtn) claimBtn.disabled = false;
-            console.error('Error claiming notification:', error);
-            alert('Gagal mengklaim hadiah. Silakan coba lagi.');
-        });
+            console.error("Error claiming notification:", error);
+            alert("Gagal mengklaim hadiah. Silakan coba lagi.");
+          });
       }
-      
+
       // Dismiss notification
       function dismissNotification(notificationId) {
-        db.collection('notifications').doc(notificationId).delete()
+        db.collection("notifications")
+          .doc(notificationId)
+          .delete()
           .then(() => {
             // Reload notifications
             loadNotifications();
           })
           .catch((error) => {
-            console.error('Error dismissing notification:', error);
+            console.error("Error dismissing notification:", error);
           });
       }
-      
+
       // Show confirmation modal
       function showConfirmModal() {
-        document.getElementById('confirmModal').style.display = 'block';
+        document.getElementById("confirmModal").style.display = "block";
       }
-      
+
       // Hide confirmation modal
       function hideConfirmModal() {
-        document.getElementById('confirmModal').style.display = 'none';
+        document.getElementById("confirmModal").style.display = "none";
       }
-      
+
       // ===============================================
       // FUNGSI BARU: Load Testimoni Positif ke Section
       // ===============================================
       function loadTestimonials() {
-          const container = document.getElementById('dynamicTestimonials');
-          container.innerHTML = '<p style="text-align: center; color: var(--gray);">Memuat testimoni terbaru...</p>';
-          
-          // Ambil ulasan terbaru
-          db.collection('reviews') // Mengambil dari koleksi 'reviews'
-              .orderBy('timestamp', 'desc')
-              .limit(50) 
-              .get()
-              .then(snapshot => {
-                  container.innerHTML = '';
-                  let count = 0;
-                  const maxTestimonials = 6; // Hanya tampilkan 6
+        const container = document.getElementById("dynamicTestimonials");
+        container.innerHTML =
+          '<p style="text-align: center; color: var(--gray);">Memuat testimoni terbaru...</p>';
 
-                  snapshot.forEach(doc => {
-                      const review = doc.data();
-                      const rating = review.rating || 0;
-                      
-                      // FILTER: Hanya ambil yang ratingnya 4 atau 5 (positif)
-                      if (rating >= 4 && count < maxTestimonials) {
-                          const testimonial = document.createElement('div');
-                          testimonial.classList.add('testimonial');
-                          
-                          // Tampilkan nama dan rating
-                          testimonial.innerHTML = `
+        // Ambil ulasan terbaru
+        db.collection("reviews") // Mengambil dari koleksi 'reviews'
+          .orderBy("timestamp", "desc")
+          .limit(50)
+          .get()
+          .then((snapshot) => {
+            container.innerHTML = "";
+            let count = 0;
+            const maxTestimonials = 6; // Hanya tampilkan 6
+
+            snapshot.forEach((doc) => {
+              const review = doc.data();
+              const rating = review.rating || 0;
+
+              // FILTER: Hanya ambil yang ratingnya 4 atau 5 (positif)
+              if (rating >= 4 && count < maxTestimonials) {
+                const testimonial = document.createElement("div");
+                testimonial.classList.add("testimonial");
+
+                // Tampilkan nama dan rating
+                testimonial.innerHTML = `
                               <p>${review.reviewText}</p>
-                              <div class="author">— ${review.reviewerName || 'Anonim'}, ${rating} Bintang</div>
+                              <div class="author">— ${
+                                review.reviewerName || "Anonim"
+                              }, ${rating} Bintang</div>
                           `;
-                          container.appendChild(testimonial);
-                          count++;
-                      }
-                  });
+                container.appendChild(testimonial);
+                count++;
+              }
+            });
 
-                  if (count === 0) {
-                      container.innerHTML = '<p style="text-align: center; color: var(--gray);">Belum ada testimoni positif (Rating 4 atau 5) yang tersedia.</p>';
-                  }
-              })
-              .catch(error => {
-                  console.error("Error loading testimonials:", error);
-                  container.innerHTML = '<p style="text-align: center; color: red;">Gagal memuat testimoni.</p>';
-              });
+            if (count === 0) {
+              container.innerHTML =
+                '<p style="text-align: center; color: var(--gray);">Belum ada testimoni positif (Rating 4 atau 5) yang tersedia.</p>';
+            }
+          })
+          .catch((error) => {
+            console.error("Error loading testimonials:", error);
+            container.innerHTML =
+              '<p style="text-align: center; color: red;">Gagal memuat testimoni.</p>';
+          });
       }
-
 
       // ===============================================
       // FUNGSI BARU: Update Rating Header (Menggunakan 'reviews')
       // ===============================================
       function updateRatingDisplay() {
-          // UBAH DARI 'ratings' KE 'reviews'
-          db.collection('reviews').get().then((snapshot) => { 
-              if (snapshot.empty) {
-                  document.querySelector('.rating-percentage').textContent = '0.0/5';
-                  return;
+        // UBAH DARI 'ratings' KE 'reviews'
+        db.collection("reviews")
+          .get()
+          .then((snapshot) => {
+            if (snapshot.empty) {
+              document.querySelector(".rating-percentage").textContent =
+                "0.0/5";
+              return;
+            }
+
+            let totalRating = 0;
+            let ratingCount = 0;
+
+            snapshot.forEach((doc) => {
+              // Pastikan field 'rating' ada dan bertipe number di Firestore
+              totalRating += doc.data().rating || 0;
+              ratingCount++;
+            });
+
+            const averageRating = totalRating / ratingCount;
+            const formattedScore = averageRating.toFixed(1).replace(".", ",");
+
+            // Update skor / 5.0
+            document.querySelector(".rating-percentage").textContent =
+              formattedScore + "/5";
+
+            const stars = document.querySelectorAll(".star");
+            const roundedRating = Math.round(averageRating);
+
+            stars.forEach((star, index) => {
+              star.classList.remove("filled");
+              // Isi bintang sesuai rata-rata yang dibulatkan
+              if (index < roundedRating) {
+                star.classList.add("filled");
               }
-              
-              let totalRating = 0;
-              let ratingCount = 0;
-              
-              snapshot.forEach((doc) => {
-                  // Pastikan field 'rating' ada dan bertipe number di Firestore
-                  totalRating += doc.data().rating || 0; 
-                  ratingCount++;
-              });
-              
-              const averageRating = totalRating / ratingCount;
-              const formattedScore = averageRating.toFixed(1).replace('.', ',');
-               
-              // Update skor / 5.0
-              document.querySelector('.rating-percentage').textContent = formattedScore + '/5';
-              
-              const stars = document.querySelectorAll('.star');
-              const roundedRating = Math.round(averageRating);
-              
-              stars.forEach((star, index) => {
-                star.classList.remove('filled');
-                // Isi bintang sesuai rata-rata yang dibulatkan
-                if (index < roundedRating) {
-                  star.classList.add('filled');
-                }
-              });
-          }).catch((error) => {
-              console.error('Error getting ratings:', error);
+            });
+          })
+          .catch((error) => {
+            console.error("Error getting ratings:", error);
           });
       }
-      
+
+      // ===============================================
+      // FUNGSI BARU: Konfirmasi Akun (Pasca Login/Sign Up)
+      // ===============================================
+      function showConfirmationModal(userData, isNewUser) {
+        pendingUserData = userData; // Simpan data sementara
+
+        document.getElementById("confirmName").textContent =
+          userData.name || "N/A";
+        document.getElementById("confirmEmail").textContent =
+          userData.email || "N/A";
+        document.getElementById("confirmAddress").textContent =
+          userData.address || "N/A";
+        document.getElementById("confirmPhone").textContent =
+          userData.phone || "N/A";
+
+        document.getElementById("confirmationModal").style.display = "flex";
+        document.body.style.overflow = "hidden";
+
+        // Event listener untuk tombol Ya
+        document.getElementById("confirmYesAccount").onclick = () => {
+          document.getElementById("confirmationModal").style.display = "none";
+          document.body.style.overflow = "auto";
+
+          // Lanjut ke Success Screen
+          showSuccessScreen(isNewUser);
+        };
+
+        // Event listener untuk tombol Tidak (Logout)
+        document.getElementById("confirmNoAccount").onclick = () => {
+          auth.signOut();
+          document.getElementById("confirmationModal").style.display = "none";
+          document.body.style.overflow = "auto";
+          alert("Akun dibatalkan. Silakan login atau daftar ulang.");
+        };
+      }
+
+      // ===============================================
+      // FUNGSI BARU: Disable/Enable Service Cards
+      // ===============================================
+      function toggleServiceCards(enable) {
+        const serviceCards = document.querySelectorAll(".service-card");
+        const sensitiveServices = ["cuci-ac", "sewa-ac"]; // Service yang di-disable jika belum login
+
+        serviceCards.forEach((card) => {
+          const serviceType = card.getAttribute("data-service-type");
+          if (sensitiveServices.includes(serviceType)) {
+            if (enable) {
+              card.classList.remove("disabled");
+            } else {
+              card.classList.add("disabled");
+              // Tambahkan event listener untuk mencegah navigasi langsung dari button di dalam card
+              card.querySelectorAll(".btn").forEach((btn) => {
+                btn.onclick = (e) => {
+                  e.preventDefault();
+                  alert("Silakan Login untuk memesan layanan ini.");
+                };
+              });
+            }
+          }
+        });
+      }
+
       // Main script on DOMContentLoaded
-      document.addEventListener('DOMContentLoaded', function() {
-        const authButtonsContainer = document.querySelector('.auth-buttons');
-        const loginModal = document.getElementById('loginModal');
-        const signupModal = document.getElementById('signupModal');
-        
-        // ... (Fungsi-fungsi AuthUI, Modals, Login/Signup lainnya ada di sini)
-        
+      document.addEventListener("DOMContentLoaded", function () {
+        const authButtonsContainer = document.querySelector(".auth-buttons");
+        const loginModal = document.getElementById("loginModal");
+        const signupModal = document.getElementById("signupModal");
+
         // Panggil fungsi testimoni
-        loadTestimonials(); 
-        
+        loadTestimonials();
+
         // Panggil fungsi update rating
         updateRatingDisplay();
-        
-        // ... kode lama lainnya
-        
+
         // Function to update UI based on auth state
         const updateAuthUI = (user) => {
           // Clear existing buttons
-          authButtonsContainer.innerHTML = '';
-          
+          authButtonsContainer.innerHTML = "";
+
           if (user) {
             // User is signed in
-            authButtonsContainer.innerHTML = `
-              <button class="auth-btn login-btn" id="profileBtn">Profil</button>
-              <button class="auth-btn signup-btn" id="logoutBtn">Logout</button>
-            `;
-            
-            // Show SJCoin display
-            document.getElementById('sjcoinDisplay').style.display = 'flex';
-            
-            // Get user data including SJCoin
-            db.collection('users').doc(user.uid).get().then(doc => {
-              if (doc.exists) {
-                const userData = doc.data();
-                document.getElementById('sjcoinAmount').textContent = userData.sjcoin || 0;
-              }
-            }).catch(error => {
-              console.error('Error getting user data:', error);
-            });
-            
-            // Logout button with confirmation
-            document.getElementById('logoutBtn').addEventListener('click', () => {
-              // Check cooldown
-              const currentTime = new Date().getTime();
-              if (currentTime - lastLogoutTime < COOLDOWN_TIME) {
-                alert('Tunggu beberapa saat sebelum logout lagi');
-                return;
-              }
-              
-              // Show confirmation modal
-              showConfirmModal();
-            });
+            toggleServiceCards(true); // Enable Cards
 
-            // Profile button
-            document.getElementById('profileBtn').addEventListener('click', () => {
-                alert('Halaman profil akan segera hadir!');
-            });
+            // Get user data including SJCoin and details
+            db.collection("users")
+              .doc(user.uid)
+              .get()
+              .then((doc) => {
+                const userData = doc.data() || {};
+                const userName =
+                  userData.name || user.displayName || user.email.split("@")[0];
+                const userPhone = userData.phone || "N/A";
 
-            // Confirmation modal buttons
-            document.getElementById('confirmYes').addEventListener('click', () => {
-              lastLogoutTime = new Date().getTime();
-              auth.signOut().then(() => {
-                hideConfirmModal();
-                alert('Anda telah berhasil logout.');
-              }).catch(error => {
-                console.error("Logout Error:", error);
-                alert('Gagal untuk logout.');
+                // 1. Update Auth Buttons ke Profile Info + Inbox
+                authButtonsContainer.innerHTML = `
+                <div class="profile-info">
+                    <a href="profile.html?uid=${
+                      user.uid
+                    }" class="user-details-link">
+                        <i class="fas fa-user"></i>
+                        <div class="user-details-text">
+                            <span class="user-name">${userName}</span>
+                            <span class="user-phone">UID: ${user.uid.substring(
+                              0,
+                              4
+                            )}...</span>
+                        </div>
+                    </a>
+                    <button class="notification-btn" id="inboxButton">
+                        <i class="fas fa-inbox"></i> Inbox
+                        <span class="notification-badge" id="notificationBadge"></span>
+                    </button>
+                </div>
+              `;
+
+                // Update Coin
+                document.getElementById("sjcoinAmount").textContent =
+                  userData.sjcoin || 0;
+                document.getElementById("sjcoinDisplay").style.display = "flex";
+
+                // Setup event listener untuk tombol Inbox
+                document
+                  .getElementById("inboxButton")
+                  .addEventListener("click", showNotificationPage);
+
+                // Update badge notifikasi segera
+                updateNotificationBadge();
+              })
+              .catch((error) => {
+                console.error("Error getting user data:", error);
               });
-            });
-            
-            document.getElementById('confirmNo').addEventListener('click', () => {
-              hideConfirmModal();
-            });
 
+            // Logout button with confirmation
+            // Catatan: Logout dipindah ke Profile Page atau harus ditempatkan di tempat lain jika diperlukan di Index
           } else {
             // User is signed out
+            toggleServiceCards(false); // Disable Cards
+
             authButtonsContainer.innerHTML = `
               <button class="auth-btn login-btn" id="loginBtn">Login</button>
               <button class="auth-btn signup-btn" id="signupBtn">Sign Up</button>
             `;
-            
+
             // Hide SJCoin display
-            document.getElementById('sjcoinDisplay').style.display = 'none';
-            
-            document.getElementById('loginBtn').addEventListener('click', () => {
-              loginModal.style.display = 'block';
-            });
-            document.getElementById('signupBtn').addEventListener('click', () => {
-              signupModal.style.display = 'block';
-            });
+            document.getElementById("sjcoinDisplay").style.display = "none";
+
+            document
+              .getElementById("loginBtn")
+              .addEventListener("click", () => {
+                loginModal.style.display = "block";
+              });
+            document
+              .getElementById("signupBtn")
+              .addEventListener("click", () => {
+                signupModal.style.display = "block";
+              });
           }
         };
-        
-        // Auth state observer
-        auth.onAuthStateChanged((user) => {
-            updateAuthUI(user);
-            updateNotificationBadge(); // Panggil saat status auth berubah
-        });
 
-        // Auth modals setup
-        const switchToSignup = document.getElementById('switchToSignup');
-        const switchToLogin = document.getElementById('switchToLogin');
-        
+        // Auth state observer
+        auth.onAuthStateChanged(updateAuthUI);
+
+        // Auth modals setup (Switch between modals)
+        const switchToSignup = document.getElementById("switchToSignup");
+        const switchToLogin = document.getElementById("switchToLogin");
+
         // Switch between modals
-        switchToSignup.addEventListener('click', (e) => {
+        switchToSignup.addEventListener("click", (e) => {
           e.preventDefault();
-          loginModal.style.display = 'none';
-          signupModal.style.display = 'block';
+          loginModal.style.display = "none";
+          signupModal.style.display = "block";
           goToStep(1); // Kembali ke step 1
         });
 
-        switchToLogin.addEventListener('click', (e) => {
+        switchToLogin.addEventListener("click", (e) => {
           e.preventDefault();
-          signupModal.style.display = 'none';
-          loginModal.style.display = 'block';
+          signupModal.style.display = "none";
+          loginModal.style.display = "block";
         });
-        
+
         // Close modals
-        document.querySelectorAll('.auth-modal .close-btn').forEach(btn => {
-          btn.addEventListener('click', () => {
-            btn.closest('.auth-modal').style.display = 'none';
+        document.querySelectorAll(".auth-modal .close-btn").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            btn.closest(".auth-modal").style.display = "none";
           });
         });
-        
-        window.addEventListener('click', (e) => {
-          if (e.target.classList.contains('auth-modal')) {
-            e.target.style.display = 'none';
+
+        window.addEventListener("click", (e) => {
+          if (e.target.classList.contains("auth-modal")) {
+            e.target.style.display = "none";
           }
         });
 
         // Signup multi-step logic
-        const steps = document.querySelectorAll('.step-indicator .step');
-        const authSteps = document.querySelectorAll('.auth-step');
+        const steps = document.querySelectorAll(".step-indicator .step");
+        const authSteps = document.querySelectorAll(".auth-step");
 
         function goToStep(stepNumber) {
-            authSteps.forEach(s => s.classList.remove('active'));
-            document.querySelector(`#signupStep${stepNumber}`).classList.add('active');
+          authSteps.forEach((s) => s.classList.remove("active"));
+          document
+            .querySelector(`#signupStep${stepNumber}`)
+            .classList.add("active");
 
-            steps.forEach(s => {
-                s.classList.remove('active', 'completed');
-                const sNum = parseInt(s.getAttribute('data-step'));
-                if (sNum < stepNumber) {
-                    s.classList.add('completed');
-                } else if (sNum === stepNumber) {
-                    s.classList.add('active');
-                }
-            });
+          steps.forEach((s) => {
+            s.classList.remove("active", "completed");
+            const sNum = parseInt(s.getAttribute("data-step"));
+            if (sNum < stepNumber) {
+              s.classList.add("completed");
+            } else if (sNum === stepNumber) {
+              s.classList.add("active");
+            }
+          });
         }
 
-        document.getElementById('signupStep1Btn').addEventListener('click', () => {
-            if (!document.getElementById('signupName').value.trim()) {
-                alert('Nama lengkap harus diisi.');
-                return;
+        document
+          .getElementById("signupStep1Btn")
+          .addEventListener("click", () => {
+            if (!document.getElementById("signupName").value.trim()) {
+              alert("Nama lengkap harus diisi.");
+              return;
             }
             goToStep(2);
-        });
+          });
 
-        document.getElementById('signupBackBtn').addEventListener('click', () => goToStep(1));
-        document.getElementById('signupStep2Btn').addEventListener('click', () => goToStep(3));
-        document.getElementById('signupBackBtn2').addEventListener('click', () => goToStep(2));
+        document
+          .getElementById("signupBackBtn")
+          .addEventListener("click", () => goToStep(1));
+        document
+          .getElementById("signupStep2Btn")
+          .addEventListener("click", () => goToStep(3));
+        document
+          .getElementById("signupBackBtn2")
+          .addEventListener("click", () => goToStep(2));
 
         // Handle Signup Submission
-        document.getElementById('signupSubmitBtn').addEventListener('click', () => {
-          const name = document.getElementById('signupName').value;
-          const address = document.getElementById('signupAddress').value;
-          const phone = document.getElementById('signupPhone').value;
-          const email = document.getElementById('signupEmail').value;
-          const password = document.getElementById('signupPassword').value;
-          const confirmPassword = document.getElementById('signupConfirmPassword').value;
-          
-          if (!email) {
-              alert('Email harus diisi.');
+        document
+          .getElementById("signupSubmitBtn")
+          .addEventListener("click", () => {
+            const name = document.getElementById("signupName").value;
+            const address = document.getElementById("signupAddress").value;
+            const phone = document.getElementById("signupPhone").value;
+            const email = document.getElementById("signupEmail").value;
+            const password = document.getElementById("signupPassword").value;
+            const confirmPassword = document.getElementById(
+              "signupConfirmPassword"
+            ).value;
+
+            if (!email || !name || !address || !phone) {
+              alert("Semua data harus diisi sebelum mendaftar.");
               return;
-          }
-          if (password.length < 8) {
-            alert('Kata sandi minimal 8 karakter.');
-            return;
-          }
-          if (password !== confirmPassword) {
-            alert('Konfirmasi kata sandi tidak cocok.');
-            return;
-          }
-          
-          // Check cooldown
-          const currentTime = new Date().getTime();
-          if (currentTime - lastLoginTime < COOLDOWN_TIME) {
-            alert('Tunggu beberapa saat sebelum mencoba lagi');
-            return;
-          }
-          
-          showLoadingScreen();
-          
-          auth.createUserWithEmailAndPassword(email, password)
-            .then((userCredential) => {
-              const user = userCredential.user;
-              // Set isFirstSignup = true karena user baru dibuat
-              isFirstSignup = true; 
-              
-              return db.collection('users').doc(user.uid).set({
-                name: name,
-                address: address,
-                phone: phone,
-                email: email,
-                sjcoin: 0,
-                createdAt: firebase.firestore.FieldValue.serverTimestamp()
-              }).then(() => user); // Lanjutkan dengan objek user
-            })
-            .then((user) => {
-              // Jika ini adalah first signup, kirim notifikasi hadiah
-              if (isFirstSignup) {
-                db.collection('notifications').add({
-                  userId: user.uid,
-                  title: 'Selamat Bergabung!',
-                  content: '🥳hore! 50 SJcoin untuk kamu!',
-                  timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                  read: false,
-                  claimed: false,
-                  coinReward: 50
-                });
-              }
-              
-              hideLoadingScreen();
-              signupModal.style.display = 'none';
-              showSuccessScreen(isFirstSignup); // Kirim flag ke success screen
-              isFirstSignup = false; // Reset flag
-            })
-            .catch((error) => {
-              hideLoadingScreen();
-              if (error.code == 'auth/email-already-in-use') {
-                  alert('Email ini sudah terdaftar. Silakan gunakan email lain atau login.');
-              } else {
-                  alert('Terjadi kesalahan: ' + error.message);
-              }
-              console.error("Signup Error:", error);
-            });
-        });
-        
+            }
+            if (password.length < 8) {
+              alert("Kata sandi minimal 8 karakter.");
+              return;
+            }
+            if (password !== confirmPassword) {
+              alert("Konfirmasi kata sandi tidak cocok.");
+              return;
+            }
+
+            const currentTime = new Date().getTime();
+            if (currentTime - lastLoginTime < COOLDOWN_TIME) {
+              alert("Tunggu beberapa saat sebelum mencoba lagi");
+              return;
+            }
+
+            showLoadingScreen();
+
+            auth
+              .createUserWithEmailAndPassword(email, password)
+              .then((userCredential) => {
+                const user = userCredential.user;
+                isFirstSignup = true;
+
+                // Simpan data lengkap ke Firestore
+                const userData = {
+                  name: name,
+                  address: address,
+                  phone: phone,
+                  email: email,
+                  sjcoin: 0,
+                  createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                };
+
+                return db
+                  .collection("users")
+                  .doc(user.uid)
+                  .set(userData)
+                  .then(() => {
+                    hideLoadingScreen();
+                    signupModal.style.display = "none";
+                    // Tampilkan Konfirmasi Akun (Langkah Baru)
+                    showConfirmationModal(userData, isFirstSignup);
+                    return user;
+                  });
+              })
+              .catch((error) => {
+                hideLoadingScreen();
+                if (error.code == "auth/email-already-in-use") {
+                  alert(
+                    "Email ini sudah terdaftar. Silakan gunakan email lain atau login."
+                  );
+                } else {
+                  alert("Terjadi kesalahan: " + error.message);
+                }
+                console.error("Signup Error:", error);
+              });
+          });
+
         // Handle Login Submission
-        document.getElementById('loginSubmitBtn').addEventListener('click', () => {
-          const email = document.getElementById('loginEmail').value;
-          const password = document.getElementById('loginPassword').value;
-          
-          if (!email || !password) {
-              alert('Email dan kata sandi harus diisi.');
+        document
+          .getElementById("loginSubmitBtn")
+          .addEventListener("click", () => {
+            const email = document.getElementById("loginEmail").value;
+            const password = document.getElementById("loginPassword").value;
+
+            if (!email || !password) {
+              alert("Email dan kata sandi harus diisi.");
               return;
-          }
-          
-          // Check cooldown
-          const currentTime = new Date().getTime();
-          if (currentTime - lastLoginTime < COOLDOWN_TIME) {
-            alert('Tunggu beberapa saat sebelum login lagi');
-            return;
-          }
-          
-          showLoadingScreen();
-          
-          auth.signInWithEmailAndPassword(email, password)
-            .then(() => {
-              lastLoginTime = new Date().getTime();
-              hideLoadingScreen();
-              loginModal.style.display = 'none';
-              showSuccessScreen(false); // Bukan new user, kirim false
-            })
-            .catch((error) => {
-              hideLoadingScreen();
-               if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
-                   alert('Email atau kata sandi yang Anda masukkan salah.');
-               } else {
-                   alert('Terjadi kesalahan: ' + error.message);
-               }
-               console.error("Login Error:", error);
-            });
-        });
+            }
+
+            const currentTime = new Date().getTime();
+            if (currentTime - lastLoginTime < COOLDOWN_TIME) {
+              alert("Tunggu beberapa saat sebelum login lagi");
+              return;
+            }
+
+            showLoadingScreen();
+
+            auth
+              .signInWithEmailAndPassword(email, password)
+              .then((userCredential) => {
+                const user = userCredential.user;
+                lastLoginTime = new Date().getTime();
+
+                // Ambil data user dari Firestore untuk konfirmasi
+                return db
+                  .collection("users")
+                  .doc(user.uid)
+                  .get()
+                  .then((doc) => {
+                    hideLoadingScreen();
+                    loginModal.style.display = "none";
+
+                    const userData = doc.data() || {
+                      name: user.displayName || user.email.split("@")[0],
+                      email: user.email,
+                      address: "Belum diisi",
+                      phone: "Belum diisi",
+                      sjcoin: 0,
+                    };
+
+                    // Tampilkan Konfirmasi Akun (Langkah Baru)
+                    showConfirmationModal(userData, false);
+                  });
+              })
+              .catch((error) => {
+                hideLoadingScreen();
+                if (
+                  error.code === "auth/user-not-found" ||
+                  error.code === "auth/wrong-password" ||
+                  error.code === "auth/invalid-credential"
+                ) {
+                  alert("Email atau kata sandi yang Anda masukkan salah.");
+                } else {
+                  alert("Terjadi kesalahan: " + error.message);
+                }
+                console.error("Login Error:", error);
+              });
+          });
 
         // --- GOOGLE AUTH ---
         const googleProvider = new firebase.auth.GoogleAuthProvider();
-        
+
         function handleGoogleAuth(isSignupAttempt) {
-            const currentTime = new Date().getTime();
-            if (currentTime - lastLoginTime < COOLDOWN_TIME) {
-                alert('Tunggu beberapa saat sebelum mencoba lagi');
-                return;
-            }
-            showLoadingScreen();
-            
-            auth.signInWithPopup(googleProvider)
+          const currentTime = new Date().getTime();
+          if (currentTime - lastLoginTime < COOLDOWN_TIME) {
+            alert("Tunggu beberapa saat sebelum mencoba lagi");
+            return;
+          }
+          showLoadingScreen();
+
+          auth
+            .signInWithPopup(googleProvider)
             .then((result) => {
-                const user = result.user;
-                lastLoginTime = new Date().getTime();
-                
-                // Cek apakah user sudah ada di koleksi 'users'
-                const userRef = db.collection('users').doc(user.uid);
-                return userRef.get().then(doc => {
-                    const isNewUser = !doc.exists;
-                    
-                    if (isNewUser) { 
-                        // Jika user benar-benar baru, buat dokumen dan kirim notifikasi
-                        userRef.set({
-                            name: user.displayName,
-                            email: user.email,
-                            sjcoin: 0,
-                            createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                        }).then(() => {
-                            db.collection('notifications').add({
-                                userId: user.uid,
-                                title: 'Selamat Bergabung!',
-                                content: '🥳hore! 50 SJcoin untuk kamu!',
-                                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                                read: false,
-                                claimed: false,
-                                coinReward: 50
-                            });
-                        });
-                    }
-                    return isNewUser; // Return status new user
-                });
-            })
-            .then((isNewUser) => {
+              const user = result.user;
+              lastLoginTime = new Date().getTime();
+
+              const userRef = db.collection("users").doc(user.uid);
+              return userRef.get().then((doc) => {
+                const isNewUser = !doc.exists;
+
+                let userData = {};
+                if (isNewUser) {
+                  userData = {
+                    name: user.displayName,
+                    email: user.email,
+                    sjcoin: 0,
+                    address: "Belum diisi",
+                    phone: "Belum diisi",
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                  };
+
+                  userRef.set(userData).then(() => {
+                    db.collection("notifications").add({
+                      userId: user.uid,
+                      title: "Selamat Bergabung!",
+                      content: "🥳hore! 50 SJcoin untuk kamu!",
+                      timestamp:
+                        firebase.firestore.FieldValue.serverTimestamp(),
+                      read: false,
+                      claimed: false,
+                      coinReward: 50,
+                    });
+                  });
+                } else {
+                  userData = doc.data();
+                }
+
                 hideLoadingScreen();
-                loginModal.style.display = 'none';
-                signupModal.style.display = 'none';
-                showSuccessScreen(isNewUser); // Kirim flag ke success screen
+                loginModal.style.display = "none";
+                signupModal.style.display = "none";
+
+                // Tampilkan Konfirmasi Akun (Langkah Baru)
+                showConfirmationModal(userData, isNewUser);
+              });
             })
             .catch((error) => {
-                hideLoadingScreen();
-                console.error("Google Auth Error:", error);
-                alert('Gagal autentikasi dengan Google: ' + error.message);
+              hideLoadingScreen();
+              console.error("Google Auth Error:", error);
+              alert("Gagal autentikasi dengan Google: " + error.message);
             });
         }
-        
-        document.getElementById('googleLoginBtn').addEventListener('click', () => handleGoogleAuth(false));
-        document.getElementById('googleSignupBtn').addEventListener('click', () => handleGoogleAuth(true));
+
+        document
+          .getElementById("googleLoginBtn")
+          .addEventListener("click", () => handleGoogleAuth(false));
+        document
+          .getElementById("googleSignupBtn")
+          .addEventListener("click", () => handleGoogleAuth(true));
 
         // --- Password Toggle ---
         function setupPasswordToggle(toggleId, inputId) {
-            const toggle = document.getElementById(toggleId);
-            const input = document.getElementById(inputId);
-            toggle.addEventListener('click', function() {
-                const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
-                input.setAttribute('type', type);
-                this.querySelector('i').classList.toggle('fa-eye');
-                this.querySelector('i').classList.toggle('fa-eye-slash');
-            });
+          const toggle = document.getElementById(toggleId);
+          const input = document.getElementById(inputId);
+          toggle.addEventListener("click", function () {
+            const type =
+              input.getAttribute("type") === "password" ? "text" : "password";
+            input.setAttribute("type", type);
+            this.querySelector("i").classList.toggle("fa-eye");
+            this.querySelector("i").classList.toggle("fa-eye-slash");
+          });
         }
-        setupPasswordToggle('toggleLoginPassword', 'loginPassword');
-        setupPasswordToggle('toggleSignupPassword', 'signupPassword');
-        setupPasswordToggle('toggleSignupConfirmPassword', 'signupConfirmPassword');
-        
-        // Notification button
-        document.getElementById('notificationButton').addEventListener('click', () => {
-          showNotificationPage();
-        });
-        
+        setupPasswordToggle("toggleLoginPassword", "loginPassword");
+        setupPasswordToggle("toggleSignupPassword", "signupPassword");
+        setupPasswordToggle(
+          "toggleSignupConfirmPassword",
+          "signupConfirmPassword"
+        );
+
+        // Notification button (diganti menjadi Inbox)
+        // Sudah diatur di updateAuthUI
+
         // Back button in notification page
-        document.getElementById('backButton').addEventListener('click', () => {
+        document.getElementById("backButton").addEventListener("click", () => {
           hideNotificationPage();
         });
-        
+
         // Success button (Menggantikan alur notifikasi popup)
-        document.getElementById('successButton').addEventListener('click', handleSuccessAction);
-        
+        document
+          .getElementById("successButton")
+          .addEventListener("click", handleSuccessAction);
       });
-      
-      // Panggil fungsi saat halaman dimuat
-      updateRatingDisplay();
-      loadTestimonials();
     </script>
   </body>
 </html>

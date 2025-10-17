@@ -150,8 +150,8 @@
     <script>
         // --- GANTI UID INI DENGAN UID AKUN ADMIN ASLI ANDA ---
         const ADMIN_UIDS = [
-            '7aIizseExGVPkqNJouqt3nMdWtE3', // GANTI DENGAN UID ADMIN PERTAMA
-            'f3M49osGvtcGbEWf9UTdJe1AG013', // GANTI DENGAN UID ADMIN KEDUA
+            '7aIizseExGVPkqNJouqt3nMdWtE3', // UID Admin 1 (Wajib sama dengan Rules)
+            'f3M49osGvtcGbEWf9UTdJe1AG013', // UID Admin 2 (Wajib sama dengan Rules)
             // Tambahkan UID Admin lain jika perlu
         ];
         // --- AKHIR UID ADMIN ---
@@ -173,11 +173,15 @@
         const db = firebase.firestore();
 
         let currentAdminUid = null;
+        let authCheckComplete = false; 
         
         // --- FIREBASE ADMIN CHECK & UI LOAD ---
         auth.onAuthStateChanged(user => {
             if (user) {
+                // Sesi Ditemukan
+                authCheckComplete = true; 
                 currentAdminUid = user.uid;
+                
                 if (ADMIN_UIDS.includes(user.uid)) {
                     // Admin Dikenali
                     document.getElementById('adminPanel').style.display = 'block';
@@ -188,10 +192,18 @@
                     document.getElementById('adminPanel').style.display = 'none';
                     document.getElementById('deniedMessage').style.display = 'block';
                 }
-            } else {
-                // Tidak Login
-                alert('Anda harus login untuk mengakses Panel Admin.');
-                window.location.href = 'index.html';
+            } 
+            
+            // Logika Penundaan untuk memastikan sesi selesai dimuat
+            if (!user && !authCheckComplete) {
+                // Jika user masih null, tunggu sebentar (misalnya 1.5 detik)
+                setTimeout(() => {
+                    // Cek lagi setelah penundaan, kalau masih null, berarti memang belum login.
+                    if (!auth.currentUser) {
+                        alert('Anda harus login untuk mengakses Panel Admin.');
+                        window.location.href = 'index.html';
+                    }
+                }, 1500); // Tunda 1.5 detik
             }
         });
 
@@ -207,6 +219,10 @@
             if (statusFilter !== 'all') {
                 ordersQuery = ordersQuery.where('status', '==', statusFilter);
             }
+            
+            // *PENTING: Order List for Admin tidak membutuhkan Indeks Gabungan karena query-nya sederhana.
+            // Cukup orderBy(timestamp) atau filter(status). Jika ada error, Firebase Console akan 
+            // memberi URL Indeks yang harus dibuat.
 
             ordersQuery.get().then(snapshot => {
                 ordersList.innerHTML = '';
@@ -228,7 +244,7 @@
                     card.innerHTML = `
                         <div class="order-details">
                             <strong>${order.serviceType || 'Service'}</strong>
-                            <p>Oleh: ${order.userName || 'Anonim'} (${order.userId.substring(0, 4)}...)</p>
+                            <p>Oleh: ${order.userName || 'Anonim'} (UID: ${order.userId.substring(0, 4)}...)</p>
                             <p>Tanggal: ${formattedDate}</p>
                             <p>Harga: ${order.price ? 'Rp ' + order.price.toLocaleString('id-ID') : 'N/A'}</p>
                         </div>
@@ -248,12 +264,14 @@
             })
             .catch(error => {
                 console.error("Error loading orders:", error);
-                ordersList.innerHTML = `<p style="color: red;">Gagal memuat pesanan. Pastikan Admin UID dan Security Rules sudah benar!</p>`;
+                // Menampilkan pesan error yang lebih jelas untuk Admin
+                ordersList.innerHTML = `<p style="color: red;">❌ Gagal memuat pesanan. Error: ${error.message}. Pastikan Rules 'orders' sudah benar!</p>`;
             });
         }
 
         function updateOrderStatus(orderId, newStatus) {
-            if (!confirm(`Yakin ingin mengubah status pesanan ${orderId.substring(0, 6)}... menjadi "${newStatus}"?`)) {
+            // Menggunakan window.confirm karena admin panel butuh konfirmasi formal
+            if (!window.confirm(`Yakin ingin mengubah status pesanan ${orderId.substring(0, 6)}... menjadi "${newStatus}"?`)) {
                 return;
             }
 
@@ -261,12 +279,12 @@
                 status: newStatus
             })
             .then(() => {
-                alert(`Status pesanan ${orderId.substring(0, 6)}... berhasil diubah menjadi ${newStatus}!`);
+                window.alert(`Status pesanan ${orderId.substring(0, 6)}... berhasil diubah menjadi ${newStatus}!`);
                 loadOrders(); // Muat ulang daftar
             })
             .catch(error => {
                 console.error("Error updating status:", error);
-                alert(`Gagal mengubah status. Error: ${error.message}. Pastikan Security Rules Admin sudah benar!`);
+                window.alert(`❌ Gagal mengubah status. Error: ${error.message}. Pastikan Security Rules Admin sudah benar!`);
             });
         }
         

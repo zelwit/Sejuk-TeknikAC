@@ -1,3 +1,4 @@
+html
 <!DOCTYPE html>
 <html lang="id">
   <head>
@@ -1339,6 +1340,22 @@
     </style>
   </head>
   <body>
+    <!-- Generic Alert Modal (NEW) - Menggantikan semua alert() -->
+    <div id="genericAlertModal" class="confirm-modal" style="z-index: 3001">
+      <div class="confirm-content">
+        <div class="confirm-title" id="alertTitle">👋 Hai!</div>
+        <div class="confirm-message" id="alertMessage">
+          Pesan tidak formal dengan emoji di sini!
+        </div>
+        <div class="confirm-buttons">
+          <button class="confirm-btn confirm-yes" id="alertCloseBtn">
+            Oke, Lanjut! 👍
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- End Generic Alert Modal -->
+
     <!-- Loading Screen (hidden by default) -->
     <div class="loading-screen" id="loadingScreen" style="display: none">
       <div class="loading-text">Tunggu siapain akun kamu!👤</div>
@@ -1389,7 +1406,7 @@
       <span id="sjcoinAmount">0</span> SJCoin
     </div>
 
-    <!-- Notification Page (hidden by default) -->
+    <!-- Notification Page (ubah menjadi Inbox) -->
     <div class="notification-page" id="notificationPage">
       <div class="notification-header-page">
         <button
@@ -1412,7 +1429,7 @@
       </div>
     </div>
 
-    <!-- Confirmation Modal (hidden by default) -->
+    <!-- Confirmation Modal (Logout - Digunakan juga oleh generic alert) -->
     <div class="confirm-modal" id="confirmModal">
       <div class="confirm-content">
         <div class="confirm-title">Konfirmasi Logout</div>
@@ -2129,280 +2146,254 @@
       // Variable Global untuk menyimpan data user yang sedang diproses untuk konfirmasi
       let pendingUserData = null;
 
+      // ===============================================
+      // FUNGSI BARU: GENERIC ALERT MODAL (Menggantikan alert())
+      // ===============================================
+      function showCustomAlert(title, message, isError = false) {
+        const modal = document.getElementById("genericAlertModal");
+        const modalTitle = document.getElementById("alertTitle");
+        const modalMessage = document.getElementById("alertMessage");
+        const closeBtn = document.getElementById("alertCloseBtn");
+
+        modalTitle.textContent = title;
+        modalMessage.innerHTML = message; // Use innerHTML for emojis/formatting
+
+        if (isError) {
+          modalTitle.style.color = "#f44336"; // Merah untuk error
+          closeBtn.textContent = "Baiklah 😥";
+          closeBtn.style.backgroundColor = "#f44336";
+        } else {
+          modalTitle.style.color = "var(--primary)"; // Biru untuk info
+          closeBtn.textContent = "Oke, Lanjut! 👍";
+          closeBtn.style.backgroundColor = "var(--primary)";
+        }
+
+        modal.style.display = "flex";
+        document.body.style.overflow = "hidden";
+
+        closeBtn.onclick = () => {
+          modal.style.display = "none";
+          document.body.style.overflow = "auto";
+        };
+      }
+
+      // FUNGSI: Map pesan formal menjadi informal + emoji
+      function mapGenericAlert(formalMessage) {
+        let title = "Info Dulu Ya! 📣";
+        let message = formalMessage;
+
+        if (formalMessage.includes("Fitur ganti bahasa")) {
+          message =
+            "Ganti bahasanya lagi disiapin ya! Tunggu sebentar lagi, pasti seru! 🥳";
+        } else if (formalMessage.includes("Tunggu beberapa saat")) {
+          message = "Sabar, jangan buru-buru! Coba lagi 5 detik dari sekarang ya. 😉";
+        } else if (formalMessage.includes("minimal 8 karakter")) {
+          title = "Password Kurang Kuat! 🛡️";
+          message =
+            "Password-nya minimal harus 8 karakter ya. Campur huruf, angka, dan simbol biar aman!";
+        } else if (formalMessage.includes("tidak cocok")) {
+          title = "Password Gak Sama! 🙅‍♂️";
+          message =
+            "Password dan Konfirmasi Password-nya harus sama persis ya. Cek lagi ketikannya!";
+        } else if (formalMessage.includes("harus diisi")) {
+          title = "Lengkapi Dulu Yuk! 📝";
+          message =
+            "Semua kolom yang wajib diisi belum terisi nih. Jangan sampai ada yang kelewat ya!";
+        } else if (formalMessage.includes("berhasil logout")) {
+          title = "Sampai Jumpa Lagi! 👋";
+          message =
+            "Kamu sudah berhasil *logout*. Senang melihatmu! Kapan-kapan mampir lagi ya!";
+        } else if (formalMessage.includes("Gagal untuk logout")) {
+          title = "Gagal Logout! 😟";
+          message = "Ada masalah saat mencoba *logout*. Coba *refresh* halaman dan ulangi.";
+        } else if (formalMessage.includes("Akun dibatalkan")) {
+          title = "Akun Dibatalkan! 💔";
+          message = "Baiklah, pendaftaran akun ini dibatalkan. Silakan daftar ulang kalau mau ya.";
+        } else if (formalMessage.includes("hadiah user baru")) {
+          title = "Hadiah Siap! 🎁";
+          message = "Hadiah *user* baru udh dikirim di **Inbox** kamu yah! Cek gih! 🎉";
+        }
+        // Tambahkan logika lain sesuai kebutuhan
+
+        return { title, message };
+      }
+      
+      // FUNGSI: Map pesan error Firebase
+      function mapErrorToInformal(error) {
+          let title = "Ups, Ada Kesalahan! 😬";
+          let message = `Ada masalah teknis! Coba lagi sebentar ya. Pesan error: ${error.message}`;
+          
+          switch(error.code) {
+              case 'auth/email-already-in-use':
+                  title = "Email Sudah Terdaftar! 😥";
+                  message = "Email ini sudah punya akun di sini! Coba *Login* aja atau pakai email lain ya.";
+                  break;
+              case 'auth/user-not-found':
+              case 'auth/wrong-password':
+              case 'auth/invalid-credential':
+                  title = "Gagal Login! 😵‍💫";
+                  message = "Email atau *password*-mu salah nih! Cek lagi ya, jangan sampai salah ketik!";
+                  break;
+              case 'auth/weak-password':
+                  title = "Password Kurang Kuat! 🛡️";
+                  message = "Password-nya minimal harus 8 karakter ya. Campur huruf, angka, dan simbol biar aman!";
+                  break;
+              default:
+                  title = "Error Tak Terduga! 🐛";
+                  // Tampilkan pesan error asli jika tidak dikenali
+                  message = `Ada masalah teknis! Coba lagi sebentar ya. Pesan error: ${error.message}`;
+                  break;
+          }
+          return { title, message };
+      }
+
+      // OVERRIDE: Ganti semua alert() bawaan JavaScript
+      window.alert = function (message) {
+        const { title, message: informalMessage } = mapGenericAlert(message);
+        showCustomAlert(title, informalMessage);
+      };
+
+      // FUNGSI-FUNGSI LAINNYA DI SINI
+      // ... (Fungsi animateCounters, calculatePrice, showDiagnosis, loadTestimonials, updateRatingDisplay, dll.)
+      // ... (Kode modal Auth, dll.)
+      // Note: Saya hanya menyertakan kembali fungsi utama yang dimodifikasi. Anda harus mengganti seluruh script di index.html Anda dengan kode di respons sebelumnya + semua modifikasi yang ada di sini.
+      
       // Animate stats counters
-      function animateCounters() {
-        const counters = document.querySelectorAll(".stat-number");
-        const speed = 200;
-
-        counters.forEach((counter) => {
-          const updateCount = () => {
-            const target = +counter.getAttribute("data-count");
-            const count = +counter.innerText.replace("+", ""); // Hapus '+'
-            const increment = target / speed;
-
-            if (count < target) {
-              counter.innerText = Math.ceil(count + increment);
-              setTimeout(updateCount, 1);
-            } else {
-              counter.innerText = target + "+";
-            }
-          };
-          updateCount();
-        });
-      }
-
-      // Show counters when scrolled to
-      const statsSection = document.querySelector(".stats");
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              animateCounters();
-              observer.unobserve(entry.target);
-            }
-          });
-        },
-        { threshold: 0.5 }
-      );
-      if (statsSection) {
-        observer.observe(statsSection);
-      }
-
+      function animateCounters() { /* ... (kode lama) ... */ }
+      
       // Price calculator
-      function calculatePrice() {
-        const acType = document.getElementById("ac-type").value;
-        const pipa = parseInt(document.getElementById("pipa").value);
-        const ruangan = parseInt(document.getElementById("ruangan").value);
-
-        let basePrice;
-        switch (acType) {
-          case "standard":
-            basePrice = 500000;
-            break;
-          case "medium":
-            basePrice = 650000;
-            break;
-          case "large":
-            basePrice = 800000;
-            break;
-          case "xl":
-            basePrice = 1200000;
-            break;
-          default:
-            basePrice = 500000;
-        }
-
-        const pipaCost = Math.max(0, pipa - 5) * 30000;
-        const ruanganAdjustment = ruangan > 20 ? 100000 : 0;
-
-        const total = basePrice + pipaCost + ruanganAdjustment;
-        document.getElementById("result").innerHTML = `
-          <p>Estimasi Biaya Pemasangan: <strong>Rp ${total.toLocaleString(
-            "id-ID"
-          )}</strong></p>
-          <small>* Harga dapat berubah setelah survey lokasi</small>
-        `;
-        document.getElementById("result").style.display = "block";
-      }
-
+      function calculatePrice() { /* ... (kode lama) ... */ }
+      
       // AC Diagnosis
-      function showDiagnosis(problem) {
-        const resultDiv = document.getElementById("diagnosis-result");
-        let solution = "";
-
-        switch (problem) {
-          case "tidak-dingin":
-            solution =
-              "Kemungkinan: Freon habis atau kompresor bermasalah. Silakan cek layanan isi freon atau perbaikan kompresor.";
-            break;
-          case "keluar-air":
-            solution =
-              "Kemungkinan: Saluran pembuangan tersumbat atau instalasi tidak level. Kami menyediakan jasa pembersihan saluran dan perbaikan instalasi.";
-            break;
-          case "berisik":
-            solution =
-              "Kemungkinan: Kipas atau kompresor bermasalah, atau ada bagian yang longgar. Perlu pemeriksaan lebih lanjut oleh teknisi kami.";
-            break;
-          case "mati-total":
-            solution =
-              "Kemungkinan: Masalah kelistrikan atau PCB rusak. Segera hubungi teknisi kami untuk diagnosis lebih akurat.";
-            break;
-          default:
-            solution =
-              "Silakan pilih gejala yang dialami untuk diagnosa lebih lanjut.";
-        }
-
-        resultDiv.innerHTML = solution;
-        resultDiv.style.display = "block";
-      }
-
+      function showDiagnosis(problem) { /* ... (kode lama) ... */ }
+      
       // Card animation on scroll
-      const cards = document.querySelectorAll(".card");
+      const cards = document.querySelectorAll('.card');
       const cardObserver = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
             if (entry.isIntersecting) {
-              entry.target.classList.add("visible");
+              entry.target.classList.add('visible');
             }
           });
         },
         { threshold: 0.1 }
       );
-
+      
       cards.forEach((card) => cardObserver.observe(card));
-
+      
       // Language switcher
-      const languageBtns = document.querySelectorAll(".language-btn");
-      languageBtns.forEach((btn) => {
-        btn.addEventListener("click", () => {
-          alert("Fitur ganti bahasa akan datang!");
+      const languageBtns = document.querySelectorAll('.language-btn');
+      languageBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          window.alert('Fitur ganti bahasa akan datang!'); // Sudah diganti ke window.alert
         });
       });
 
       // Modal functionality for blog posts
-      const modalBtns = document.querySelectorAll(".read-more-btn");
-      const modals = document.querySelectorAll(".modal");
-      const closeBtns = document.querySelectorAll(".modal .close-btn");
-
-      modalBtns.forEach((btn) => {
-        btn.addEventListener("click", () => {
-          const modalId = btn.getAttribute("data-modal");
-          document.getElementById(modalId).style.display = "block";
+      const modalBtns = document.querySelectorAll('.read-more-btn');
+      const modals = document.querySelectorAll('.modal');
+      const closeBtns = document.querySelectorAll('.modal .close-btn');
+      
+      modalBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const modalId = btn.getAttribute('data-modal');
+          document.getElementById(modalId).style.display = 'block';
         });
       });
 
-      closeBtns.forEach((btn) => {
-        btn.addEventListener("click", () => {
-          btn.closest(".modal").style.display = "none";
+      closeBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          btn.closest('.modal').style.display = 'none';
         });
       });
 
-      window.addEventListener("click", (e) => {
-        if (e.target.classList.contains("modal")) {
-          e.target.style.display = "none";
+      window.addEventListener('click', (e) => {
+        if (e.target.classList.contains('modal')) {
+          e.target.style.display = 'none';
         }
       });
-
+      
       // Create particle effect
-      function createParticles() {
-        const particlesContainer = document.getElementById("particles");
-        const particleCount = 50;
-
-        for (let i = 0; i < particleCount; i++) {
-          setTimeout(() => {
-            const particle = document.createElement("div");
-            particle.classList.add("particle");
-
-            // Random size
-            const size = Math.random() * 10 + 5;
-            particle.style.width = `${size}px`;
-            particle.style.height = `${size}px`;
-
-            // Random position
-            const posX = Math.random() * window.innerWidth;
-            const posY = Math.random() * window.innerHeight;
-            particle.style.left = `${posX}px`;
-            particle.style.top = `${posY}px`;
-
-            // Random color
-            const colors = ["#0066cc", "#ff7a00", "#ffd700", "#ff5252"];
-            const color = colors[Math.floor(Math.random() * colors.length)];
-            particle.style.backgroundColor = color;
-
-            particlesContainer.appendChild(particle);
-
-            // Remove particle after animation completes
-            setTimeout(() => {
-              particle.remove();
-            }, 3000);
-          }, i * 50);
-        }
-      }
-
+      function createParticles() { /* ... (kode lama) ... */ }
+      
       // Show loading screen
       function showLoadingScreen() {
-        document.getElementById("loadingScreen").style.display = "flex";
+        document.getElementById('loadingScreen').style.display = 'flex';
       }
-
+      
       // Hide loading screen
       function hideLoadingScreen() {
-        document.getElementById("loadingScreen").style.display = "none";
+        document.getElementById('loadingScreen').style.display = 'none';
       }
-
+      
       // Show success screen (dengan flag untuk new user)
       function showSuccessScreen(isNewUser = false) {
-        document.getElementById("successContainer").style.display = "flex";
-        document
-          .getElementById("successContainer")
-          .setAttribute("data-new-user", isNewUser); // Store the flag
+        document.getElementById('successContainer').style.display = 'flex';
+        document.getElementById('successContainer').setAttribute('data-new-user', isNewUser); // Store the flag
         createParticles();
       }
-
+      
       // Hide success screen
       function hideSuccessScreen() {
-        document.getElementById("successContainer").style.display = "none";
+        document.getElementById('successContainer').style.display = 'none';
       }
-
+      
       // Logic setelah klik 'Thanks!'
       function handleSuccessAction() {
-        const container = document.getElementById("successContainer");
-        const isNewUser = container.getAttribute("data-new-user") === "true";
+        const container = document.getElementById('successContainer');
+        const isNewUser = container.getAttribute('data-new-user') === 'true';
         hideSuccessScreen();
-
+        
         if (isNewUser) {
-          // Tampilkan alert khusus untuk pengguna baru
-          alert("hadiah user baru udh di kirim di notif kamu yah cek gih!");
-          container.setAttribute("data-new-user", "false"); // Reset flag
+            window.alert('hadiah user baru udh di kirim di notif kamu yah cek gih!'); // Diganti ke window.alert
+            container.setAttribute('data-new-user', 'false'); // Reset flag
         }
-
-        // Pastikan badge notifikasi di update setelah action
+        
         updateNotificationBadge();
       }
-
+      
       // Fungsi untuk mengupdate badge notifikasi
-      const notificationBadge = document.getElementById("notificationBadge");
+      const notificationBadge = document.getElementById('notificationBadge');
 
       function updateNotificationBadge() {
-        const user = auth.currentUser;
-        if (!user) {
-          // notificationBadge.textContent = ''; // Tidak perlu di sini, UI di handle updateAuthUI
-          // notificationBadge.style.display = 'none';
-          return;
-        }
+          const user = auth.currentUser;
+          if (!user) {
+              return;
+          }
 
-        db.collection("notifications")
-          .where("userId", "==", user.uid)
-          .where("read", "==", false)
-          .get()
-          .then((snapshot) => {
-            const count = snapshot.size;
-            const inboxBtn = document.getElementById("inboxButton");
-
-            if (inboxBtn) {
-              // Pastikan tombol Inbox ada (saat sudah login)
-              const badge = inboxBtn.querySelector(".notification-badge");
-              badge.textContent = count > 0 ? count : "";
-              badge.style.display = count > 0 ? "flex" : "none";
-            }
-          })
-          .catch((error) => {
-            console.error("Error updating badge:", error);
-          });
+          db.collection('notifications')
+            .where('userId', '==', user.uid)
+            .where('read', '==', false)
+            .get()
+            .then(snapshot => {
+                const count = snapshot.size;
+                const inboxBtn = document.getElementById('inboxButton');
+                
+                if (inboxBtn) { 
+                    const badge = inboxBtn.querySelector('.notification-badge');
+                    badge.textContent = count > 0 ? count : '';
+                    badge.style.display = count > 0 ? 'flex' : 'none';
+                }
+            })
+            .catch(error => {
+                console.error('Error updating badge:', error);
+            });
       }
-
+      
       // Show notification page
       function showNotificationPage() {
-        document.getElementById("notificationPage").style.display = "block";
+        document.getElementById('notificationPage').style.display = 'block';
         loadNotifications();
       }
-
+      
       // Hide notification page
       function hideNotificationPage() {
-        document.getElementById("notificationPage").style.display = "none";
+        document.getElementById('notificationPage').style.display = 'none';
       }
-
+      
       // Load notifications from Firestore
-      function loadNotifications() {
+      function loadNotifications() { /* ... (kode lama) ... */
         const notificationList = document.getElementById("notificationList");
         notificationList.innerHTML =
           '<p style="text-align: center; color: #666;">Memuat notifikasi...</p>';
@@ -2497,9 +2488,9 @@
             console.error("Error batch updating notifications:", error);
           });
       }
-
+      
       // Claim notification
-      function claimNotification(notificationId, coinReward) {
+      function claimNotification(notificationId, coinReward) { /* ... (kode lama) ... */
         const user = auth.currentUser;
         if (!user || !coinReward) return;
 
@@ -2535,9 +2526,9 @@
           .then((newCoins) => {
             // 3. Update UI
             document.getElementById("sjcoinAmount").textContent = newCoins;
-            alert(
+            window.alert(
               `Anda mendapatkan ${coinReward} SJCoin! Total SJCoin Anda: ${newCoins}`
-            );
+            ); // Diganti ke window.alert
 
             // Muat ulang notifikasi untuk menampilkan tombol 'Sudah Diklaim'
             loadNotifications();
@@ -2545,12 +2536,12 @@
           .catch((error) => {
             if (claimBtn) claimBtn.disabled = false;
             console.error("Error claiming notification:", error);
-            alert("Gagal mengklaim hadiah. Silakan coba lagi.");
+            window.alert("Gagal mengklaim hadiah. Silakan coba lagi."); // Diganti ke window.alert
           });
       }
-
+      
       // Dismiss notification
-      function dismissNotification(notificationId) {
+      function dismissNotification(notificationId) { /* ... (kode lama) ... */
         db.collection("notifications")
           .doc(notificationId)
           .delete()
@@ -2562,21 +2553,19 @@
             console.error("Error dismissing notification:", error);
           });
       }
-
+      
       // Show confirmation modal
       function showConfirmModal() {
-        document.getElementById("confirmModal").style.display = "block";
+        document.getElementById('confirmModal').style.display = 'block';
       }
-
+      
       // Hide confirmation modal
       function hideConfirmModal() {
-        document.getElementById("confirmModal").style.display = "none";
+        document.getElementById('confirmModal').style.display = 'none';
       }
-
-      // ===============================================
-      // FUNGSI BARU: Load Testimoni Positif ke Section
-      // ===============================================
-      function loadTestimonials() {
+      
+      // Load Testimoni Positif ke Section
+      function loadTestimonials() { /* ... (kode lama) ... */
         const container = document.getElementById("dynamicTestimonials");
         container.innerHTML =
           '<p style="text-align: center; color: var(--gray);">Memuat testimoni terbaru...</p>';
@@ -2624,11 +2613,8 @@
           });
       }
 
-      // ===============================================
-      // FUNGSI BARU: Update Rating Header (Menggunakan 'reviews')
-      // ===============================================
-      function updateRatingDisplay() {
-        // UBAH DARI 'ratings' KE 'reviews'
+      // Update Rating Header (Menggunakan 'reviews')
+      function updateRatingDisplay() { /* ... (kode lama) ... */
         db.collection("reviews")
           .get()
           .then((snapshot) => {
@@ -2642,7 +2628,6 @@
             let ratingCount = 0;
 
             snapshot.forEach((doc) => {
-              // Pastikan field 'rating' ada dan bertipe number di Firestore
               totalRating += doc.data().rating || 0;
               ratingCount++;
             });
@@ -2650,7 +2635,6 @@
             const averageRating = totalRating / ratingCount;
             const formattedScore = averageRating.toFixed(1).replace(".", ",");
 
-            // Update skor / 5.0
             document.querySelector(".rating-percentage").textContent =
               formattedScore + "/5";
 
@@ -2659,7 +2643,6 @@
 
             stars.forEach((star, index) => {
               star.classList.remove("filled");
-              // Isi bintang sesuai rata-rata yang dibulatkan
               if (index < roundedRating) {
                 star.classList.add("filled");
               }
@@ -2669,10 +2652,8 @@
             console.error("Error getting ratings:", error);
           });
       }
-
-      // ===============================================
-      // FUNGSI BARU: Konfirmasi Akun (Pasca Login/Sign Up)
-      // ===============================================
+      
+      // Konfirmasi Akun (Pasca Login/Sign Up)
       function showConfirmationModal(userData, isNewUser) {
         pendingUserData = userData; // Simpan data sementara
 
@@ -2702,36 +2683,42 @@
           auth.signOut();
           document.getElementById("confirmationModal").style.display = "none";
           document.body.style.overflow = "auto";
-          alert("Akun dibatalkan. Silakan login atau daftar ulang.");
+          window.alert("Akun dibatalkan. Silakan login atau daftar ulang."); // Diganti ke window.alert
         };
       }
 
-      // ===============================================
-      // FUNGSI BARU: Disable/Enable Service Cards
-      // ===============================================
+      // Disable/Enable Service Cards
       function toggleServiceCards(enable) {
         const serviceCards = document.querySelectorAll(".service-card");
         const sensitiveServices = ["cuci-ac", "sewa-ac"]; // Service yang di-disable jika belum login
-
+        
         serviceCards.forEach((card) => {
           const serviceType = card.getAttribute("data-service-type");
           if (sensitiveServices.includes(serviceType)) {
             if (enable) {
               card.classList.remove("disabled");
+              // Hapus event listener pencegah (biarkan tombol berjalan normal)
+              card.querySelectorAll(".btn").forEach((btn) => {
+                  btn.onclick = null;
+              });
             } else {
               card.classList.add("disabled");
               // Tambahkan event listener untuk mencegah navigasi langsung dari button di dalam card
               card.querySelectorAll(".btn").forEach((btn) => {
                 btn.onclick = (e) => {
                   e.preventDefault();
-                  alert("Silakan Login untuk memesan layanan ini.");
+                  showCustomAlert(
+                    "Eh, Belum Login! 😅", 
+                    "Kamu harus *Login* dulu nih kalau mau pesan layanan *Service/Sewa AC*. Yuk, *Sign Up* dulu!",
+                    true
+                  );
                 };
               });
             }
           }
         });
       }
-
+      
       // Main script on DOMContentLoaded
       document.addEventListener("DOMContentLoaded", function () {
         const authButtonsContainer = document.querySelector(".auth-buttons");
@@ -2888,7 +2875,7 @@
           .getElementById("signupStep1Btn")
           .addEventListener("click", () => {
             if (!document.getElementById("signupName").value.trim()) {
-              alert("Nama lengkap harus diisi.");
+              window.alert("Nama lengkap harus diisi.");
               return;
             }
             goToStep(2);
@@ -2918,21 +2905,21 @@
             ).value;
 
             if (!email || !name || !address || !phone) {
-              alert("Semua data harus diisi sebelum mendaftar.");
+              window.alert("Semua data harus diisi sebelum mendaftar.");
               return;
             }
             if (password.length < 8) {
-              alert("Kata sandi minimal 8 karakter.");
+              window.alert("Kata sandi minimal 8 karakter.");
               return;
             }
             if (password !== confirmPassword) {
-              alert("Konfirmasi kata sandi tidak cocok.");
+              window.alert("Konfirmasi kata sandi tidak cocok.");
               return;
             }
 
             const currentTime = new Date().getTime();
             if (currentTime - lastLoginTime < COOLDOWN_TIME) {
-              alert("Tunggu beberapa saat sebelum mencoba lagi");
+              window.alert("Tunggu beberapa saat sebelum mencoba lagi");
               return;
             }
 
@@ -2968,13 +2955,8 @@
               })
               .catch((error) => {
                 hideLoadingScreen();
-                if (error.code == "auth/email-already-in-use") {
-                  alert(
-                    "Email ini sudah terdaftar. Silakan gunakan email lain atau login."
-                  );
-                } else {
-                  alert("Terjadi kesalahan: " + error.message);
-                }
+                const { title, message } = mapErrorToInformal(error);
+                showCustomAlert(title, message, true);
                 console.error("Signup Error:", error);
               });
           });
@@ -2987,13 +2969,13 @@
             const password = document.getElementById("loginPassword").value;
 
             if (!email || !password) {
-              alert("Email dan kata sandi harus diisi.");
+              window.alert("Email dan kata sandi harus diisi.");
               return;
             }
 
             const currentTime = new Date().getTime();
             if (currentTime - lastLoginTime < COOLDOWN_TIME) {
-              alert("Tunggu beberapa saat sebelum login lagi");
+              window.alert("Tunggu beberapa saat sebelum login lagi");
               return;
             }
 
@@ -3028,15 +3010,8 @@
               })
               .catch((error) => {
                 hideLoadingScreen();
-                if (
-                  error.code === "auth/user-not-found" ||
-                  error.code === "auth/wrong-password" ||
-                  error.code === "auth/invalid-credential"
-                ) {
-                  alert("Email atau kata sandi yang Anda masukkan salah.");
-                } else {
-                  alert("Terjadi kesalahan: " + error.message);
-                }
+                const { title, message } = mapErrorToInformal(error);
+                showCustomAlert(title, message, true);
                 console.error("Login Error:", error);
               });
           });
@@ -3047,7 +3022,7 @@
         function handleGoogleAuth(isSignupAttempt) {
           const currentTime = new Date().getTime();
           if (currentTime - lastLoginTime < COOLDOWN_TIME) {
-            alert("Tunggu beberapa saat sebelum mencoba lagi");
+            window.alert("Tunggu beberapa saat sebelum mencoba lagi");
             return;
           }
           showLoadingScreen();
@@ -3099,8 +3074,9 @@
             })
             .catch((error) => {
               hideLoadingScreen();
+              const { title, message } = mapErrorToInformal(error);
+              showCustomAlert(title, message, true);
               console.error("Google Auth Error:", error);
-              alert("Gagal autentikasi dengan Google: " + error.message);
             });
         }
 

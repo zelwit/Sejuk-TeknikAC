@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Admin | Sejuk Teknik AC</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    <style>
+        :root {
+            --primary: #0066cc;
+            --primary-light: #e6f2ff;
+            --secondary: #ff7a00;
+            --dark: #2d3748;
+            --light: #f8fafc;
+            --white: #ffffff;
+        }
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background-color: var(--light); 
+            color: var(--dark); 
+            padding: 20px; 
+        }
+        .container { 
+            max-width: 1000px; 
+            margin: 50px auto; 
+            background: var(--white); 
+            padding: 30px; 
+            border-radius: 12px; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1); 
+        }
+        h1 { 
+            color: var(--primary); 
+            margin-bottom: 20px; 
+            border-bottom: 2px solid var(--primary-light); 
+            padding-bottom: 10px; 
+        }
+        .admin-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .order-card {
+            background-color: var(--primary-light);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .order-details {
+            flex-grow: 1;
+        }
+        .order-details strong {
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+        .order-status-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .status-tag {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+            color: white;
+            white-space: nowrap;
+        }
+        .status-tag.Baru { background-color: #ff9800; }
+        .status-tag.Diproses { background-color: #2196f3; }
+        .status-tag.Selesai { background-color: #4caf50; }
+        .status-tag.Dibatalkan { background-color: #f44336; }
+
+        .btn-status {
+            padding: 5px 10px;
+            border-radius: 5px;
+            border: 1px solid var(--primary);
+            background-color: var(--white);
+            color: var(--primary);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-status:hover {
+            background-color: var(--primary);
+            color: var(--white);
+        }
+        .btn-logout {
+            background-color: #f44336; 
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            float: right;
+        }
+
+        /* Access Denied Page Style */
+        .denied-container {
+            text-align: center;
+            padding: 50px;
+            margin-top: 100px;
+            background-color: #fdd;
+            border: 2px solid #f44336;
+            border-radius: 12px;
+        }
+        .denied-container h2 {
+            color: #f44336;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Access Denied Message (Hidden by default) -->
+    <div id="deniedMessage" style="display: none;" class="container denied-container">
+        <h2><i class="fas fa-lock"></i> Akses Ditolak</h2>
+        <p>Maaf, Anda tidak memiliki izin untuk mengakses Panel Admin. Silakan hubungi pengembang.</p>
+        <button class="btn-logout" onclick="window.location.href='index.html'"><i class="fas fa-home"></i> Kembali ke Beranda</button>
+    </div>
+
+    <!-- Admin Panel Content (Hidden by default) -->
+    <div id="adminPanel" style="display: none;" class="container">
+        <button class="btn-logout" id="adminLogoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+        <h1><i class="fas fa-cog"></i> Panel Admin Sejuk Teknik</h1>
+        
+        <div class="admin-section">
+            <h3>Filter Pesanan</h3>
+            <select id="statusFilter" class="btn-status" onchange="loadOrders()">
+                <option value="all">Semua Pesanan</option>
+                <option value="Baru">Baru</option>
+                <option value="Diproses">Diproses</option>
+                <option value="Selesai">Selesai</option>
+                <option value="Dibatalkan">Dibatalkan</option>
+            </select>
+        </div>
+
+        <div class="admin-section">
+            <h3>Daftar Pesanan Terbaru (<span id="orderCount">0</span>)</h3>
+            <div id="ordersList">
+                <p>Memuat pesanan...</p>
+            </div>
+        </div>
+        
+    </div>
+
+    <script>
+        // --- GANTI UID INI DENGAN UID AKUN ADMIN ASLI ANDA ---
+        const ADMIN_UIDS = [
+            'YOUR_ADMIN_UID_1', // GANTI DENGAN UID ADMIN PERTAMA
+            'YOUR_ADMIN_UID_2', // GANTI DENGAN UID ADMIN KEDUA
+            // Tambahkan UID Admin lain jika perlu
+        ];
+        // --- AKHIR UID ADMIN ---
+
+        // Konfigurasi Firebase (HARUS SAMA PERSIS dengan index.html)
+        const firebaseConfig = {
+            apiKey: "AIzaSyDtLHSz7-KU97ALJTQvLRQTQvLRQTQvLRQTG5yj7brcsvc", 
+            authDomain: "sejuk-teknik.firebaseapp.com",
+            projectId: "sejuk-teknik",
+            storageBucket: "sejuk-teknik.appspot.com", 
+            messagingSenderId: "733860478343",
+            appId: "1:733860478343:web:172838a08e702d129ae722",
+            measurementId: "G-EDJ6Y6J7GC"
+        };
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        let currentAdminUid = null;
+        
+        // --- FIREBASE ADMIN CHECK & UI LOAD ---
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                currentAdminUid = user.uid;
+                if (ADMIN_UIDS.includes(user.uid)) {
+                    // Admin Dikenali
+                    document.getElementById('adminPanel').style.display = 'block';
+                    document.getElementById('deniedMessage').style.display = 'none';
+                    loadOrders();
+                } else {
+                    // Akses Ditolak (Bukan Admin)
+                    document.getElementById('adminPanel').style.display = 'none';
+                    document.getElementById('deniedMessage').style.display = 'block';
+                }
+            } else {
+                // Tidak Login
+                alert('Anda harus login untuk mengakses Panel Admin.');
+                window.location.href = 'index.html';
+            }
+        });
+
+        // --- ORDER MANAGEMENT FUNCTIONS ---
+
+        function loadOrders() {
+            const ordersList = document.getElementById('ordersList');
+            const statusFilter = document.getElementById('statusFilter').value;
+            ordersList.innerHTML = '<p>Memuat...</p>';
+
+            let ordersQuery = db.collection('orders').orderBy('orderDate', 'desc');
+
+            if (statusFilter !== 'all') {
+                ordersQuery = ordersQuery.where('status', '==', statusFilter);
+            }
+
+            ordersQuery.get().then(snapshot => {
+                ordersList.innerHTML = '';
+                document.getElementById('orderCount').textContent = snapshot.size;
+
+                if (snapshot.empty) {
+                    ordersList.innerHTML = `<p>Tidak ada pesanan dengan status "${statusFilter}".</p>`;
+                    return;
+                }
+
+                snapshot.forEach(doc => {
+                    const order = doc.data();
+                    const orderId = doc.id;
+                    const date = order.orderDate ? new Date(order.orderDate.toDate()) : new Date();
+                    const formattedDate = date.toLocaleDateString('id-ID') + ' ' + date.toLocaleTimeString('id-ID');
+
+                    const card = document.createElement('div');
+                    card.classList.add('order-card');
+                    card.innerHTML = `
+                        <div class="order-details">
+                            <strong>${order.serviceType || 'Service'}</strong>
+                            <p>Oleh: ${order.userName || 'Anonim'} (${order.userId.substring(0, 4)}...)</p>
+                            <p>Tanggal: ${formattedDate}</p>
+                            <p>Harga: ${order.price ? 'Rp ' + order.price.toLocaleString('id-ID') : 'N/A'}</p>
+                        </div>
+                        <div class="order-status-group">
+                            <span class="status-tag ${order.status}">${order.status}</span>
+                            <select class="btn-status" onchange="updateOrderStatus('${orderId}', this.value)">
+                                <option value="" disabled>Ubah Status</option>
+                                <option value="Baru" ${order.status === 'Baru' ? 'selected' : ''}>Baru</option>
+                                <option value="Diproses" ${order.status === 'Diproses' ? 'selected' : ''}>Diproses</option>
+                                <option value="Selesai" ${order.status === 'Selesai' ? 'selected' : ''}>Selesai</option>
+                                <option value="Dibatalkan" ${order.status === 'Dibatalkan' ? 'selected' : ''}>Batalkan</option>
+                            </select>
+                        </div>
+                    `;
+                    ordersList.appendChild(card);
+                });
+            })
+            .catch(error => {
+                console.error("Error loading orders:", error);
+                ordersList.innerHTML = `<p style="color: red;">Gagal memuat pesanan. Pastikan Admin UID dan Security Rules sudah benar!</p>`;
+            });
+        }
+
+        function updateOrderStatus(orderId, newStatus) {
+            if (!confirm(`Yakin ingin mengubah status pesanan ${orderId.substring(0, 6)}... menjadi "${newStatus}"?`)) {
+                return;
+            }
+
+            db.collection('orders').doc(orderId).update({
+                status: newStatus
+            })
+            .then(() => {
+                alert(`Status pesanan ${orderId.substring(0, 6)}... berhasil diubah menjadi ${newStatus}!`);
+                loadOrders(); // Muat ulang daftar
+            })
+            .catch(error => {
+                console.error("Error updating status:", error);
+                alert(`Gagal mengubah status. Error: ${error.message}. Pastikan Security Rules Admin sudah benar!`);
+            });
+        }
+        
+        // Tambahkan event listener untuk logout admin
+        document.getElementById('adminLogoutBtn').addEventListener('click', () => {
+            auth.signOut().then(() => {
+                alert('Anda telah berhasil logout dari Admin Panel.');
+                window.location.href = 'index.html';
+            });
+        });
+
+    </script>
+</body>
+</html>

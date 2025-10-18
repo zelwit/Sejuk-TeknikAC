@@ -593,6 +593,14 @@
         <div class="content">
           <!-- Dashboard Overview -->
           <div id="dashboardPage" class="page-content">
+            <!-- Tempat tombol inisialisasi -->
+            <div class="card" id="settingsInitCard" style="display: none; background-color: var(--danger); color: var(--white); text-align: center;">
+                <p style="font-weight: 600; margin-bottom: 10px;">⚠️ PERHATIAN: Koleksi Pengaturan Sistem Belum Ada!</p>
+                <button class="btn" onclick="initializeDefaultSettings()" style="background-color: var(--white); color: var(--danger); border-color: var(--white);">
+                    <i class="fas fa-cogs"></i> KLIK UNTUK INISIALISASI SETTINGS!
+                </button>
+            </div>
+            
             <div class="dashboard-overview">
               <div class="stat-card">
                 <div class="stat-icon primary">
@@ -996,9 +1004,77 @@
       // --- DASHBOARD FUNCTIONS ---
       
       function loadDashboard() {
+        checkSettingsInit(); // Pengecekan baru
         loadStatistics();
         loadCharts();
         loadRecentActivities();
+      }
+      
+      // Fungsi Baru: Cek apakah koleksi settings/operational sudah ada (NEW)
+      function checkSettingsInit() {
+          const initCard = document.getElementById('settingsInitCard');
+          
+          db.collection('settings').doc('operational').get()
+              .then(doc => {
+                  if (!doc.exists) {
+                      initCard.style.display = 'block';
+                  } else {
+                      initCard.style.display = 'none';
+                  }
+              })
+              .catch(e => {
+                  console.error('Error checking settings doc:', e);
+                  // Tampilkan kartu jika gagal cek (fail-safe)
+                  initCard.style.display = 'block'; 
+              });
+      }
+      
+      // Fungsi Baru: Inisialisasi Koleksi Settings (NEW)
+      function initializeDefaultSettings() {
+          const db = firebase.firestore();
+          const batch = db.batch();
+          
+          if (!confirm("Yakin ingin membuat data pengaturan sistem default? Ini akan membuat 2 dokumen di koleksi 'settings'.")) {
+              return;
+          }
+
+          // --- 1. DEFAULT OPERATIONAL SETTINGS ---
+          const operationalRef = db.collection('settings').doc('operational');
+          const operationalData = {
+              openTime: '09:00', 
+              closeTime: '19:00', 
+              employeeStatus: 'Siaga - Siap Mengerjakan', 
+              forceStatus: null, 
+              updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+          };
+          batch.set(operationalRef, operationalData);
+
+          // --- 2. DEFAULT EVENT POP-UP (Non-aktif secara default) ---
+          const eventRef = db.collection('settings').doc('event_popup');
+          const pastDate = new Date();
+          pastDate.setDate(pastDate.getDate() - 1); 
+          
+          const eventData = {
+              title: 'Selamat Datang!',
+              message: 'Ini adalah event pop-up default. Silakan ganti di Admin Panel.',
+              color: 'var(--primary)',
+              start: firebase.firestore.Timestamp.fromDate(pastDate),
+              end: firebase.firestore.Timestamp.fromDate(pastDate),
+              dismissible: true,
+              updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+          };
+          batch.set(eventRef, eventData);
+
+          // --- COMMIT BATCH ---
+          batch.commit()
+              .then(() => {
+                  window.alert('Data Setting Default berhasil dibuat! Dashboard akan dimuat ulang.');
+                  // Muat ulang dashboard untuk menyembunyikan tombol
+                  loadDashboard();
+              })
+              .catch((error) => {
+                  window.alert('Gagal membuat Data Setting Default: ' + error.message, true);
+              });
       }
       
       function loadStatistics() {
@@ -1917,4 +1993,4 @@
       
     </script>
   </body>
-</html>
+</html>```

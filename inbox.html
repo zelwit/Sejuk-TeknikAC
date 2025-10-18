@@ -1,305 +1,674 @@
 <!DOCTYPE html>
 <html lang="id">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Inbox | Kotak Masuk Notifikasi</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
     <style>
-      /* --- VARIABEL & RESET DASAR (Disesuaikan dengan file sebelumnya) --- */
-      :root {
-        --primary: #0066cc;
-        --primary-light: #e6f2ff;
-        --secondary: #ff7a00;
-        --dark: #2d3748;
-        --light: #f8fafc;
-        --gray: #718096;
-        --white: #ffffff;
-        --coin: #ffd700;
-        --success: #4caf50;
-        --danger: #f44336;
-      }
-      * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-      }
-      body {
-        font-family: "Poppins", sans-serif;
-        color: var(--dark);
-        line-height: 1.6;
-        background-color: var(--light);
-        min-height: 100vh;
-        display: flex;
-        flex-direction: column;
-      }
-      .content {
-        padding: 1.5rem;
-        max-width: 800px;
-        width: 100%;
-        margin: 0 auto;
-        flex-grow: 1;
-      }
-      .footer {
-        background-color: var(--dark);
-        color: white;
-        padding: 1rem;
-        text-align: center;
-        margin-top: auto;
-      }
-      .btn {
-        display: inline-block;
-        background-color: var(--primary);
-        color: var(--white);
-        padding: 0.6rem 1rem;
-        border-radius: 50px;
-        text-decoration: none;
-        font-weight: 500;
-        transition: all 0.3s ease;
-        border: 2px solid var(--primary);
-        cursor: pointer;
-      }
-      .btn:hover {
-        background-color: transparent;
-        color: var(--primary);
-      }
+        /* --- VARIABEL & RESET DASAR --- */
+        :root {
+            --primary: #0066cc;
+            --primary-light: #e6f2ff;
+            --secondary: #ff7a00;
+            --dark: #2d3748;
+            --light: #f8fafc;
+            --gray: #718096;
+            --white: #ffffff;
+            --coin: #ffd700;
+            --success: #4caf50;
+            --danger: #f44336;
+            --info: #17a2b8;
+            --warning: #ffc107;
+            --mashkuran-blue: #1e88e5;
+            --mashkuran-light: #f5f9ff;
+            --mashkuran-gray: #f1f3f5;
+            --mashkuran-text: #495057;
+            --mashkuran-border: #e9ecef;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: "Poppins", sans-serif;
+            color: var(--mashkuran-text);
+            line-height: 1.6;
+            background-color: var(--mashkuran-light);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .content {
+            padding: 1rem;
+            max-width: 100%;
+            width: 100%;
+            margin: 0 auto;
+            flex-grow: 1;
+        }
+        .footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            margin-top: auto;
+            font-size: 0.85rem;
+        }
+        .btn {
+            display: inline-block;
+            background-color: var(--mashkuran-blue);
+            color: var(--white);
+            padding: 0.6rem 1rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        .btn:hover {
+            background-color: #1976d2;
+            transform: translateY(-2px);
+        }
+        .btn-sm {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.85rem;
+        }
 
-      /* --- NAVBAR (Agar konsisten dengan index.html) --- */
-      nav {
-        background-color: var(--white);
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        position: sticky;
-        top: 0;
-        z-index: 100;
-      }
-      .nav-container {
-        max-width: 1200px;
-        margin: 0 auto;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 1rem;
-      }
-      .logo {
-        font-weight: 700;
-        color: var(--primary);
-        font-size: 1.2rem;
-        text-decoration: none;
-      }
-      .nav-links {
-        display: flex;
-        gap: 1.5rem;
-      }
-      nav a {
-        color: var(--dark);
-        text-decoration: none;
-        font-weight: 500;
-        font-size: 0.95rem;
-        transition: all 0.3s ease;
-        position: relative;
-      }
-      nav a.active {
-        color: var(--primary);
-      }
-      
-      /* --- INBOX SPECIFIC STYLES (Diambil dari notif page sebelumnya) --- */
-      .inbox-header {
-        background-color: var(--primary);
-        color: white;
-        padding: 1.5rem;
-        border-radius: 12px 12px 0 0;
-        text-align: center;
-        margin-bottom: 1rem;
-      }
-      .inbox-header h2 {
-          font-size: 1.8rem;
-          margin-bottom: 5px;
-      }
-      .inbox-header p {
-          font-size: 0.9rem;
-          opacity: 0.8;
-      }
-      .notification-list {
-        padding: 0;
-      }
-      .notification-item {
-        background-color: var(--white);
-        border-radius: 8px;
-        padding: 1rem;
-        margin-bottom: 1rem;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-        border-left: 5px solid var(--gray);
-      }
-      .notification-item.claimed {
-        border-left-color: var(--success);
-      }
-      .notification-item.reward {
-        border-left-color: var(--coin);
-      }
-      .notification-item-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 0.5rem;
-      }
-      .notification-item-title {
-        font-weight: 600;
-        color: var(--primary);
-      }
-      .notification-item-time {
-        font-size: 0.75rem;
-        color: var(--gray);
-      }
-      .notification-item-content {
-        color: var(--dark);
-        margin-bottom: 0.75rem;
-        font-size: 0.95rem;
-      }
-      .notification-item-actions {
-        display: flex;
-        gap: 10px;
-        justify-content: flex-end;
-      }
-      .notification-btn {
-        padding: 6px 12px;
-        border-radius: 50px;
-        font-weight: 500;
-        cursor: pointer;
-        border: none;
-        font-size: 0.85rem;
-        transition: opacity 0.2s;
-      }
-      .notification-btn.notification-claim {
-          background-color: var(--coin);
-          color: var(--dark);
-      }
-      .notification-btn.notification-dismiss {
-          background-color: var(--danger);
-          color: var(--white);
-      }
-      .notification-btn:disabled {
-          background-color: #ddd !important;
-          color: #777 !important;
-          cursor: not-allowed;
-      }
+        /* --- NAVBAR (MashKuran Style) --- */
+        nav {
+            background-color: var(--white);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--mashkuran-border);
+        }
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 1rem;
+        }
+        .logo {
+            font-weight: 700;
+            color: var(--mashkuran-blue);
+            font-size: 1.3rem;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .logo i {
+            font-size: 1.5rem;
+        }
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+        nav a {
+            color: var(--mashkuran-text);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            position: relative;
+            padding: 0.5rem 0;
+        }
+        nav a.active {
+            color: var(--mashkuran-blue);
+        }
+        nav a.active::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: var(--mashkuran-blue);
+        }
 
-      /* --- ALERT MODAL (Dari file sebelumnya) --- */
-      .confirm-modal {
-        display: none;
-        position: fixed;
-        z-index: 3001;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        overflow: auto;
-        background-color: rgba(0, 0, 0, 0.7);
-        justify-content: center;
-        align-items: center;
-      }
-      .confirm-content {
-        background-color: #fefefe;
-        margin: auto;
-        padding: 20px;
-        border-radius: 10px;
-        max-width: 400px;
-        width: 90%;
-        position: relative;
-        text-align: center;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-      }
-      .confirm-title {
-        font-size: 1.5rem;
-        margin-bottom: 1rem;
-        color: var(--primary);
-      }
-      .confirm-message {
-        margin-bottom: 1.5rem;
-        color: var(--dark);
-      }
-      .confirm-buttons {
-        display: flex;
-        justify-content: center;
-        gap: 15px;
-      }
-      .confirm-yes {
-        background-color: var(--primary);
-        color: white;
-      }
-      .confirm-yes.error-style {
-          background-color: var(--danger);
-      }
-      
-      /* --- LOGIN PROMPT (Jika belum login) --- */
-      #loginPrompt {
-          background: var(--white);
-          padding: 2rem;
-          border-radius: 12px;
-          text-align: center;
-          box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-          margin-top: 50px;
-      }
-      #loginPrompt h3 { color: var(--secondary); margin-bottom: 1rem; }
+        /* --- INBOX HEADER (MashKuran Style) --- */
+        .inbox-header {
+            background: linear-gradient(135deg, var(--mashkuran-blue), #42a5f5);
+            color: white;
+            padding: 2rem 1.5rem;
+            border-radius: 16px;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 20px rgba(30, 136, 229, 0.25);
+        }
+        .inbox-header h2 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+        .inbox-header p {
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+        .inbox-stats {
+            display: flex;
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .stat-number {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        .stat-label {
+            font-size: 0.85rem;
+            opacity: 0.8;
+        }
 
+        /* --- INBOX CONTROLS (MashKuran Style) --- */
+        .inbox-controls {
+            background-color: var(--white);
+            padding: 1.2rem;
+            border-radius: 16px;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        .controls-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        .controls-row:last-child {
+            margin-bottom: 0;
+        }
+        .search-box {
+            position: relative;
+            flex-grow: 1;
+            max-width: 400px;
+        }
+        .search-box input {
+            width: 100%;
+            padding: 0.7rem 1rem 0.7rem 2.8rem;
+            border: 1px solid var(--mashkuran-border);
+            border-radius: 50px;
+            font-family: "Poppins", sans-serif;
+            font-size: 0.9rem;
+            background-color: var(--mashkuran-gray);
+            transition: all 0.3s ease;
+        }
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--mashkuran-blue);
+            background-color: var(--white);
+        }
+        .search-box i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+        .filter-tabs {
+            display: flex;
+            gap: 0.3rem;
+            background-color: var(--mashkuran-gray);
+            padding: 0.3rem;
+            border-radius: 50px;
+        }
+        .filter-tab {
+            padding: 0.6rem 1.2rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            background: transparent;
+            color: var(--mashkuran-text);
+        }
+        .filter-tab.active {
+            background-color: var(--white);
+            color: var(--mashkuran-blue);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .category-filters {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .category-filter {
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid var(--mashkuran-border);
+            background: white;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .category-filter.active {
+            background-color: var(--mashkuran-blue);
+            color: white;
+            border-color: var(--mashkuran-blue);
+        }
+        .category-filter i {
+            font-size: 0.8rem;
+        }
+
+        /* --- INBOX CONTENT (MashKuran Style) --- */
+        .inbox-container {
+            background-color: var(--white);
+            border-radius: 16px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+        .notification-list {
+            padding: 0;
+        }
+        .notification-item {
+            padding: 1.2rem;
+            border-bottom: 1px solid var(--mashkuran-gray);
+            position: relative;
+            transition: background-color 0.2s;
+            cursor: pointer;
+        }
+        .notification-item:hover {
+            background-color: var(--mashkuran-light);
+        }
+        .notification-item:last-child {
+            border-bottom: none;
+        }
+        .notification-item.unread {
+            background-color: rgba(30, 136, 229, 0.05);
+        }
+        .notification-item.unread::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background-color: var(--mashkuran-blue);
+        }
+        .notification-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.8rem;
+        }
+        .notification-item-title-wrapper {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.8rem;
+        }
+        .notification-item-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        .notification-item-icon.promo {
+            background-color: rgba(255, 122, 0, 0.1);
+            color: var(--secondary);
+        }
+        .notification-item-icon.transaction {
+            background-color: rgba(76, 175, 80, 0.1);
+            color: var(--success);
+        }
+        .notification-item-icon.system {
+            background-color: rgba(23, 162, 184, 0.1);
+            color: var(--info);
+        }
+        .notification-item-icon.reward {
+            background-color: rgba(255, 215, 0, 0.1);
+            color: var(--coin);
+        }
+        .notification-item-content-wrapper {
+            flex-grow: 1;
+        }
+        .notification-item-title {
+            font-weight: 600;
+            color: var(--mashkuran-text);
+            margin-bottom: 0.3rem;
+            font-size: 1rem;
+        }
+        .notification-item-excerpt {
+            color: var(--gray);
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+        .notification-item-time {
+            font-size: 0.75rem;
+            color: var(--gray);
+            white-space: nowrap;
+            padding-top: 0.2rem;
+        }
+        .notification-item-content {
+            color: var(--mashkuran-text);
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+            padding-left: 3rem;
+            line-height: 1.5;
+        }
+        .notification-item-actions {
+            display: flex;
+            gap: 0.8rem;
+            justify-content: flex-end;
+            padding-left: 3rem;
+        }
+        .notification-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .notification-btn.notification-claim {
+            background-color: var(--coin);
+            color: var(--dark);
+        }
+        .notification-btn.notification-claim:hover {
+            background-color: #e6c200;
+        }
+        .notification-btn.notification-dismiss {
+            background-color: transparent;
+            color: var(--danger);
+            border: 1px solid var(--danger);
+        }
+        .notification-btn.notification-dismiss:hover {
+            background-color: var(--danger);
+            color: white;
+        }
+        .notification-btn:disabled {
+            background-color: #ddd !important;
+            color: #777 !important;
+            cursor: not-allowed;
+            border-color: #ddd !important;
+        }
+
+        /* --- EMPTY STATE (MashKuran Style) --- */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--gray);
+        }
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            color: #ddd;
+        }
+        .empty-state h3 {
+            margin-bottom: 0.8rem;
+            color: var(--mashkuran-text);
+            font-size: 1.3rem;
+        }
+        .empty-state p {
+            max-width: 400px;
+            margin: 0 auto 1.5rem;
+            line-height: 1.6;
+        }
+
+        /* --- LOGIN PROMPT (MashKuran Style) --- */
+        #loginPrompt {
+            background: var(--white);
+            padding: 3rem 2rem;
+            border-radius: 16px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-top: 50px;
+        }
+        #loginPrompt i { 
+            font-size: 3.5rem;
+            color: var(--mashkuran-blue);
+            margin-bottom: 1.5rem;
+        }
+        #loginPrompt h3 { 
+            color: var(--mashkuran-blue); 
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+        #loginPrompt p {
+            margin-bottom: 1.5rem;
+            color: var(--mashkuran-text);
+        }
+
+        /* --- MODAL (MashKuran Style) --- */
+        .confirm-modal {
+            display: none;
+            position: fixed;
+            z-index: 3001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.6);
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(4px);
+        }
+        .confirm-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 2rem;
+            border-radius: 16px;
+            max-width: 400px;
+            width: 90%;
+            position: relative;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            animation: modalSlideUp 0.3s ease-out;
+        }
+        @keyframes modalSlideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        .confirm-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--mashkuran-blue);
+        }
+        .confirm-message {
+            margin-bottom: 1.5rem;
+            color: var(--mashkuran-text);
+            line-height: 1.5;
+        }
+        .confirm-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+        .confirm-yes {
+            background-color: var(--mashkuran-blue);
+            color: white;
+        }
+        .confirm-yes.error-style {
+            background-color: var(--danger);
+        }
+
+        /* --- MOBILE RESPONSIVE (MashKuran Style) --- */
+        @media (max-width: 768px) {
+            .inbox-controls {
+                padding: 1rem;
+            }
+            .controls-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .search-box {
+                max-width: none;
+                order: 1;
+            }
+            .filter-tabs {
+                order: 2;
+                justify-content: center;
+            }
+            .category-filters {
+                order: 3;
+                justify-content: center;
+            }
+            .notification-item-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .notification-item-time {
+                margin-top: 0.5rem;
+            }
+            .notification-item-content {
+                padding-left: 0;
+            }
+            .notification-item-actions {
+                padding-left: 0;
+                justify-content: flex-start;
+            }
+            .inbox-stats {
+                gap: 1.5rem;
+            }
+            .stat-number {
+                font-size: 1.5rem;
+            }
+        }
     </style>
-  </head>
-  <body>
-    <!-- Generic Alert Modal (Dari file sebelumnya) -->
+</head>
+<body>
+    <!-- Generic Alert Modal -->
     <div id="genericAlertModal" class="confirm-modal">
-      <div class="confirm-content">
-        <div class="confirm-title" id="alertTitle"></div>
-        <div class="confirm-message" id="alertMessage"></div>
-        <div class="confirm-buttons">
-          <button class="confirm-btn confirm-yes" id="alertCloseBtn">
-            Oke, Lanjut! 👍
-          </button>
+        <div class="confirm-content">
+            <div class="confirm-title" id="alertTitle"></div>
+            <div class="confirm-message" id="alertMessage"></div>
+            <div class="confirm-buttons">
+                <button class="confirm-btn confirm-yes" id="alertCloseBtn">
+                    Oke, Lanjut! 👍
+                </button>
+            </div>
         </div>
-      </div>
     </div>
 
-    <!-- NavBar (Simplified) -->
+    <!-- NavBar -->
     <nav>
-      <div class="nav-container">
-        <a href="index.html" class="logo">Sejuk Teknik</a>
-        <div class="nav-links">
-          <a href="index.html"><i class="fas fa-home"></i> Beranda</a>
-          <a href="rating-ulasan.html"><i class="fas fa-star"></i> Rating & Ulasan</a>
-          <a href="inbox.html" class="active"><i class="fas fa-inbox"></i> Inbox</a>
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-snowflake"></i>
+                Sejuk Teknik
+            </a>
+            <div class="nav-links">
+                <a href="index.html"><i class="fas fa-home"></i> Beranda</a>
+                <a href="rating-ulasan.html"><i class="fas fa-star"></i> Rating & Ulasan</a>
+                <a href="inbox.html" class="active"><i class="fas fa-inbox"></i> Inbox</a>
+            </div>
         </div>
-      </div>
     </nav>
 
     <section class="content">
         <div class="inbox-header">
             <h2><i class="fas fa-inbox"></i> Kotak Masuk Anda</h2>
-            <p>Pesan, notifikasi hadiah, dan pembaruan penting ada di sini.</p>
+            <p>Pusat notifikasi, pesan, dan informasi penting dari Sejuk Teknik</p>
+            
+            <div class="inbox-stats">
+                <div class="stat-item">
+                    <div class="stat-number" id="totalNotifications">0</div>
+                    <div class="stat-label">Total Notifikasi</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="unreadCount">0</div>
+                    <div class="stat-label">Belum Dibaca</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="rewardCount">0</div>
+                    <div class="stat-label">Hadiah Tersedia</div>
+                </div>
+            </div>
         </div>
 
-        <!-- Konten Utama Inbox -->
-        <div id="mainInboxContent">
-            <!-- Loading message / Login Prompt -->
-            <p id="loadingMessage" style="text-align: center; color: var(--gray);">Memuat notifikasi...</p>
+        <div class="inbox-controls">
+            <div class="controls-row">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="Cari notifikasi...">
+                </div>
+                
+                <div class="filter-tabs">
+                    <button class="filter-tab active" data-filter="all">Semua</button>
+                    <button class="filter-tab" data-filter="unread">Belum Dibaca</button>
+                    <button class="filter-tab" data-filter="read">Sudah Dibaca</button>
+                </div>
+            </div>
             
+            <div class="controls-row">
+                <div class="category-filters">
+                    <button class="category-filter active" data-category="all">
+                        <i class="fas fa-list"></i> Semua
+                    </button>
+                    <button class="category-filter" data-category="promo">
+                        <i class="fas fa-tag"></i> Promo
+                    </button>
+                    <button class="category-filter" data-category="transaction">
+                        <i class="fas fa-exchange-alt"></i> Transaksi
+                    </button>
+                    <button class="category-filter" data-category="system">
+                        <i class="fas fa-cog"></i> Sistem
+                    </button>
+                    <button class="category-filter" data-category="reward">
+                        <i class="fas fa-gift"></i> Hadiah
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="inbox-container">
+            <!-- Loading message -->
+            <div id="loadingMessage" style="text-align: center; padding: 2rem; color: var(--gray);">
+                <i class="fas fa-spinner fa-spin"></i> Memuat notifikasi...
+            </div>
+            
+            <!-- Notification List -->
             <div id="notificationList" class="notification-list">
                 <!-- Notifications akan dimuat di sini -->
             </div>
 
-            <div id="loginPrompt" style="display: none;">
-                <h3>Anda Belum Login!</h3>
-                <p>Silakan login untuk melihat Kotak Masuk Anda.</p>
-                <a href="index.html" class="btn">Login / Daftar</a>
+            <!-- Empty State -->
+            <div id="emptyState" class="empty-state" style="display: none;">
+                <i class="fas fa-inbox"></i>
+                <h3>Tidak Ada Notifikasi</h3>
+                <p>Tidak ada notifikasi yang sesuai dengan filter Anda. Coba ubah filter atau periksa kembali nanti.</p>
             </div>
+        </div>
+
+        <div id="loginPrompt" style="display: none;">
+            <i class="fas fa-user-lock"></i>
+            <h3>Anda Belum Login!</h3>
+            <p>Silakan login untuk melihat Kotak Masuk Anda dan mengakses semua notifikasi.</p>
+            <a href="index.html" class="btn">Login / Daftar</a>
         </div>
     </section>
 
@@ -309,277 +678,443 @@
     </footer>
 
     <script>
-      // === FIREBASE CONFIG & INIT (Disalin dari index.html) ===
-      const firebaseConfig = {
-        apiKey: "AIzaSyDtLHSz7-KU97ALJTQvLRQTG5yj7brcsvc", 
-        authDomain: "sejuk-teknik.firebaseapp.com",
-        projectId: "sejuk-teknik",
-        storageBucket: "sejuk-teknik.appspot.com",
-        messagingSenderId: "733860478343",
-        appId: "1:733860478343:web:172838a08e702d129ae722",
-        measurementId: "G-EDJ6Y6J7GC"
-      };
-
-      firebase.initializeApp(firebaseConfig);
-      const auth = firebase.auth();
-      const db = firebase.firestore();
-
-      let currentUserId = null;
-
-      // --- MODAL & ALERT UTILITY (Diambil dan disederhanakan dari index.html) ---
-
-      // FUNGSI: Map pesan formal menjadi informal + emoji (hanya yang relevan)
-      function mapGenericAlert(formalMessage) {
-        let title = "Info Dulu Ya! 📣";
-        let message = formalMessage;
-
-        if (formalMessage.includes("Gagal mengklaim hadiah")) {
-            title = "Klaim Gagal! 😥";
-        } else if (formalMessage.includes("Anda mendapatkan")) {
-            title = "Hadiah Masuk! 🥳";
-            message = formalMessage.replace("Anda mendapatkan", "Kamu dapat");
-        } else if (formalMessage.includes("Silakan login")) {
-            title = "Eits, Login Dulu! 🔒";
-            message = "Kamu harus *login* dulu untuk melakukan ini ya.";
-        } else if (formalMessage.includes("Sabar, jangan buru-buru!")) {
-             title = "Terlalu Cepat! ⏳";
-        }
-
-        return { title, message };
-      }
-      
-      function showCustomAlert(title, message, isError = false) {
-        const modal = document.getElementById("genericAlertModal");
-        const modalTitle = document.getElementById("alertTitle");
-        const modalMessage = document.getElementById("alertMessage");
-        const closeBtn = document.getElementById("alertCloseBtn");
-
-        modalTitle.textContent = title;
-        modalMessage.innerHTML = message;
-
-        modalTitle.style.color = isError ? "var(--danger)" : "var(--primary)";
-        closeBtn.textContent = isError ? "Baiklah 😥" : "Oke, Lanjut! 👍";
-        closeBtn.style.backgroundColor = isError ? "var(--danger)" : "var(--primary)";
-        closeBtn.classList.toggle('error-style', isError);
-
-        modal.style.display = "flex";
-        document.body.style.overflow = "hidden";
-
-        closeBtn.onclick = () => {
-          modal.style.display = "none";
-          document.body.style.overflow = "auto";
+        // === FIREBASE CONFIG & INIT ===
+        const firebaseConfig = {
+            apiKey: "AIzaSyDtLHSz7-KU97ALJTQvLRQTG5yj7brcsvc", 
+            authDomain: "sejuk-teknik.firebaseapp.com",
+            projectId: "sejuk-teknik",
+            storageBucket: "sejuk-teknik.appspot.com",
+            messagingSenderId: "733860478343",
+            appId: "1:733860478343:web:172838a08e702d129ae722",
+            measurementId: "G-EDJ6Y6J7GC"
         };
-      }
 
-      // OVERRIDE: Ganti semua alert() bawaan JavaScript
-      window.alert = function (message) {
-        const isError = message.toLowerCase().includes("gagal") || message.toLowerCase().includes("error");
-        const { title, message: informalMessage } = mapGenericAlert(message);
-        showCustomAlert(title, informalMessage, isError);
-      };
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
 
-      // --- HELPER FUNCTIONS ---
+        let currentUserId = null;
+        let allNotifications = [];
+        let currentFilter = 'all';
+        let currentCategory = 'all';
 
-      function timeSince(date) {
-          const seconds = Math.floor((new Date() - date) / 1000);
-          let interval = seconds / 31536000;
-          if (interval > 1) return Math.floor(interval) + " tahun lalu";
-          interval = seconds / 2592000;
-          if (interval > 1) return Math.floor(interval) + " bulan lalu";
-          interval = seconds / 86400;
-          if (interval > 1) return Math.floor(interval) + " hari lalu";
-          interval = seconds / 3600;
-          if (interval > 1) return Math.floor(interval) + " jam lalu";
-          interval = seconds / 60;
-          if (interval > 1) return Math.floor(interval) + " menit lalu";
-          return Math.floor(seconds) + " detik lalu";
-      }
+        // --- MODAL & ALERT UTILITY ---
 
-      function escapeHtml(text) {
-          if (!text) return '';
-          return text
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/\"/g, '&quot;')
-            .replace(/\'/g, '&#039;');
-      }
+        // FUNGSI: Map pesan formal menjadi informal + emoji
+        function mapGenericAlert(formalMessage) {
+            let title = "Info Dulu Ya! 📣";
+            let message = formalMessage;
 
-      // --- MAIN INBOX LOGIC ---
-
-      function loadNotifications() {
-        const notificationList = document.getElementById("notificationList");
-        const loadingMessage = document.getElementById("loadingMessage");
-        
-        loadingMessage.style.display = 'block';
-        notificationList.innerHTML = '';
-        document.getElementById('loginPrompt').style.display = 'none';
-
-        const user = auth.currentUser;
-        if (!user) {
-          loadingMessage.style.display = 'none';
-          document.getElementById('loginPrompt').style.display = 'block';
-          return;
-        }
-        currentUserId = user.uid;
-
-        // 1. Muat dan Tandai Sudah Dibaca (Mark all as read)
-        db.collection("notifications")
-          .where("userId", "==", currentUserId)
-          .where("read", "==", false)
-          .get()
-          .then((snapshot) => {
-            const batch = db.batch();
-            snapshot.docs.forEach((doc) => {
-              batch.update(doc.ref, { read: true });
-            });
-            return batch.commit();
-          })
-          .then(() => {
-            // 2. Muat Daftar Notifikasi (Order by timestamp)
-            return db.collection("notifications")
-              .where("userId", "==", currentUserId)
-              .orderBy("timestamp", "desc")
-              .get();
-          })
-          .then((querySnapshot) => {
-            loadingMessage.style.display = 'none';
-            notificationList.innerHTML = "";
-
-            if (querySnapshot.empty) {
-              notificationList.innerHTML =
-                '<p style="text-align: center; color: var(--gray);">Tidak ada notifikasi di Kotak Masuk.</p>';
-              return;
+            if (formalMessage.includes("Gagal mengklaim hadiah")) {
+                title = "Klaim Gagal! 😥";
+            } else if (formalMessage.includes("Anda mendapatkan")) {
+                title = "Hadiah Masuk! 🥳";
+                message = formalMessage.replace("Anda mendapatkan", "Kamu dapat");
+            } else if (formalMessage.includes("Silakan login")) {
+                title = "Eits, Login Dulu! 🔒";
+                message = "Kamu harus *login* dulu untuk melakukan ini ya.";
+            } else if (formalMessage.includes("Sabar, jangan buru-buru!")) {
+                title = "Terlalu Cepat! ⏳";
             }
 
-            querySnapshot.forEach((doc) => {
-              const notification = doc.data();
-              const notificationItem = document.createElement("div");
-              notificationItem.classList.add("notification-item");
-              if (notification.coinReward) {
-                  notificationItem.classList.add("reward");
-              }
-              if (notification.claimed) {
-                  notificationItem.classList.add("claimed");
-              }
+            return { title, message };
+        }
+        
+        function showCustomAlert(title, message, isError = false) {
+            const modal = document.getElementById("genericAlertModal");
+            const modalTitle = document.getElementById("alertTitle");
+            const modalMessage = document.getElementById("alertMessage");
+            const closeBtn = document.getElementById("alertCloseBtn");
 
-              const date = notification.timestamp
+            modalTitle.textContent = title;
+            modalMessage.innerHTML = message;
+
+            modalTitle.style.color = isError ? "var(--danger)" : "var(--mashkuran-blue)";
+            closeBtn.textContent = isError ? "Baiklah 😥" : "Oke, Lanjut! 👍";
+            closeBtn.style.backgroundColor = isError ? "var(--danger)" : "var(--mashkuran-blue)";
+            closeBtn.classList.toggle('error-style', isError);
+
+            modal.style.display = "flex";
+            document.body.style.overflow = "hidden";
+
+            closeBtn.onclick = () => {
+                modal.style.display = "none";
+                document.body.style.overflow = "auto";
+            };
+        }
+
+        // OVERRIDE: Ganti semua alert() bawaan JavaScript
+        window.alert = function (message) {
+            const isError = message.toLowerCase().includes("gagal") || message.toLowerCase().includes("error");
+            const { title, message: informalMessage } = mapGenericAlert(message);
+            showCustomAlert(title, informalMessage, isError);
+        };
+
+        // --- HELPER FUNCTIONS ---
+
+        function timeSince(date) {
+            const seconds = Math.floor((new Date() - date) / 1000);
+            let interval = seconds / 31536000;
+            if (interval > 1) return Math.floor(interval) + " tahun lalu";
+            interval = seconds / 2592000;
+            if (interval > 1) return Math.floor(interval) + " bulan lalu";
+            interval = seconds / 86400;
+            if (interval > 1) return Math.floor(interval) + " hari lalu";
+            interval = seconds / 3600;
+            if (interval > 1) return Math.floor(interval) + " jam lalu";
+            interval = seconds / 60;
+            if (interval > 1) return Math.floor(interval) + " menit lalu";
+            return Math.floor(seconds) + " detik lalu";
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            return text
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/\"/g, '&quot;')
+                .replace(/\'/g, '&#039;');
+        }
+
+        // --- UPDATE STATS ---
+
+        function updateStats() {
+            const totalNotifications = document.getElementById('totalNotifications');
+            const unreadCount = document.getElementById('unreadCount');
+            const rewardCount = document.getElementById('rewardCount');
+            
+            // Calculate stats
+            const total = allNotifications.length;
+            const unread = allNotifications.filter(n => !n.read).length;
+            const rewards = allNotifications.filter(n => n.coinReward && !n.claimed).length;
+            
+            // Update DOM with animation
+            animateValue(totalNotifications, parseInt(totalNotifications.textContent) || 0, total, 500);
+            animateValue(unreadCount, parseInt(unreadCount.textContent) || 0, unread, 500);
+            animateValue(rewardCount, parseInt(rewardCount.textContent) || 0, rewards, 500);
+        }
+
+        function animateValue(element, start, end, duration) {
+            if (start === end) return;
+            
+            const range = end - start;
+            const increment = range / (duration / 16);
+            let current = start;
+            
+            const timer = setInterval(() => {
+                current += increment;
+                if ((increment > 0 && current >= end) || (increment < 0 && current <= end)) {
+                    element.textContent = end;
+                    clearInterval(timer);
+                } else {
+                    element.textContent = Math.floor(current);
+                }
+            }, 16);
+        }
+
+        // --- FILTER & SEARCH FUNCTIONS ---
+
+        function applyFilters() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const notificationList = document.getElementById('notificationList');
+            const emptyState = document.getElementById('emptyState');
+            
+            // Filter notifications based on current filter and category
+            let filteredNotifications = allNotifications.filter(notification => {
+                // Filter by read/unread
+                if (currentFilter === 'unread' && notification.read) return false;
+                if (currentFilter === 'read' && !notification.read) return false;
+                
+                // Filter by category
+                if (currentCategory !== 'all' && notification.category !== currentCategory) return false;
+                
+                // Filter by search term
+                if (searchTerm && 
+                    !notification.title.toLowerCase().includes(searchTerm) && 
+                    !notification.content.toLowerCase().includes(searchTerm)) {
+                    return false;
+                }
+                
+                return true;
+            });
+            
+            // Clear notification list
+            notificationList.innerHTML = '';
+            
+            // Show empty state if no notifications match filters
+            if (filteredNotifications.length === 0) {
+                emptyState.style.display = 'block';
+                return;
+            } else {
+                emptyState.style.display = 'none';
+            }
+            
+            // Render filtered notifications
+            filteredNotifications.forEach(notification => {
+                renderNotification(notification);
+            });
+        }
+
+        function renderNotification(notification) {
+            const notificationList = document.getElementById('notificationList');
+            const notificationItem = document.createElement("div");
+            
+            // Add classes based on notification properties
+            notificationItem.classList.add("notification-item");
+            if (!notification.read) {
+                notificationItem.classList.add("unread");
+            }
+            
+            // Determine icon class based on category
+            let iconClass = "fas fa-bell";
+            if (notification.category === 'promo') iconClass = "fas fa-tag";
+            if (notification.category === 'transaction') iconClass = "fas fa-exchange-alt";
+            if (notification.category === 'system') iconClass = "fas fa-cog";
+            if (notification.category === 'reward') iconClass = "fas fa-gift";
+            
+            const date = notification.timestamp
                 ? (notification.timestamp.toDate ? notification.timestamp.toDate() : new Date(notification.timestamp.seconds * 1000))
                 : new Date();
-              const timeString = timeSince(date);
+            const timeString = timeSince(date);
 
-              let actionButtons = "";
-              if (notification.claimed) {
-                actionButtons =
-                  '<button class="notification-btn" disabled style="background-color: #ddd; color: #777;">Sudah Diklaim</button>';
-              } else if (notification.coinReward) {
+            // Create action buttons
+            let actionButtons = "";
+            if (notification.claimed) {
+                actionButtons = '<button class="notification-btn" disabled style="background-color: #ddd; color: #777;"><i class="fas fa-check"></i> Sudah Diklaim</button>';
+            } else if (notification.coinReward) {
                 actionButtons = `
-                      <button class="notification-btn notification-claim" onclick="claimNotification('${doc.id}', ${notification.coinReward})">Klaim ${notification.coinReward} SJCoin</button>
-                      <button class="notification-btn notification-dismiss" onclick="dismissNotification('${doc.id}')">Hapus</button>
-                  `;
-              } else {
-                actionButtons = `<button class="notification-btn notification-dismiss" onclick="dismissNotification('${doc.id}')">Hapus</button>`;
-              }
-              
-              notificationItem.innerHTML = `
+                    <button class="notification-btn notification-claim" onclick="claimNotification('${notification.id}', ${notification.coinReward})">
+                        <i class="fas fa-coins"></i> Klaim ${notification.coinReward} SJCoin
+                    </button>
+                    <button class="notification-btn notification-dismiss" onclick="dismissNotification('${notification.id}')">
+                        <i class="fas fa-trash"></i> Hapus
+                    </button>
+                `;
+            } else {
+                actionButtons = `<button class="notification-btn notification-dismiss" onclick="dismissNotification('${notification.id}')"><i class="fas fa-trash"></i> Hapus</button>`;
+            }
+            
+            notificationItem.innerHTML = `
                 <div class="notification-item-header">
-                  <div class="notification-item-title">${escapeHtml(notification.title)}</div>
-                  <div class="notification-item-time">${timeString}</div>
+                    <div class="notification-item-title-wrapper">
+                        <div class="notification-item-icon ${notification.category}">
+                            <i class="${iconClass}"></i>
+                        </div>
+                        <div class="notification-item-content-wrapper">
+                            <div class="notification-item-title">${escapeHtml(notification.title)}</div>
+                            <div class="notification-item-excerpt">${escapeHtml(notification.content.substring(0, 80))}${notification.content.length > 80 ? '...' : ''}</div>
+                        </div>
+                    </div>
+                    <div class="notification-item-time">${timeString}</div>
                 </div>
                 <div class="notification-item-content">${escapeHtml(notification.content)}</div>
                 <div class="notification-item-actions">
-                  ${actionButtons}
+                    ${actionButtons}
                 </div>
-              `;
+            `;
 
-              notificationList.appendChild(notificationItem);
-            });
-            
-            // Perlu panggil update badge dari index.html jika ada, tapi karena ini file terpisah, kita abaikan atau panggil fungsi yang ada di index.html jika ini adalah bagian dari project besar
-          })
-          .catch((error) => {
-            loadingMessage.style.display = 'none';
-            console.error("Error loading notifications:", error);
-            notificationList.innerHTML =
-              '<p style="text-align: center; color: var(--danger);">Gagal memuat notifikasi. Silakan coba refresh.</p>';
-          });
-      }
-      
-      function claimNotification(notificationId, coinReward) {
-        if (!currentUserId) { 
-            window.alert("Silakan login untuk mengklaim hadiah."); 
-            return; 
+            notificationList.appendChild(notificationItem);
         }
 
-        const claimBtn = document.querySelector(`.notification-claim[onclick*="${notificationId}"]`);
-        if (claimBtn) claimBtn.disabled = true;
+        // --- MAIN INBOX LOGIC ---
 
-        // Transaction untuk memastikan update koin dan status klaim atomik
-        const notifRef = db.collection("notifications").doc(notificationId);
-        const userRef = db.collection("users").doc(currentUserId);
+        function loadNotifications() {
+            const loadingMessage = document.getElementById("loadingMessage");
+            const notificationList = document.getElementById("notificationList");
+            const emptyState = document.getElementById("emptyState");
+            
+            loadingMessage.style.display = 'block';
+            notificationList.innerHTML = '';
+            emptyState.style.display = 'none';
+            document.getElementById('loginPrompt').style.display = 'none';
+
+            const user = auth.currentUser;
+            if (!user) {
+                loadingMessage.style.display = 'none';
+                document.getElementById('loginPrompt').style.display = 'block';
+                return;
+            }
+            currentUserId = user.uid;
+
+            // 1. Muat dan Tandai Sudah Dibaca (Mark all as read)
+            db.collection("notifications")
+                .where("userId", "==", currentUserId)
+                .where("read", "==", false)
+                .get()
+                .then((snapshot) => {
+                    const batch = db.batch();
+                    snapshot.docs.forEach((doc) => {
+                        batch.update(doc.ref, { read: true });
+                    });
+                    return batch.commit();
+                })
+                .then(() => {
+                    // 2. Muat Daftar Notifikasi (Order by timestamp)
+                    return db.collection("notifications")
+                        .where("userId", "==", currentUserId)
+                        .orderBy("timestamp", "desc")
+                        .get();
+                })
+                .then((querySnapshot) => {
+                    loadingMessage.style.display = 'none';
+                    allNotifications = []; // Reset all notifications array
+                    
+                    if (querySnapshot.empty) {
+                        emptyState.style.display = 'block';
+                        updateStats();
+                        return;
+                    }
+
+                    querySnapshot.forEach((doc) => {
+                        const notification = doc.data();
+                        notification.id = doc.id;
+                        
+                        // Ensure category is set
+                        if (!notification.category) {
+                            if (notification.coinReward) {
+                                notification.category = 'reward';
+                            } else {
+                                notification.category = 'system';
+                            }
+                        }
+                        
+                        allNotifications.push(notification);
+                    });
+                    
+                    // Update stats
+                    updateStats();
+                    
+                    // Apply current filters
+                    applyFilters();
+                })
+                .catch((error) => {
+                    loadingMessage.style.display = 'none';
+                    console.error("Error loading notifications:", error);
+                    notificationList.innerHTML =
+                        '<p style="text-align: center; color: var(--danger);">Gagal memuat notifikasi. Silakan coba refresh.</p>';
+                });
+        }
         
-        db.runTransaction(transaction => {
-            return transaction.get(notifRef).then(notifDoc => {
-                if (!notifDoc.exists || notifDoc.data().claimed) {
-                    throw new Error("Notifikasi sudah diklaim atau tidak ditemukan.");
-                }
-                
-                return transaction.get(userRef).then(userDoc => {
-                    const currentCoins = userDoc.data().sjcoin || 0;
-                    const newCoins = currentCoins + coinReward;
+        function claimNotification(notificationId, coinReward) {
+            if (!currentUserId) { 
+                window.alert("Silakan login untuk mengklaim hadiah."); 
+                return; 
+            }
+
+            const claimBtn = document.querySelector(`.notification-claim[onclick*="${notificationId}"]`);
+            if (claimBtn) claimBtn.disabled = true;
+
+            // Transaction untuk memastikan update koin dan status klaim atomik
+            const notifRef = db.collection("notifications").doc(notificationId);
+            const userRef = db.collection("users").doc(currentUserId);
+            
+            db.runTransaction(transaction => {
+                return transaction.get(notifRef).then(notifDoc => {
+                    if (!notifDoc.exists || notifDoc.data().claimed) {
+                        throw new Error("Notifikasi sudah diklaim atau tidak ditemukan.");
+                    }
                     
-                    // 1. Update notifikasi: tandai sudah diklaim
-                    transaction.update(notifRef, { claimed: true });
-                    // 2. Tambahkan koin ke user
-                    transaction.update(userRef, { sjcoin: newCoins });
+                    return transaction.get(userRef).then(userDoc => {
+                        const currentCoins = userDoc.data().sjcoin || 0;
+                        const newCoins = currentCoins + coinReward;
+                        
+                        // 1. Update notifikasi: tandai sudah diklaim
+                        transaction.update(notifRef, { claimed: true });
+                        // 2. Tambahkan koin ke user
+                        transaction.update(userRef, { sjcoin: newCoins });
+                        
+                        return newCoins;
+                    });
+                });
+            })
+            .then((newCoins) => {
+                window.alert(`Anda mendapatkan ${coinReward} SJCoin! Total SJCoin Anda: ${newCoins}`);
+                loadNotifications(); // Muat ulang notifikasi untuk menampilkan tombol 'Sudah Diklaim'
+            })
+            .catch((error) => {
+                if (claimBtn) claimBtn.disabled = false;
+                console.error("Error claiming notification:", error);
+                window.alert(`Gagal mengklaim hadiah: ${error.message || 'Error tak terduga'}`);
+            });
+        }
+        
+        function dismissNotification(notificationId) {
+            if (!currentUserId) { 
+                window.alert("Silakan login untuk menghapus notifikasi."); 
+                return; 
+            }
+              
+            db.collection("notifications")
+                .doc(notificationId)
+                .delete()
+                .then(() => {
+                    // Remove from allNotifications array
+                    allNotifications = allNotifications.filter(n => n.id !== notificationId);
+                    // Re-apply filters
+                    applyFilters();
+                    // Update stats
+                    updateStats();
+                })
+                .catch((error) => {
+                    console.error("Error dismissing notification:", error);
+                    window.alert("Gagal menghapus notifikasi.");
+                });
+        }
+
+        // --- EVENT LISTENERS ---
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Setup filter tabs
+            const filterTabs = document.querySelectorAll('.filter-tab');
+            filterTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    // Update active tab
+                    filterTabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
                     
-                    return newCoins;
+                    // Update current filter
+                    currentFilter = tab.getAttribute('data-filter');
+                    
+                    // Apply filters
+                    applyFilters();
                 });
             });
-        })
-        .then((newCoins) => {
-            window.alert(`Anda mendapatkan ${coinReward} SJCoin! Total SJCoin Anda: ${newCoins}`);
-            loadNotifications(); // Muat ulang notifikasi untuk menampilkan tombol 'Sudah Diklaim'
-        })
-        .catch((error) => {
-            if (claimBtn) claimBtn.disabled = false;
-            console.error("Error claiming notification:", error);
-            window.alert(`Gagal mengklaim hadiah: ${error.message || 'Error tak terduga'}`);
+            
+            // Setup category filters
+            const categoryFilters = document.querySelectorAll('.category-filter');
+            categoryFilters.forEach(filter => {
+                filter.addEventListener('click', () => {
+                    // Update active filter
+                    categoryFilters.forEach(f => f.classList.remove('active'));
+                    filter.classList.add('active');
+                    
+                    // Update current category
+                    currentCategory = filter.getAttribute('data-category');
+                    
+                    // Apply filters
+                    applyFilters();
+                });
+            });
+            
+            // Setup search input
+            const searchInput = document.getElementById('searchInput');
+            searchInput.addEventListener('input', () => {
+                applyFilters();
+            });
+            
+            // Listen for auth state changes
+            auth.onAuthStateChanged((user) => {
+                if (user) {
+                    loadNotifications();
+                } else {
+                    document.getElementById('loadingMessage').style.display = 'none';
+                    document.getElementById('notificationList').innerHTML = '';
+                    document.getElementById('emptyState').style.display = 'none';
+                    document.getElementById('loginPrompt').style.display = 'block';
+                }
+            });
         });
-      }
-      
-      function dismissNotification(notificationId) {
-        if (!currentUserId) { 
-            window.alert("Silakan login untuk menghapus notifikasi."); 
-            return; 
-        }
-          
-        db.collection("notifications")
-          .doc(notificationId)
-          .delete()
-          .then(() => {
-            loadNotifications();
-          })
-          .catch((error) => {
-            console.error("Error dismissing notification:", error);
-            window.alert("Gagal menghapus notifikasi.");
-          });
-      }
-
-
-      // --- INITIALIZATION ---
-      document.addEventListener('DOMContentLoaded', function() {
-          // Listen for auth state changes
-          auth.onAuthStateChanged((user) => {
-              if (user) {
-                  loadNotifications();
-              } else {
-                  document.getElementById('loadingMessage').style.display = 'none';
-                  document.getElementById('notificationList').innerHTML = '';
-                  document.getElementById('loginPrompt').style.display = 'block';
-              }
-          });
-      });
     </script>
-  </body>
+</body>
 </html>

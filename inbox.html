@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inbox - Sejuk Teknik AC</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    <style>
+        :root {
+            --primary: #0066cc;
+            --primary-light: #e6f2ff;
+            --secondary: #ff7a00;
+            --dark: #2d3748;
+            --light: #f8fafc;
+            --gray: #718096;
+            --white: #ffffff;
+            --coin: #ffd700;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: "Poppins", sans-serif;
+            color: var(--dark);
+            line-height: 1.6;
+            background-color: var(--light);
+        }
+        header {
+            background: linear-gradient(135deg, var(--primary), #004c99);
+            color: var(--white);
+            padding: 2rem 1rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path fill="rgba(255,255,255,0.05)" d="M0,0 L100,0 L100,100 L0,100 Z"></path></svg>');
+            opacity: 0.1;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2rem;
+            font-weight: 700;
+            position: relative;
+            display: inline-block;
+        }
+        nav {
+            background-color: var(--white);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+        }
+        .logo {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 1.2rem;
+            text-decoration: none;
+        }
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+        nav a {
+            color: var(--dark);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        nav a:hover {
+            color: var(--primary);
+        }
+        nav a::after {
+            content: "";
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background-color: var(--primary);
+            transition: width 0.3s ease;
+        }
+        nav a:hover::after {
+            width: 100%;
+        }
+        .back-button {
+            background: none;
+            border: none;
+            color: var(--white);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        .back-button:hover {
+            transform: translateX(-5px);
+        }
+        .content {
+            padding: 2rem 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .section-title {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .section-title h2 {
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            position: relative;
+            display: inline-block;
+        }
+        .section-title h2::after {
+            content: "";
+            position: absolute;
+            width: 50%;
+            height: 3px;
+            bottom: -10px;
+            left: 25%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        }
+        .notification-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .notification-item {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+        }
+        .notification-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        .notification-item.unread {
+            border-left: 4px solid var(--primary);
+        }
+        .notification-item-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+        .notification-item-title {
+            font-weight: 600;
+            color: var(--primary);
+        }
+        .notification-item-time {
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+        .notification-item-content {
+            color: var(--dark);
+            margin-bottom: 1rem;
+        }
+        .notification-item-actions {
+            display: flex;
+            gap: 10px;
+        }
+        .notification-btn {
+            padding: 8px 15px;
+            border-radius: 50px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            font-size: 0.9rem;
+        }
+        .notification-claim {
+            background-color: var(--primary);
+            color: white;
+        }
+        .notification-claim:hover {
+            background-color: #0052a3;
+        }
+        .notification-dismiss {
+            background-color: transparent;
+            color: var(--gray);
+            border: 1px solid var(--gray);
+        }
+        .notification-dismiss:hover {
+            background-color: var(--gray);
+            color: white;
+        }
+        .notification-claimed {
+            background-color: #e0e0e0;
+            color: #757575;
+            cursor: not-allowed;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--gray);
+        }
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--primary-light);
+        }
+        .empty-state h3 {
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+        .loading {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--gray);
+        }
+        .loading i {
+            font-size: 2rem;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .sjcoin-display {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--coin);
+            color: var(--dark);
+            padding: 10px 15px;
+            border-radius: 50px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(255, 215, 0, 0.3);
+            z-index: 50;
+        }
+        .sjcoin-display i {
+            margin-right: 5px;
+        }
+        .footer {
+            background-color: var(--dark);
+            color: var(--white);
+            padding: 2rem 0;
+            text-align: center;
+            margin-top: 3rem;
+        }
+        .footer p {
+            opacity: 0.8;
+            font-size: 0.9rem;
+        }
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            header h1 {
+                font-size: 1.8rem;
+            }
+            .notification-item {
+                padding: 1rem;
+            }
+            .sjcoin-display {
+                bottom: 10px;
+                right: 10px;
+                padding: 8px 12px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <button class="back-button" onclick="goBack()">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        <h1>Inbox Saya</h1>
+    </header>
+    
+    <nav>
+        <div class="nav-container">
+            <a href="index.html" class="logo">Sejuk Teknik</a>
+            <div class="nav-links">
+                <a href="index.html"><i class="fas fa-home"></i> Beranda</a>
+                <a href="layanan.html"><i class="fas fa-tools"></i> Layanan</a>
+                <a href="tentang.html"><i class="fas fa-info-circle"></i> Tentang</a>
+                <a href="profile.html"><i class="fas fa-user"></i> Profil</a>
+            </div>
+        </div>
+    </nav>
+    
+    <section class="content">
+        <div class="section-title">
+            <h2>Notifikasi Anda</h2>
+        </div>
+        
+        <div id="notificationContainer" class="notification-list">
+            <div class="loading">
+                <i class="fas fa-spinner"></i>
+                <p>Memuat notifikasi...</p>
+            </div>
+        </div>
+    </section>
+    
+    <div class="sjcoin-display" id="sjcoinDisplay" style="display: none;">
+        <i class="fas fa-coins"></i>
+        <span id="sjcoinAmount">0</span> SJCoin
+    </div>
+    
+    <footer class="footer">
+        <p>© 2020-2025 Sejuk Teknik AC. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        // Initialize Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyDtLHSz7-KU97ALJTQvLRQTG5yj7brcsvc",
+            authDomain: "sejuk-teknik.firebaseapp.com",
+            projectId: "sejuk-teknik",
+            storageBucket: "sejuk-teknik.appspot.com",
+            messagingSenderId: "733860478343",
+            appId: "1:733860478343:web:172838a08e702d129ae722",
+            measurementId: "G-EDJ6Y6J7GC",
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        // Check if user is logged in
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                // User is signed in
+                loadNotifications(user);
+                loadUserCoins(user);
+            } else {
+                // User is signed out
+                window.location.href = "index.html";
+            }
+        });
+
+        // Load notifications from Firestore
+        function loadNotifications(user) {
+            const notificationContainer = document.getElementById("notificationContainer");
+            notificationContainer.innerHTML = `
+                <div class="loading">
+                    <i class="fas fa-spinner"></i>
+                    <p>Memuat notifikasi...</p>
+                </div>
+            `;
+
+            // Get all notifications for the user
+            db.collection("notifications")
+                .where("userId", "==", user.uid)
+                .orderBy("timestamp", "desc")
+                .get()
+                .then(querySnapshot => {
+                    notificationContainer.innerHTML = "";
+                    
+                    if (querySnapshot.empty) {
+                        notificationContainer.innerHTML = `
+                            <div class="empty-state">
+                                <i class="fas fa-inbox"></i>
+                                <h3>Tidak Ada Notifikasi</h3>
+                                <p>Anda tidak memiliki notifikasi saat ini.</p>
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    querySnapshot.forEach(doc => {
+                        const notification = doc.data();
+                        const notificationId = doc.id;
+                        const date = notification.timestamp ? new Date(notification.timestamp.toDate()) : new Date();
+                        const formattedDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()} ${date.getHours()}:${date.getMinutes().toString().padStart(2, '0')}`;
+                        
+                        let actionButtons = "";
+                        if (notification.claimed) {
+                            actionButtons = `
+                                <button class="notification-btn notification-claimed" disabled>
+                                    <i class="fas fa-check"></i> Sudah Diklaim
+                                </button>
+                            `;
+                        } else if (notification.coinReward) {
+                            actionButtons = `
+                                <button class="notification-btn notification-claim" onclick="claimNotification('${notificationId}', ${notification.coinReward})">
+                                    <i class="fas fa-gift"></i> Klaim Hadiah
+                                </button>
+                                <button class="notification-btn notification-dismiss" onclick="dismissNotification('${notificationId}')">
+                                    <i class="fas fa-times"></i> Hapus
+                                </button>
+                            `;
+                        } else {
+                            actionButtons = `
+                                <button class="notification-btn notification-dismiss" onclick="dismissNotification('${notificationId}')">
+                                    <i class="fas fa-times"></i> Hapus
+                                </button>
+                            `;
+                        }
+
+                        const notificationItem = document.createElement("div");
+                        notificationItem.classList.add("notification-item");
+                        if (!notification.read) {
+                            notificationItem.classList.add("unread");
+                        }
+                        
+                        notificationItem.innerHTML = `
+                            <div class="notification-item-header">
+                                <div class="notification-item-title">${notification.title}</div>
+                                <div class="notification-item-time">${formattedDate}</div>
+                            </div>
+                            <div class="notification-item-content">${notification.content}</div>
+                            <div class="notification-item-actions">
+                                ${actionButtons}
+                            </div>
+                        `;
+                        
+                        notificationContainer.appendChild(notificationItem);
+                    });
+
+                    // Mark all notifications as read
+                    markAllAsRead(user.uid);
+                })
+                .catch(error => {
+                    console.error("Error loading notifications:", error);
+                    notificationContainer.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <h3>Terjadi Kesalahan</h3>
+                            <p>Gagal memuat notifikasi. Silakan coba lagi nanti.</p>
+                        </div>
+                    `;
+                });
+        }
+
+        // Load user's SJCoin
+        function loadUserCoins(user) {
+            db.collection("users").doc(user.uid).get()
+                .then(doc => {
+                    if (doc.exists) {
+                        const userData = doc.data();
+                        const coinAmount = userData.sjcoin || 0;
+                        document.getElementById("sjcoinAmount").textContent = coinAmount;
+                        document.getElementById("sjcoinDisplay").style.display = "flex";
+                    }
+                })
+                .catch(error => {
+                    console.error("Error loading user coins:", error);
+                });
+        }
+
+        // Mark all notifications as read
+        function markAllAsRead(userId) {
+            db.collection("notifications")
+                .where("userId", "==", userId)
+                .where("read", "==", false)
+                .get()
+                .then(snapshot => {
+                    const batch = db.batch();
+                    snapshot.docs.forEach(doc => {
+                        batch.update(doc.ref, { read: true });
+                    });
+                    return batch.commit();
+                })
+                .then(() => {
+                    console.log("All notifications marked as read");
+                })
+                .catch(error => {
+                    console.error("Error marking notifications as read:", error);
+                });
+        }
+
+        // Claim notification reward
+        function claimNotification(notificationId, coinReward) {
+            const user = auth.currentUser;
+            if (!user) return;
+
+            // Disable the claim button to prevent multiple clicks
+            const claimBtn = document.querySelector(`[onclick="claimNotification('${notificationId}', ${coinReward})"]`);
+            if (claimBtn) claimBtn.disabled = true;
+
+            // Update notification to claimed
+            db.collection("notifications").doc(notificationId).update({
+                claimed: true
+            })
+            .then(() => {
+                // Add coins to user
+                return db.collection("users").doc(user.uid).get()
+                    .then(userDoc => {
+                        const currentCoins = userDoc.data().sjcoin || 0;
+                        return db.collection("users").doc(user.uid).update({
+                            sjcoin: currentCoins + coinReward
+                        })
+                        .then(() => {
+                            // Update UI
+                            document.getElementById("sjcoinAmount").textContent = currentCoins + coinReward;
+                            
+                            // Show success message
+                            showNotificationMessage(`Anda mendapatkan ${coinReward} SJCoin! Total SJCoin Anda: ${currentCoins + coinReward}`);
+                            
+                            // Reload notifications
+                            loadNotifications(user);
+                        });
+                    });
+            })
+            .catch(error => {
+                if (claimBtn) claimBtn.disabled = false;
+                console.error("Error claiming notification:", error);
+                showNotificationMessage("Gagal mengklaim hadiah. Silakan coba lagi.");
+            });
+        }
+
+        // Dismiss notification
+        function dismissNotification(notificationId) {
+            db.collection("notifications").doc(notificationId).delete()
+                .then(() => {
+                    // Reload notifications
+                    loadNotifications(auth.currentUser);
+                })
+                .catch(error => {
+                    console.error("Error dismissing notification:", error);
+                    showNotificationMessage("Gagal menghapus notifikasi. Silakan coba lagi.");
+                });
+        }
+
+        // Show notification message
+        function showNotificationMessage(message) {
+            const messageDiv = document.createElement("div");
+            messageDiv.style.position = "fixed";
+            messageDiv.style.top = "20px";
+            messageDiv.style.left = "50%";
+            messageDiv.style.transform = "translateX(-50%)";
+            messageDiv.style.backgroundColor = "var(--primary)";
+            messageDiv.style.color = "white";
+            messageDiv.style.padding = "10px 20px";
+            messageDiv.style.borderRadius = "50px";
+            messageDiv.style.boxShadow = "0 4px 10px rgba(0, 0, 0, 0.2)";
+            messageDiv.style.zIndex = "1000";
+            messageDiv.textContent = message;
+            
+            document.body.appendChild(messageDiv);
+            
+            // Remove message after 3 seconds
+            setTimeout(() => {
+                messageDiv.style.opacity = "0";
+                messageDiv.style.transition = "opacity 0.5s";
+                setTimeout(() => {
+                    document.body.removeChild(messageDiv);
+                }, 500);
+            }, 3000);
+        }
+
+        // Go back to previous page
+        function goBack() {
+            window.history.back();
+        }
+    </script>
+</body>
+</html>

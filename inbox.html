@@ -81,6 +81,15 @@
             padding: 0.4rem 0.8rem;
             font-size: 0.85rem;
         }
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--mashkuran-blue);
+            color: var(--mashkuran-blue);
+        }
+        .btn-outline:hover {
+            background-color: var(--mashkuran-blue);
+            color: white;
+        }
 
         /* --- NAVBAR (MashKuran Style) --- */
         nav {
@@ -268,6 +277,29 @@
         .category-filter i {
             font-size: 0.8rem;
         }
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .action-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid var(--mashkuran-border);
+            background: white;
+            color: var(--mashkuran-text);
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .action-btn:hover {
+            background-color: var(--mashkuran-blue);
+            color: white;
+            border-color: var(--mashkuran-blue);
+        }
 
         /* --- INBOX CONTENT (MashKuran Style) --- */
         .inbox-container {
@@ -280,7 +312,7 @@
             padding: 0;
         }
         .notification-item {
-            padding: 1.2rem;
+            padding: 1rem;
             border-bottom: 1px solid var(--mashkuran-gray);
             position: relative;
             transition: background-color 0.2s;
@@ -307,22 +339,21 @@
         .notification-item-header {
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 0.8rem;
+            align-items: center;
         }
         .notification-item-title-wrapper {
             display: flex;
-            align-items: flex-start;
+            align-items: center;
             gap: 0.8rem;
         }
         .notification-item-icon {
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1rem;
+            font-size: 0.9rem;
             flex-shrink: 0;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
@@ -348,44 +379,36 @@
         .notification-item-title {
             font-weight: 600;
             color: var(--mashkuran-text);
-            margin-bottom: 0.3rem;
-            font-size: 1rem;
+            font-size: 0.95rem;
         }
         .notification-item-excerpt {
             color: var(--gray);
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             line-height: 1.4;
+            margin-top: 0.2rem;
         }
         .notification-item-time {
             font-size: 0.75rem;
             color: var(--gray);
             white-space: nowrap;
-            padding-top: 0.2rem;
-        }
-        .notification-item-content {
-            color: var(--mashkuran-text);
-            margin-bottom: 1rem;
-            font-size: 0.95rem;
-            padding-left: 3rem;
-            line-height: 1.5;
         }
         .notification-item-actions {
             display: flex;
-            gap: 0.8rem;
+            gap: 0.5rem;
+            margin-top: 0.8rem;
             justify-content: flex-end;
-            padding-left: 3rem;
         }
         .notification-btn {
-            padding: 0.5rem 1rem;
+            padding: 0.4rem 0.8rem;
             border-radius: 50px;
             font-weight: 500;
             cursor: pointer;
             border: none;
-            font-size: 0.85rem;
+            font-size: 0.75rem;
             transition: all 0.2s;
             display: flex;
             align-items: center;
-            gap: 0.4rem;
+            gap: 0.3rem;
         }
         .notification-btn.notification-claim {
             background-color: var(--coin);
@@ -393,6 +416,13 @@
         }
         .notification-btn.notification-claim:hover {
             background-color: #e6c200;
+        }
+        .notification-btn.notification-read {
+            background-color: var(--mashkuran-blue);
+            color: white;
+        }
+        .notification-btn.notification-read:hover {
+            background-color: #1976d2;
         }
         .notification-btn.notification-dismiss {
             background-color: transparent;
@@ -516,6 +546,101 @@
             background-color: var(--danger);
         }
 
+        /* --- NOTIFICATION DETAIL MODAL --- */
+        .notification-detail-modal {
+            display: none;
+            position: fixed;
+            z-index: 3002;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.6);
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(4px);
+        }
+        .notification-detail-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 2rem;
+            border-radius: 16px;
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            animation: modalSlideUp 0.3s ease-out;
+        }
+        .notification-detail-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--mashkuran-border);
+        }
+        .notification-detail-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        .notification-detail-icon.promo {
+            background-color: rgba(255, 122, 0, 0.1);
+            color: var(--secondary);
+        }
+        .notification-detail-icon.transaction {
+            background-color: rgba(76, 175, 80, 0.1);
+            color: var(--success);
+        }
+        .notification-detail-icon.system {
+            background-color: rgba(23, 162, 184, 0.1);
+            color: var(--info);
+        }
+        .notification-detail-icon.reward {
+            background-color: rgba(255, 215, 0, 0.1);
+            color: var(--coin);
+        }
+        .notification-detail-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--mashkuran-text);
+        }
+        .notification-detail-time {
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+        .notification-detail-body {
+            margin-bottom: 1.5rem;
+            color: var(--mashkuran-text);
+            line-height: 1.6;
+        }
+        .notification-detail-actions {
+            display: flex;
+            gap: 0.8rem;
+            justify-content: flex-end;
+        }
+        .notification-detail-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--gray);
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .notification-detail-close:hover {
+            color: var(--mashkuran-text);
+        }
+
         /* --- MOBILE RESPONSIVE (MashKuran Style) --- */
         @media (max-width: 768px) {
             .inbox-controls {
@@ -537,6 +662,10 @@
                 order: 3;
                 justify-content: center;
             }
+            .action-buttons {
+                order: 4;
+                justify-content: center;
+            }
             .notification-item-header {
                 flex-direction: column;
                 align-items: flex-start;
@@ -544,11 +673,7 @@
             .notification-item-time {
                 margin-top: 0.5rem;
             }
-            .notification-item-content {
-                padding-left: 0;
-            }
             .notification-item-actions {
-                padding-left: 0;
                 justify-content: flex-start;
             }
             .inbox-stats {
@@ -556,6 +681,10 @@
             }
             .stat-number {
                 font-size: 1.5rem;
+            }
+            .notification-detail-content {
+                width: 95%;
+                padding: 1.5rem;
             }
         }
     </style>
@@ -570,6 +699,28 @@
                 <button class="confirm-btn confirm-yes" id="alertCloseBtn">
                     Oke, Lanjut! 👍
                 </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Detail Modal -->
+    <div id="notificationDetailModal" class="notification-detail-modal">
+        <div class="notification-detail-content">
+            <button class="notification-detail-close" id="closeDetailModal">&times;</button>
+            <div class="notification-detail-header">
+                <div class="notification-detail-icon" id="detailIcon">
+                    <i class="fas fa-bell"></i>
+                </div>
+                <div>
+                    <div class="notification-detail-title" id="detailTitle">Judul Notifikasi</div>
+                    <div class="notification-detail-time" id="detailTime">2 jam lalu</div>
+                </div>
+            </div>
+            <div class="notification-detail-body" id="detailContent">
+                Isi notifikasi akan ditampilkan di sini...
+            </div>
+            <div class="notification-detail-actions" id="detailActions">
+                <!-- Tombol aksi akan dimuat di sini -->
             </div>
         </div>
     </div>
@@ -642,6 +793,15 @@
                         <i class="fas fa-gift"></i> Hadiah
                     </button>
                 </div>
+                
+                <div class="action-buttons">
+                    <button class="action-btn" id="markAllReadBtn">
+                        <i class="fas fa-check-double"></i> Tandai semua dibaca
+                    </button>
+                    <button class="action-btn" id="deleteAllBtn">
+                        <i class="fas fa-trash-alt"></i> Hapus semua
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -697,6 +857,7 @@
         let allNotifications = [];
         let currentFilter = 'all';
         let currentCategory = 'all';
+        let selectedNotification = null;
 
         // --- MODAL & ALERT UTILITY ---
 
@@ -866,6 +1027,11 @@
                 notificationItem.classList.add("unread");
             }
             
+            // Add click event to show detail
+            notificationItem.addEventListener('click', () => {
+                showNotificationDetail(notification);
+            });
+            
             // Determine icon class based on category
             let iconClass = "fas fa-bell";
             if (notification.category === 'promo') iconClass = "fas fa-tag";
@@ -877,23 +1043,11 @@
                 ? (notification.timestamp.toDate ? notification.timestamp.toDate() : new Date(notification.timestamp.seconds * 1000))
                 : new Date();
             const timeString = timeSince(date);
-
-            // Create action buttons
-            let actionButtons = "";
-            if (notification.claimed) {
-                actionButtons = '<button class="notification-btn" disabled style="background-color: #ddd; color: #777;"><i class="fas fa-check"></i> Sudah Diklaim</button>';
-            } else if (notification.coinReward) {
-                actionButtons = `
-                    <button class="notification-btn notification-claim" onclick="claimNotification('${notification.id}', ${notification.coinReward})">
-                        <i class="fas fa-coins"></i> Klaim ${notification.coinReward} SJCoin
-                    </button>
-                    <button class="notification-btn notification-dismiss" onclick="dismissNotification('${notification.id}')">
-                        <i class="fas fa-trash"></i> Hapus
-                    </button>
-                `;
-            } else {
-                actionButtons = `<button class="notification-btn notification-dismiss" onclick="dismissNotification('${notification.id}')"><i class="fas fa-trash"></i> Hapus</button>`;
-            }
+            
+            // Create excerpt from content (max 50 characters)
+            const excerpt = notification.content.length > 50 
+                ? notification.content.substring(0, 50) + '...' 
+                : notification.content;
             
             notificationItem.innerHTML = `
                 <div class="notification-item-header">
@@ -903,18 +1057,143 @@
                         </div>
                         <div class="notification-item-content-wrapper">
                             <div class="notification-item-title">${escapeHtml(notification.title)}</div>
-                            <div class="notification-item-excerpt">${escapeHtml(notification.content.substring(0, 80))}${notification.content.length > 80 ? '...' : ''}</div>
+                            <div class="notification-item-excerpt">${escapeHtml(excerpt)}</div>
                         </div>
                     </div>
                     <div class="notification-item-time">${timeString}</div>
                 </div>
-                <div class="notification-item-content">${escapeHtml(notification.content)}</div>
-                <div class="notification-item-actions">
-                    ${actionButtons}
-                </div>
             `;
 
             notificationList.appendChild(notificationItem);
+        }
+
+        // --- NOTIFICATION DETAIL MODAL ---
+
+        function showNotificationDetail(notification) {
+            selectedNotification = notification;
+            
+            const modal = document.getElementById('notificationDetailModal');
+            const detailIcon = document.getElementById('detailIcon');
+            const detailTitle = document.getElementById('detailTitle');
+            const detailTime = document.getElementById('detailTime');
+            const detailContent = document.getElementById('detailContent');
+            const detailActions = document.getElementById('detailActions');
+            
+            // Determine icon class based on category
+            let iconClass = "fas fa-bell";
+            if (notification.category === 'promo') iconClass = "fas fa-tag";
+            if (notification.category === 'transaction') iconClass = "fas fa-exchange-alt";
+            if (notification.category === 'system') iconClass = "fas fa-cog";
+            if (notification.category === 'reward') iconClass = "fas fa-gift";
+            
+            // Update modal content
+            detailIcon.className = `notification-detail-icon ${notification.category}`;
+            detailIcon.innerHTML = `<i class="${iconClass}"></i>`;
+            detailTitle.textContent = notification.title;
+            
+            const date = notification.timestamp
+                ? (notification.timestamp.toDate ? notification.timestamp.toDate() : new Date(notification.timestamp.seconds * 1000))
+                : new Date();
+            detailTime.textContent = timeSince(date);
+            
+            detailContent.textContent = notification.content;
+            
+            // Clear actions
+            detailActions.innerHTML = '';
+            
+            // Add action buttons based on notification type
+            if (notification.coinReward && !notification.claimed) {
+                // Has reward and not claimed yet
+                detailActions.innerHTML = `
+                    <button class="notification-btn notification-claim" onclick="claimNotificationFromDetail('${notification.id}', ${notification.coinReward})">
+                        <i class="fas fa-coins"></i> Klaim ${notification.coinReward} SJCoin
+                    </button>
+                    <button class="notification-btn notification-dismiss" onclick="dismissNotificationFromDetail('${notification.id}')">
+                        <i class="fas fa-trash"></i> Hapus
+                    </button>
+                `;
+            } else if (notification.coinReward && notification.claimed) {
+                // Has reward and already claimed
+                detailActions.innerHTML = `
+                    <button class="notification-btn" disabled>
+                        <i class="fas fa-check"></i> Sudah Diklaim
+                    </button>
+                    <button class="notification-btn notification-dismiss" onclick="dismissNotificationFromDetail('${notification.id}')">
+                        <i class="fas fa-trash"></i> Hapus
+                    </button>
+                `;
+            } else {
+                // No reward
+                if (!notification.read) {
+                    detailActions.innerHTML = `
+                        <button class="notification-btn notification-read" onclick="markAsReadFromDetail('${notification.id}')">
+                            <i class="fas fa-check"></i> Tandai sudah dibaca
+                        </button>
+                        <button class="notification-btn notification-dismiss" onclick="dismissNotificationFromDetail('${notification.id}')">
+                            <i class="fas fa-trash"></i> Hapus
+                        </button>
+                    `;
+                } else {
+                    detailActions.innerHTML = `
+                        <button class="notification-btn notification-dismiss" onclick="dismissNotificationFromDetail('${notification.id}')">
+                            <i class="fas fa-trash"></i> Hapus
+                        </button>
+                    `;
+                }
+            }
+            
+            // Show modal
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeNotificationDetail() {
+            const modal = document.getElementById('notificationDetailModal');
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        function claimNotificationFromDetail(notificationId, coinReward) {
+            claimNotification(notificationId, coinReward);
+            closeNotificationDetail();
+        }
+
+        function dismissNotificationFromDetail(notificationId) {
+            dismissNotification(notificationId);
+            closeNotificationDetail();
+        }
+
+        function markAsReadFromDetail(notificationId) {
+            if (!currentUserId) { 
+                window.alert("Silakan login untuk menandai notifikasi."); 
+                return; 
+            }
+            
+            const notifRef = db.collection("notifications").doc(notificationId);
+            
+            notifRef.update({ read: true })
+                .then(() => {
+                    // Update notification in allNotifications array
+                    const notification = allNotifications.find(n => n.id === notificationId);
+                    if (notification) {
+                        notification.read = true;
+                    }
+                    
+                    // Re-apply filters
+                    applyFilters();
+                    
+                    // Update stats
+                    updateStats();
+                    
+                    // Close modal
+                    closeNotificationDetail();
+                    
+                    window.alert("Notifikasi telah ditandai sebagai dibaca.");
+                })
+                .catch((error) => {
+                    console.error("Error marking notification as read:", error);
+                    window.alert("Gagal menandai notifikasi sebagai dibaca.");
+                });
         }
 
         // --- MAIN INBOX LOGIC ---
@@ -937,25 +1216,11 @@
             }
             currentUserId = user.uid;
 
-            // 1. Muat dan Tandai Sudah Dibaca (Mark all as read)
+            // 1. Muat Daftar Notifikasi (Order by timestamp)
             db.collection("notifications")
                 .where("userId", "==", currentUserId)
-                .where("read", "==", false)
+                .orderBy("timestamp", "desc")
                 .get()
-                .then((snapshot) => {
-                    const batch = db.batch();
-                    snapshot.docs.forEach((doc) => {
-                        batch.update(doc.ref, { read: true });
-                    });
-                    return batch.commit();
-                })
-                .then(() => {
-                    // 2. Muat Daftar Notifikasi (Order by timestamp)
-                    return db.collection("notifications")
-                        .where("userId", "==", currentUserId)
-                        .orderBy("timestamp", "desc")
-                        .get();
-                })
                 .then((querySnapshot) => {
                     loadingMessage.style.display = 'none';
                     allNotifications = []; // Reset all notifications array
@@ -1030,7 +1295,18 @@
             })
             .then((newCoins) => {
                 window.alert(`Anda mendapatkan ${coinReward} SJCoin! Total SJCoin Anda: ${newCoins}`);
-                loadNotifications(); // Muat ulang notifikasi untuk menampilkan tombol 'Sudah Diklaim'
+                
+                // Update notification in allNotifications array
+                const notification = allNotifications.find(n => n.id === notificationId);
+                if (notification) {
+                    notification.claimed = true;
+                }
+                
+                // Re-apply filters
+                applyFilters();
+                
+                // Update stats
+                updateStats();
             })
             .catch((error) => {
                 if (claimBtn) claimBtn.disabled = false;
@@ -1059,6 +1335,90 @@
                 .catch((error) => {
                     console.error("Error dismissing notification:", error);
                     window.alert("Gagal menghapus notifikasi.");
+                });
+        }
+
+        function markAllAsRead() {
+            if (!currentUserId) { 
+                window.alert("Silakan login untuk menandai notifikasi."); 
+                return; 
+            }
+            
+            // Get all unread notifications
+            const unreadNotifications = allNotifications.filter(n => !n.read);
+            
+            if (unreadNotifications.length === 0) {
+                window.alert("Tidak ada notifikasi yang belum dibaca.");
+                return;
+            }
+            
+            // Create batch update
+            const batch = db.batch();
+            unreadNotifications.forEach(notification => {
+                const notifRef = db.collection("notifications").doc(notification.id);
+                batch.update(notifRef, { read: true });
+            });
+            
+            // Commit batch
+            batch.commit()
+                .then(() => {
+                    // Update all notifications in array
+                    allNotifications.forEach(notification => {
+                        notification.read = true;
+                    });
+                    
+                    // Re-apply filters
+                    applyFilters();
+                    
+                    // Update stats
+                    updateStats();
+                    
+                    window.alert(`Semua notifikasi (${unreadNotifications.length}) telah ditandai sebagai dibaca.`);
+                })
+                .catch((error) => {
+                    console.error("Error marking all notifications as read:", error);
+                    window.alert("Gagal menandai semua notifikasi sebagai dibaca.");
+                });
+        }
+
+        function deleteAllNotifications() {
+            if (!currentUserId) { 
+                window.alert("Silakan login untuk menghapus notifikasi."); 
+                return; 
+            }
+            
+            // Get all notifications
+            const notificationsToDelete = [...allNotifications];
+            
+            if (notificationsToDelete.length === 0) {
+                window.alert("Tidak ada notifikasi untuk dihapus.");
+                return;
+            }
+            
+            // Create batch delete
+            const batch = db.batch();
+            notificationsToDelete.forEach(notification => {
+                const notifRef = db.collection("notifications").doc(notification.id);
+                batch.delete(notifRef);
+            });
+            
+            // Commit batch
+            batch.commit()
+                .then(() => {
+                    // Clear all notifications array
+                    allNotifications = [];
+                    
+                    // Re-apply filters
+                    applyFilters();
+                    
+                    // Update stats
+                    updateStats();
+                    
+                    window.alert(`Semua notifikasi (${notificationsToDelete.length}) telah dihapus.`);
+                })
+                .catch((error) => {
+                    console.error("Error deleting all notifications:", error);
+                    window.alert("Gagal menghapus semua notifikasi.");
                 });
         }
 
@@ -1101,6 +1461,21 @@
             const searchInput = document.getElementById('searchInput');
             searchInput.addEventListener('input', () => {
                 applyFilters();
+            });
+            
+            // Setup action buttons
+            document.getElementById('markAllReadBtn').addEventListener('click', markAllAsRead);
+            document.getElementById('deleteAllBtn').addEventListener('click', deleteAllNotifications);
+            
+            // Setup modal close button
+            document.getElementById('closeDetailModal').addEventListener('click', closeNotificationDetail);
+            
+            // Close modal when clicking outside
+            window.addEventListener('click', (event) => {
+                const modal = document.getElementById('notificationDetailModal');
+                if (event.target === modal) {
+                    closeNotificationDetail();
+                }
             });
             
             // Listen for auth state changes

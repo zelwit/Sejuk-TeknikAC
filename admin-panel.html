@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Admin Panel | Sejuk Teknik AC</title>
+    <title>Admin Dashboard | Sejuk Teknik AC</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
@@ -15,7 +15,8 @@
     />
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.9.1/firebase-firestore-compat.js"></script> 
+    <script src="https://www.gstatic.com/firebasejs/9.9.1/firebase-firestore-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
       /* --- VARIABEL & RESET DASAR --- */
       :root {
@@ -29,6 +30,8 @@
         --coin: #ffd700;
         --success: #4caf50;
         --danger: #f44336;
+        --sidebar-width: 250px;
+        --header-height: 70px;
       }
       * {
         box-sizing: border-box;
@@ -41,55 +44,273 @@
         line-height: 1.6;
         background-color: var(--light);
         min-height: 100vh;
-        display: flex;
-        flex-direction: column;
-      }
-      .container {
-        padding: 1.5rem;
-        max-width: 1000px;
-        width: 100%;
-        margin: 0 auto;
-        flex-grow: 1;
-      }
-      .btn {
-        display: inline-block;
-        background-color: var(--primary);
-        color: var(--white);
-        padding: 0.6rem 1rem;
-        border-radius: 50px;
-        text-decoration: none;
-        font-weight: 500;
-        transition: all 0.3s ease;
-        border: 2px solid var(--primary);
-        cursor: pointer;
-        text-align: center;
-      }
-      .btn:hover {
-        background-color: transparent;
-        color: var(--primary);
-      }
-      .btn-danger {
-        background-color: var(--danger);
-        border-color: var(--danger);
-      }
-      .btn-danger:hover {
-        color: var(--danger);
-        background-color: transparent;
       }
       
-      /* --- Header & Tabs --- */
-      header {
-        background: var(--dark);
+      /* --- LAYOUT DASHBOARD --- */
+      .dashboard-container {
+        display: flex;
+        min-height: 100vh;
+      }
+      
+      /* Sidebar */
+      .sidebar {
+        width: var(--sidebar-width);
+        background-color: var(--dark);
         color: var(--white);
+        position: fixed;
+        height: 100vh;
+        overflow-y: auto;
+        transition: all 0.3s ease;
+        z-index: 1000;
+      }
+      
+      .sidebar-header {
         padding: 1.5rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      
+      .sidebar-header h2 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      
+      .sidebar-menu {
+        padding: 1rem 0;
+      }
+      
+      .menu-item {
+        display: block;
+        padding: 0.8rem 1.5rem;
+        color: rgba(255, 255, 255, 0.8);
+        text-decoration: none;
+        transition: all 0.3s ease;
+        position: relative;
+        border-left: 3px solid transparent;
+      }
+      
+      .menu-item:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: var(--white);
+      }
+      
+      .menu-item.active {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: var(--white);
+        border-left: 3px solid var(--secondary);
+      }
+      
+      .menu-item i {
+        margin-right: 10px;
+        width: 20px;
         text-align: center;
       }
+      
+      .sidebar-footer {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        padding: 1rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      
+      /* Main Content */
+      .main-content {
+        flex: 1;
+        margin-left: var(--sidebar-width);
+        transition: all 0.3s ease;
+      }
+      
+      /* Header */
+      .header {
+        background-color: var(--white);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        height: var(--header-height);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 2rem;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+      
+      .header-left h1 {
+        font-size: 1.5rem;
+        color: var(--dark);
+      }
+      
+      .header-right {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+      
+      .user-info {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      
+      .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: var(--primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--white);
+        font-weight: 600;
+      }
+      
+      .user-details p {
+        font-size: 0.9rem;
+        margin: 0;
+      }
+      
+      .user-details .user-role {
+        font-size: 0.75rem;
+        color: var(--gray);
+      }
+      
+      .logout-btn {
+        background-color: var(--danger);
+        color: var(--white);
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: all 0.3s ease;
+      }
+      
+      .logout-btn:hover {
+        background-color: #d32f2f;
+      }
+      
+      /* Content Area */
+      .content {
+        padding: 2rem;
+      }
+      
+      /* Dashboard Overview */
+      .dashboard-overview {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+      }
+      
+      .stat-card {
+        background-color: var(--white);
+        border-radius: 10px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        display: flex;
+        align-items: center;
+        transition: transform 0.3s ease;
+      }
+      
+      .stat-card:hover {
+        transform: translateY(-5px);
+      }
+      
+      .stat-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        margin-right: 1rem;
+      }
+      
+      .stat-icon.primary {
+        background-color: var(--primary-light);
+        color: var(--primary);
+      }
+      
+      .stat-icon.success {
+        background-color: rgba(76, 175, 80, 0.1);
+        color: var(--success);
+      }
+      
+      .stat-icon.warning {
+        background-color: rgba(255, 152, 0, 0.1);
+        color: var(--secondary);
+      }
+      
+      .stat-icon.danger {
+        background-color: rgba(244, 67, 54, 0.1);
+        color: var(--danger);
+      }
+      
+      .stat-info h3 {
+        font-size: 1.8rem;
+        margin-bottom: 0.2rem;
+      }
+      
+      .stat-info p {
+        color: var(--gray);
+        font-size: 0.9rem;
+      }
+      
+      /* Charts Section */
+      .charts-section {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+      }
+      
+      .chart-container {
+        background-color: var(--white);
+        border-radius: 10px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+      }
+      
+      .chart-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+      }
+      
+      .chart-header h3 {
+        font-size: 1.2rem;
+        color: var(--dark);
+      }
+      
+      .chart-options {
+        display: flex;
+        gap: 0.5rem;
+      }
+      
+      .chart-option {
+        padding: 0.3rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+      
+      .chart-option.active {
+        background-color: var(--primary-light);
+        color: var(--primary);
+      }
+      
+      /* Tabs */
       .tabs {
         display: flex;
-        justify-content: center;
-        margin-top: 1rem;
-        border-bottom: 2px solid #ddd;
+        margin-bottom: 1.5rem;
+        border-bottom: 2px solid #eee;
       }
+      
       .tab-btn {
         background: transparent;
         border: none;
@@ -100,34 +321,52 @@
         border-bottom: 3px solid transparent;
         transition: all 0.3s;
       }
+      
       .tab-btn.active {
         color: var(--primary);
         border-bottom: 3px solid var(--primary);
       }
+      
       .tab-content {
-        padding: 1.5rem 0;
         display: none;
       }
+      
       .tab-content.active {
         display: block;
       }
-
-      /* --- Cards & Forms --- */
+      
+      /* Cards & Forms */
       .card {
         background: var(--white);
         padding: 1.5rem;
-        border-radius: 12px;
+        border-radius: 10px;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
         margin-bottom: 1.5rem;
       }
+      
+      .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+      }
+      
+      .card-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: var(--dark);
+      }
+      
       .form-group {
         margin-bottom: 1rem;
       }
+      
       .form-group label {
         display: block;
         margin-bottom: 0.5rem;
         font-weight: 500;
       }
+      
       .form-group input,
       .form-group textarea,
       .form-group select {
@@ -138,7 +377,41 @@
         font-family: "Poppins", sans-serif;
       }
       
-      /* --- Review List Styles --- */
+      .btn {
+        display: inline-block;
+        background-color: var(--primary);
+        color: var(--white);
+        padding: 0.6rem 1.2rem;
+        border-radius: 50px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        border: 2px solid var(--primary);
+        cursor: pointer;
+        text-align: center;
+      }
+      
+      .btn:hover {
+        background-color: transparent;
+        color: var(--primary);
+      }
+      
+      .btn-danger {
+        background-color: var(--danger);
+        border-color: var(--danger);
+      }
+      
+      .btn-danger:hover {
+        color: var(--danger);
+        background-color: transparent;
+      }
+      
+      .btn-sm {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.85rem;
+      }
+      
+      /* Review List Styles */
       .review-card {
         background: var(--light);
         padding: 1rem;
@@ -147,15 +420,18 @@
         border-left: 5px solid var(--primary);
         box-shadow: 0 2px 5px rgba(0,0,0,0.05);
       }
+      
       .review-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
         margin-bottom: 0.5rem;
       }
+      
       .review-stars i {
         color: #ffc107;
       }
+      
       .review-footer {
         display: flex;
         justify-content: space-between;
@@ -165,14 +441,29 @@
         flex-wrap: wrap;
         align-items: center;
       }
-      .admin-controls button{
-        margin-left:5px; cursor:pointer; border:none; 
-        background:var(--secondary); color:var(--white);
-        padding: 5px 10px; border-radius: 50px; font-weight:500;
+      
+      .admin-controls button {
+        margin-left: 5px;
+        cursor: pointer;
+        border: none;
+        background: var(--secondary);
+        color: var(--white);
+        padding: 5px 10px;
+        border-radius: 50px;
+        font-weight: 500;
       }
-      .admin-controls button:hover{ opacity: 0.9; }
-      .admin-controls .unpin-btn { background-color: var(--gray); }
-      .admin-controls .edit-reply-btn { background-color: var(--primary); }
+      
+      .admin-controls button:hover {
+        opacity: 0.9;
+      }
+      
+      .admin-controls .unpin-btn {
+        background-color: var(--gray);
+      }
+      
+      .admin-controls .edit-reply-btn {
+        background-color: var(--primary);
+      }
       
       /* Modal Styles (General) */
       .modal-overlay {
@@ -182,24 +473,27 @@
         width: 100%;
         height: 100%;
         background: rgba(0, 0, 0, 0.7);
-        display: none; 
+        display: none;
         justify-content: center;
         align-items: center;
         z-index: 2000;
       }
+      
       .modal-content {
         background: var(--white);
         padding: 1.5rem;
         border-radius: 12px;
         width: 90%;
-        max-width: 450px;
+        max-width: 500px;
         position: relative;
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
       }
+      
       .modal-content h3 {
         margin-bottom: 1rem;
         color: var(--primary);
       }
+      
       .modal-content textarea {
         width: 100%;
         padding: 0.5rem;
@@ -208,6 +502,7 @@
         margin-bottom: 1rem;
         resize: vertical;
       }
+      
       .modal-content .close-btn {
         position: absolute;
         top: 10px;
@@ -218,54 +513,135 @@
         background: transparent;
         font-size: 1.2rem;
       }
+      
       .modal-footer {
-          display: flex;
-          justify-content: flex-end;
-          gap: 10px;
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
       }
-
+      
       /* Alert Modal & User Search Results */
-      #genericAlertModal { z-index: 3000; }
-      .confirm-yes.error-style { background-color: var(--danger); }
-      .notification-list-target { 
-          max-height: 400px; 
-          overflow-y: auto;
-          border: 1px solid #eee;
-          border-radius: 8px;
-          padding: 10px;
-          background: var(--white);
+      #genericAlertModal {
+        z-index: 3000;
       }
+      
+      .confirm-yes.error-style {
+        background-color: var(--danger);
+      }
+      
+      .notification-list-target {
+        max-height: 400px;
+        overflow-y: auto;
+        border: 1px solid #eee;
+        border-radius: 8px;
+        padding: 10px;
+        background: var(--white);
+      }
+      
       .user-list-item {
-          padding: 8px;
-          border-bottom: 1px dashed #eee;
-          cursor: pointer;
-          transition: background-color 0.2s;
-          line-height: 1.2;
+        padding: 8px;
+        border-bottom: 1px dashed #eee;
+        cursor: pointer;
+        transition: background-color 0.2s;
+        line-height: 1.2;
       }
-      .user-list-item:hover { background-color: var(--primary-light); }
-      .user-list-item:last-child { border-bottom: none; }
-      .user-list-item.selected { 
-        background-color: var(--primary); 
+      
+      .user-list-item:hover {
+        background-color: var(--primary-light);
+      }
+      
+      .user-list-item:last-child {
+        border-bottom: none;
+      }
+      
+      .user-list-item.selected {
+        background-color: var(--primary);
         color: var(--white);
         font-weight: 600;
       }
       
       /* Order/User Table Styles */
-      .data-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-      .data-table th, .data-table td { 
-          border: 1px solid #ddd; padding: 10px; text-align: left; font-size: 0.9em;
+      .data-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
       }
-      .data-table th { background-color: var(--primary-light); color: var(--primary); }
-      .data-table tr:nth-child(even) { background-color: #f9f9f9; }
-
+      
+      .data-table th,
+      .data-table td {
+        border: 1px solid #ddd;
+        padding: 12px;
+        text-align: left;
+        font-size: 0.9em;
+      }
+      
+      .data-table th {
+        background-color: var(--primary-light);
+        color: var(--primary);
+        font-weight: 600;
+      }
+      
+      .data-table tr:nth-child(even) {
+        background-color: #f9f9f9;
+      }
+      
+      .data-table tr:hover {
+        background-color: var(--primary-light);
+      }
+      
       /* User Detail Modal Specific */
-      .user-detail-list strong { display: inline-block; width: 120px; color: var(--primary); }
-      .user-detail-list p { border-bottom: 1px dashed var(--light); padding-bottom: 5px; margin-bottom: 5px; }
-
+      .user-detail-list strong {
+        display: inline-block;
+        width: 120px;
+        color: var(--primary);
+      }
+      
+      .user-detail-list p {
+        border-bottom: 1px dashed var(--light);
+        padding-bottom: 5px;
+        margin-bottom: 5px;
+      }
+      
+      /* Responsive */
+      .mobile-menu-toggle {
+        display: none;
+        background: none;
+        border: none;
+        color: var(--dark);
+        font-size: 1.5rem;
+        cursor: pointer;
+      }
+      
+      @media (max-width: 992px) {
+        .charts-section {
+          grid-template-columns: 1fr;
+        }
+      }
+      
+      @media (max-width: 768px) {
+        .sidebar {
+          transform: translateX(-100%);
+        }
+        
+        .sidebar.active {
+          transform: translateX(0);
+        }
+        
+        .main-content {
+          margin-left: 0;
+        }
+        
+        .mobile-menu-toggle {
+          display: block;
+        }
+        
+        .dashboard-overview {
+          grid-template-columns: 1fr;
+        }
+      }
     </style>
   </head>
   <body>
-    
     <!-- Generic Alert Modal (Untuk feedback) -->
     <div id="genericAlertModal" class="modal-overlay">
       <div class="modal-content">
@@ -312,93 +688,216 @@
       </div>
     </div>
 
-
-    <header>
-      <h1>Admin Panel</h1>
-      <p id="authStatus"></p>
-      <button class="btn btn-danger" id="logoutBtn" style="margin-top: 10px; display: none;">Logout</button>
-      <div class="tabs" id="adminTabs" style="display: none;">
-        <button class="tab-btn active" data-tab="reviews">Kelola Ulasan</button>
-        <button class="tab-btn" data-tab="notif">Kirim Notifikasi</button>
-        <button class="tab-btn" data-tab="orders">Kelola Pesanan</button>
-        <button class="tab-btn" data-tab="users">User List</button>
-      </div>
-    </header>
-
-    <div class="container">
-      
-      <!-- Tab Konten: Kelola Ulasan -->
-      <div id="reviews" class="tab-content active">
-        <div class="card">
-            <h3>Daftar Ulasan Pelanggan</h3>
-            <div id="reviewsList">
-              <p style="text-align:center;">Memuat ulasan...</p>
-            </div>
+    <div class="dashboard-container">
+      <!-- Sidebar -->
+      <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+          <h2><i class="fas fa-snowflake"></i> Sejuk Teknik</h2>
+        </div>
+        <div class="sidebar-menu">
+          <a href="#" class="menu-item active" data-page="dashboard">
+            <i class="fas fa-tachometer-alt"></i> Dashboard
+          </a>
+          <a href="#" class="menu-item" data-page="reviews">
+            <i class="fas fa-star"></i> Kelola Ulasan
+          </a>
+          <a href="#" class="menu-item" data-page="notif">
+            <i class="fas fa-bell"></i> Kirim Notifikasi
+          </a>
+          <a href="#" class="menu-item" data-page="orders">
+            <i class="fas fa-shopping-cart"></i> Kelola Pesanan
+          </a>
+          <a href="#" class="menu-item" data-page="users">
+            <i class="fas fa-users"></i> User List
+          </a>
+        </div>
+        <div class="sidebar-footer">
+          <button class="logout-btn" id="logoutBtn" style="width: 100%;">
+            <i class="fas fa-sign-out-alt"></i> Logout
+          </button>
         </div>
       </div>
-      
-      <!-- Tab Konten: Kirim Notifikasi -->
-      <div id="notif" class="tab-content">
-        <div class="card">
-            <h3>Kirim Hadiah/Pesan ke User</h3>
-            <p>Pilih user yang akan menerima notifikasi. Ketik 'ALL' untuk broadcast.</p>
-            
-            <div id="userSearchArea" class="form-group">
+
+      <!-- Main Content -->
+      <div class="main-content">
+        <!-- Header -->
+        <header class="header">
+          <div class="header-left">
+            <button class="mobile-menu-toggle" id="mobileMenuToggle">
+              <i class="fas fa-bars"></i>
+            </button>
+            <h1 id="pageTitle">Dashboard</h1>
+          </div>
+          <div class="header-right">
+            <div class="user-info">
+              <div class="user-avatar" id="userAvatar">A</div>
+              <div class="user-details">
+                <p id="userName">Admin</p>
+                <p class="user-role">Administrator</p>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <!-- Content Area -->
+        <div class="content">
+          <!-- Dashboard Overview -->
+          <div id="dashboardPage" class="page-content">
+            <div class="dashboard-overview">
+              <div class="stat-card">
+                <div class="stat-icon primary">
+                  <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-info">
+                  <h3 id="totalUsers">0</h3>
+                  <p>Total Pengguna</p>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon success">
+                  <i class="fas fa-shopping-cart"></i>
+                </div>
+                <div class="stat-info">
+                  <h3 id="totalOrders">0</h3>
+                  <p>Total Pesanan</p>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon warning">
+                  <i class="fas fa-star"></i>
+                </div>
+                <div class="stat-info">
+                  <h3 id="totalReviews">0</h3>
+                  <p>Total Ulasan</p>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon danger">
+                  <i class="fas fa-coins"></i>
+                </div>
+                <div class="stat-info">
+                  <h3 id="totalCoins">0</h3>
+                  <p>Total SJCoin</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Charts Section -->
+            <div class="charts-section">
+              <div class="chart-container">
+                <div class="chart-header">
+                  <h3>Statistik Pesanan</h3>
+                  <div class="chart-options">
+                    <span class="chart-option active">Minggu</span>
+                    <span class="chart-option">Bulan</span>
+                    <span class="chart-option">Tahun</span>
+                  </div>
+                </div>
+                <canvas id="ordersChart" height="100"></canvas>
+              </div>
+              <div class="chart-container">
+                <div class="chart-header">
+                  <h3>Distribusi Ulasan</h3>
+                  <div class="chart-options">
+                    <span class="chart-option active">Rating</span>
+                  </div>
+                </div>
+                <canvas id="reviewsChart" height="100"></canvas>
+              </div>
+            </div>
+
+            <!-- Recent Activities -->
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Aktivitas Terbaru</h3>
+              </div>
+              <div id="recentActivities">
+                <p style="text-align:center;">Memuat aktivitas terbaru...</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab Konten: Kelola Ulasan -->
+          <div id="reviewsPage" class="page-content" style="display: none;">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Daftar Ulasan Pelanggan</h3>
+              </div>
+              <div id="reviewsList">
+                <p style="text-align:center;">Memuat ulasan...</p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Tab Konten: Kirim Notifikasi -->
+          <div id="notifPage" class="page-content" style="display: none;">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Kirim Hadiah/Pesan ke User</h3>
+              </div>
+              <p>Pilih user yang akan menerima notifikasi. Ketik 'ALL' untuk broadcast.</p>
+              
+              <div id="userSearchArea" class="form-group">
                 <input type="text" id="userSearch" placeholder="Cari User (Nama/Email) atau ketik ALL">
                 <div id="userSearchResults" class="notification-list-target" style="margin-top: 10px; display: none;">
-                    <!-- Hasil pencarian user -->
+                  <!-- Hasil pencarian user -->
                 </div>
                 <p id="selectedUser" style="margin-top: 10px; font-weight: 600; color: var(--success); display: none;">
-                    ✅ Target: <span id="selectedUserName"></span> 
-                    <span id="selectedUserUID" style="font-size: 0.8em; color: var(--gray);"></span>
+                  ✅ Target: <span id="selectedUserName"></span> 
+                  <span id="selectedUserUID" style="font-size: 0.8em; color: var(--gray);"></span>
                 </p>
-            </div>
-            
-            <div class="form-group">
+              </div>
+              
+              <div class="form-group">
                 <label for="notifTitleSelect">Saran Judul</label>
                 <select id="notifTitleSelect">
-                    <option value="CUSTOM">-- Judul Kustom --</option>
-                    <option value="Selamat Bergabung!">Selamat Bergabung!</option>
-                    <option value="Hadiah Klaim Koin!">Hadiah Klaim Koin!</option>
-                    <option value="Update Status Pesanan!">Update Status Pesanan!</option>
-                    <option value="Promosi Terbaru!">Promosi Terbaru!</option>
+                  <option value="CUSTOM">-- Judul Kustom --</option>
+                  <option value="Selamat Bergabung!">Selamat Bergabung!</option>
+                  <option value="Hadiah Klaim Koin!">Hadiah Klaim Koin!</option>
+                  <option value="Update Status Pesanan!">Update Status Pesanan!</option>
+                  <option value="Promosi Terbaru!">Promosi Terbaru!</option>
                 </select>
-            </div>
+              </div>
 
-            <form id="notificationForm" style="margin-top: 15px;">
+              <form id="notificationForm" style="margin-top: 15px;">
                 <div class="form-group">
-                    <label for="notifTitle">Judul Notifikasi</label>
-                    <input type="text" id="notifTitle" required>
+                  <label for="notifTitle">Judul Notifikasi</label>
+                  <input type="text" id="notifTitle" required>
                 </div>
                 <div class="form-group">
-                    <label for="notifContent">Isi Pesan</label>
-                    <textarea id="notifContent" rows="3" required></textarea>
+                  <label for="notifContent">Isi Pesan</label>
+                  <textarea id="notifContent" rows="3" required></textarea>
                 </div>
                 <div class="form-group">
-                    <label for="coinReward">Hadiah SJCoin (Opsional)</label>
-                    <input type="number" id="coinReward" min="0" value="0">
+                  <label for="coinReward">Hadiah SJCoin (Opsional)</label>
+                  <input type="number" id="coinReward" min="0" value="0">
                 </div>
                 <button type="submit" class="btn" id="sendNotifBtn">Kirim Notifikasi</button>
-            </form>
+              </form>
+            </div>
+          </div>
+          
+          <!-- Tab Konten: Kelola Pesanan -->
+          <div id="ordersPage" class="page-content" style="display: none;">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Daftar Pesanan Terbaru</h3>
+              </div>
+              <p id="ordersList">Memuat data pesanan...</p>
+            </div>
+          </div>
+          
+          <!-- Tab Konten: User List -->
+          <div id="usersPage" class="page-content" style="display: none;">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Semua Pengguna Terdaftar</h3>
+              </div>
+              <p id="usersList">Memuat data pengguna...</p>
+            </div>
+          </div>
         </div>
       </div>
-      
-      <!-- Tab Konten: Kelola Pesanan -->
-      <div id="orders" class="tab-content">
-        <div class="card">
-          <h3>Daftar Pesanan Terbaru</h3>
-          <p id="ordersList">Memuat data pesanan...</p>
-        </div>
-      </div>
-      
-      <!-- Tab Konten: User List -->
-      <div id="users" class="tab-content">
-        <div class="card">
-          <h3>Semua Pengguna Terdaftar</h3>
-          <p id="usersList">Memuat data pengguna...</p>
-        </div>
-      </div>
-
     </div>
 
     <script>
@@ -472,52 +971,67 @@
           return `<div class="review-stars">${starsHtml}</div>`;
       }
       
-      // --- TAB SWITCHING ---
-      document.querySelectorAll('.tab-btn').forEach(button => {
-        button.addEventListener('click', () => {
-          const tabId = button.getAttribute('data-tab');
-          document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-          document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+      // --- PAGE NAVIGATION ---
+      document.querySelectorAll('.menu-item').forEach(item => {
+        item.addEventListener('click', function(e) {
+          e.preventDefault();
+          const page = this.getAttribute('data-page');
           
-          button.classList.add('active');
-          document.getElementById(tabId).classList.add('active');
+          // Update active menu
+          document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
+          this.classList.add('active');
           
-          // Muat data spesifik saat tab dibuka
-          if (tabId === 'reviews') loadReviews();
-          if (tabId === 'orders') loadOrders();
-          if (tabId === 'users') loadUsers();
+          // Hide all pages
+          document.querySelectorAll('.page-content').forEach(p => p.style.display = 'none');
+          
+          // Show selected page
+          document.getElementById(page + 'Page').style.display = 'block';
+          
+          // Update page title
+          document.getElementById('pageTitle').textContent = this.textContent.trim();
+          
+          // Load page specific data
+          if (page === 'dashboard') loadDashboard();
+          if (page === 'reviews') loadReviews();
+          if (page === 'orders') loadOrders();
+          if (page === 'users') loadUsers();
+          
+          // Close mobile menu if open
+          if (window.innerWidth <= 768) {
+            document.getElementById('sidebar').classList.remove('active');
+          }
         });
+      });
+      
+      // Mobile menu toggle
+      document.getElementById('mobileMenuToggle').addEventListener('click', function() {
+        document.getElementById('sidebar').classList.toggle('active');
       });
 
       // --- ADMIN AUTH CHECK ---
 
       auth.onAuthStateChanged((user) => {
-        const authStatus = document.getElementById('authStatus');
-        const logoutBtn = document.getElementById('logoutBtn');
-        const adminTabs = document.getElementById('adminTabs');
-
         if (user) {
             isAdmin = ADMIN_UIDS.includes(user.uid);
             if (isAdmin) {
-                authStatus.textContent = `Login sebagai Admin: ${user.email}`;
-                logoutBtn.style.display = 'inline-block';
-                adminTabs.style.display = 'flex';
-                loadReviews(); // Muat ulasan saat pertama kali masuk ke Reviews tab
+                // Update user info in header
+                document.getElementById('userName').textContent = user.displayName || user.email.split('@')[0];
+                document.getElementById('userAvatar').textContent = (user.displayName || user.email).charAt(0).toUpperCase();
+                
+                // Load dashboard by default
+                loadDashboard();
             } else {
-                authStatus.textContent = "Akses Ditolak. Anda bukan Admin.";
-                logoutBtn.style.display = 'inline-block';
-                adminTabs.style.display = 'none';
-                document.querySelector('.container').innerHTML = '<div class="card"><p style="text-align:center; color: var(--danger);">Anda tidak memiliki izin untuk mengakses halaman ini.</p></div>';
+                showCustomAlert("Akses Ditolak", "Anda bukan Admin. Akses ditolak.", true);
+                document.querySelector('.main-content').innerHTML = '<div class="content"><div class="card"><p style="text-align:center; color: var(--danger);">Anda tidak memiliki izin untuk mengakses halaman ini.</p></div></div>';
             }
         } else {
-            isAdmin = false;
-            authStatus.textContent = "Anda harus Login sebagai Admin.";
-            logoutBtn.style.display = 'none';
-            adminTabs.style.display = 'none';
-            document.querySelector('.container').innerHTML = `
-                <div class="card" style="text-align:center;">
-                    <p style="margin-bottom: 15px;">Silakan login dengan akun Admin.</p>
-                    <button class="btn" onclick="window.location.href='index.html'">Pergi ke Halaman Utama</button>
+            showCustomAlert("Login Diperlukan", "Anda harus Login sebagai Admin.", true);
+            document.querySelector('.main-content').innerHTML = `
+                <div class="content">
+                    <div class="card" style="text-align:center;">
+                        <p style="margin-bottom: 15px;">Silakan login dengan akun Admin.</p>
+                        <button class="btn" onclick="window.location.href='index.html'">Pergi ke Halaman Utama</button>
+                    </div>
                 </div>
             `;
         }
@@ -531,6 +1045,198 @@
               window.alert('Gagal Logout: ' + error.message);
           });
       });
+      
+      // --- DASHBOARD FUNCTIONS ---
+      
+      function loadDashboard() {
+        // Load statistics
+        loadStatistics();
+        
+        // Load charts
+        loadCharts();
+        
+        // Load recent activities
+        loadRecentActivities();
+      }
+      
+      function loadStatistics() {
+        // Total Users
+        db.collection('users').get().then(snapshot => {
+          document.getElementById('totalUsers').textContent = snapshot.size;
+        }).catch(e => console.error('Error loading users count:', e));
+        
+        // Total Orders
+        db.collection('orders').get().then(snapshot => {
+          document.getElementById('totalOrders').textContent = snapshot.size;
+        }).catch(e => console.error('Error loading orders count:', e));
+        
+        // Total Reviews
+        db.collection('reviews').get().then(snapshot => {
+          document.getElementById('totalReviews').textContent = snapshot.size;
+        }).catch(e => console.error('Error loading reviews count:', e));
+        
+        // Total Coins
+        db.collection('users').get().then(snapshot => {
+          let totalCoins = 0;
+          snapshot.forEach(doc => {
+            totalCoins += doc.data().sjcoin || 0;
+          });
+          document.getElementById('totalCoins').textContent = totalCoins;
+        }).catch(e => console.error('Error loading coins count:', e));
+      }
+      
+      function loadCharts() {
+        // Orders Chart
+        const ordersCtx = document.getElementById('ordersChart').getContext('2d');
+        const ordersChart = new Chart(ordersCtx, {
+          type: 'line',
+          data: {
+            labels: ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'],
+            datasets: [{
+              label: 'Pesanan',
+              data: [12, 19, 3, 5, 2, 3, 7],
+              backgroundColor: 'rgba(0, 102, 204, 0.2)',
+              borderColor: 'rgba(0, 102, 204, 1)',
+              borderWidth: 2,
+              tension: 0.3
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              y: {
+                beginAtZero: true
+              }
+            }
+          }
+        });
+        
+        // Reviews Chart
+        const reviewsCtx = document.getElementById('reviewsChart').getContext('2d');
+        const reviewsChart = new Chart(reviewsCtx, {
+          type: 'doughnut',
+          data: {
+            labels: ['5 Bintang', '4 Bintang', '3 Bintang', '2 Bintang', '1 Bintang'],
+            datasets: [{
+              data: [30, 15, 5, 3, 2],
+              backgroundColor: [
+                'rgba(76, 175, 80, 0.7)',
+                'rgba(0, 102, 204, 0.7)',
+                'rgba(255, 193, 7, 0.7)',
+                'rgba(255, 152, 0, 0.7)',
+                'rgba(244, 67, 54, 0.7)'
+              ],
+              borderColor: [
+                'rgba(76, 175, 80, 1)',
+                'rgba(0, 102, 204, 1)',
+                'rgba(255, 193, 7, 1)',
+                'rgba(255, 152, 0, 1)',
+                'rgba(244, 67, 54, 1)'
+              ],
+              borderWidth: 1
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false
+          }
+        });
+      }
+      
+      function loadRecentActivities() {
+        const activitiesContainer = document.getElementById('recentActivities');
+        activitiesContainer.innerHTML = '<p style="text-align:center;">Memuat aktivitas terbaru...</p>';
+        
+        // Get recent reviews
+        db.collection('reviews').orderBy('timestamp', 'desc').limit(5).get()
+        .then(reviewsSnapshot => {
+          // Get recent orders
+          return db.collection('orders').orderBy('timestamp', 'desc').limit(5).get()
+          .then(ordersSnapshot => {
+            // Get recent notifications
+            return db.collection('notifications').orderBy('timestamp', 'desc').limit(5).get()
+            .then(notificationsSnapshot => {
+              // Combine and sort activities
+              let activities = [];
+              
+              reviewsSnapshot.forEach(doc => {
+                const data = doc.data();
+                activities.push({
+                  type: 'review',
+                  title: `Ulasan baru dari ${data.reviewerName || 'Anonim'}`,
+                  time: data.timestamp,
+                  icon: 'fa-star',
+                  color: 'warning'
+                });
+              });
+              
+              ordersSnapshot.forEach(doc => {
+                const data = doc.data();
+                activities.push({
+                  type: 'order',
+                  title: `Pesanan baru dari ${data.userName || 'User'}`,
+                  time: data.timestamp,
+                  icon: 'fa-shopping-cart',
+                  color: 'success'
+                });
+              });
+              
+              notificationsSnapshot.forEach(doc => {
+                const data = doc.data();
+                activities.push({
+                  type: 'notification',
+                  title: `Notifikasi: ${data.title}`,
+                  time: data.timestamp,
+                  icon: 'fa-bell',
+                  color: 'primary'
+                });
+              });
+              
+              // Sort by time (newest first)
+              activities.sort((a, b) => {
+                if (!a.time) return 1;
+                if (!b.time) return -1;
+                return b.time.toDate() - a.time.toDate();
+              });
+              
+              // Take top 5
+              activities = activities.slice(0, 5);
+              
+              // Render activities
+              if (activities.length === 0) {
+                activitiesContainer.innerHTML = '<p style="text-align:center;">Belum ada aktivitas terbaru.</p>';
+                return;
+              }
+              
+              let activitiesHtml = '<ul style="list-style: none; padding: 0;">';
+              activities.forEach(activity => {
+                const date = activity.time ? activity.time.toDate() : new Date();
+                const formattedTime = date.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+                const formattedDate = date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
+                
+                activitiesHtml += `
+                  <li style="padding: 10px 0; border-bottom: 1px solid #eee; display: flex; align-items: center;">
+                    <div style="width: 40px; height: 40px; border-radius: 50%; background-color: var(--${activity.color}-light); color: var(--${activity.color}); display: flex; align-items: center; justify-content: center; margin-right: 15px;">
+                      <i class="fas ${activity.icon}"></i>
+                    </div>
+                    <div style="flex: 1;">
+                      <p style="margin: 0; font-weight: 500;">${activity.title}</p>
+                      <p style="margin: 0; font-size: 0.8rem; color: var(--gray);">${formattedDate}, ${formattedTime}</p>
+                    </div>
+                  </li>
+                `;
+              });
+              activitiesHtml += '</ul>';
+              
+              activitiesContainer.innerHTML = activitiesHtml;
+            });
+          });
+        })
+        .catch(e => {
+          activitiesContainer.innerHTML = `<p style="text-align:center; color: var(--danger);">Gagal memuat aktivitas: ${e.message}</p>`;
+        });
+      }
       
       // --- REVIEW MANAGEMENT FUNCTIONS (Review Tab) ---
       
@@ -919,8 +1625,8 @@
                           <td><span style="color: ${order.status === 'Selesai' ? 'var(--success)' : (order.status === 'Baru' ? 'var(--secondary)' : 'var(--primary)')}; font-weight: 600;">${order.status || 'Baru'}</span></td>
                           <td>${formattedTime}</td>
                           <td>
-                              <button class="btn" style="padding: 5px 10px; font-size: 0.8em;" onclick="viewOrder('${orderId}')">Detail</button>
-                              <button class="btn-danger" style="padding: 5px 10px; font-size: 0.8em;" onclick="deleteOrder('${orderId}')">Hapus</button>
+                              <button class="btn btn-sm" onclick="viewOrder('${orderId}')">Detail</button>
+                              <button class="btn-danger btn-sm" onclick="deleteOrder('${orderId}')">Hapus</button>
                           </td>
                       </tr>
                   `;
@@ -991,7 +1697,7 @@
                         <td><span style="color: var(--coin); font-weight: 600;">${user.sjcoin || 0}</span></td>
                         <td>${formattedDate}</td>
                         <td>
-                            <button class="btn" style="padding: 5px 10px; font-size: 0.8em;" onclick="viewUserDetail('${userId}')">Detail</button>
+                            <button class="btn btn-sm" onclick="viewUserDetail('${userId}')">Detail</button>
                         </td>
                     </tr>
                 `;

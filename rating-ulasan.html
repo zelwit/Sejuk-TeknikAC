@@ -26,6 +26,8 @@
         --gray: #718096;
         --white: #ffffff;
         --coin: #ffd700;
+        --success: #4caf50;
+        --danger: #f44336;
       }
       * {
         box-sizing: border-box;
@@ -330,6 +332,68 @@
       .admin-controls { display:flex; gap:8px; align-items:center; }
       .pin { color: #ffb300; }
 
+      /* Modal Styles (Admin Reply & Notifications) */
+      .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7); /* Black blur */
+        display: none; /* Default hidden */
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+      }
+      .modal-content {
+        background: var(--white);
+        padding: 1.5rem;
+        border-radius: 12px;
+        width: 90%;
+        max-width: 400px;
+        position: relative;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      }
+      .modal-content h3 {
+        margin-bottom: 1rem;
+        color: var(--primary);
+      }
+      .modal-content textarea {
+        width: 100%;
+        padding: 0.5rem;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        margin-bottom: 1rem;
+        resize: vertical;
+      }
+      .modal-content .close-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        cursor: pointer;
+        font-weight: bold;
+        border: none;
+        background: transparent;
+        font-size: 1.2rem;
+      }
+      .modal-footer {
+          display: flex;
+          justify-content: flex-end;
+          gap: 10px;
+      }
+      /* Notification Modal Specific */
+      .notification-modal .modal-content {
+          text-align: center;
+          padding: 2rem;
+      }
+      .notification-modal i {
+          font-size: 3rem;
+          margin-bottom: 0.5rem;
+      }
+      .notification-success i { color: var(--success); }
+      .notification-error i { color: var(--danger); }
+      /* END Modal Styles */
+
       /* MOBILE OPTIMIZATIONS */
       @media (max-width: 768px) {
         .rating-summary { flex-direction: column; align-items: flex-start; }
@@ -342,6 +406,31 @@
     </style>
   </head>
   <body>
+    
+    <!-- Modal for Admin Reply -->
+    <div class="modal-overlay" id="replyModal">
+      <div class="modal-content">
+        <button class="close-btn" onclick="closeReplyModal()">×</button>
+        <h3 id="replyModalTitle">Boss mau bales apa ke <span id="replyReviewerName"></span>?</h3>
+        <textarea id="replyTextarea" rows="5" placeholder="Tulis balasan..."></textarea>
+        <div class="modal-footer">
+            <button class="btn" style="background-color: var(--gray);" onclick="closeReplyModal()">Batal</button>
+            <button class="btn" onclick="sendReply()">Kirim Balasan</button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Modal for General Notifications (Success/Error/Warning) -->
+    <div class="modal-overlay notification-modal" id="notificationModal">
+        <div class="modal-content" id="notificationModalContent">
+            <!-- Content filled by JS -->
+            <i id="notificationIcon" class="fas"></i>
+            <h3 id="notificationMessage"></h3>
+            <button class="btn" onclick="closeNotificationModal()">Tutup</button>
+        </div>
+    </div>
+
+
     <nav>
       <div class="nav-container">
         <a href="index.html" class="logo">Sejuk Teknik</a>
@@ -400,7 +489,7 @@
       <div class="review-form-container" id="loginWarning" style="text-align: center;">
         <h3>Ingin Memberi Ulasan?</h3>
         <p>Silakan <strong>Login</strong> atau <strong>Sign Up</strong> terlebih dahulu untuk berbagi pengalaman Anda.</p>
-        <button class="btn login-btn" onclick="alert('Buka modal Login/Signup')">Login / Daftar</button>
+        <button class="btn login-btn" onclick="showNotification('Fitur Login/Daftar belum diimplementasikan.', 'warning')">Login / Daftar</button>
       </div>
 
       <div class="filter-buttons">
@@ -434,7 +523,7 @@
       const auth = firebase.auth();
       const db = firebase.firestore();
 
-      // Admin UIDs allowed to reply/pin (from user request)
+      // Admin UIDs allowed to reply/pin
       const ADMIN_UIDS = [
         'f3M49osGvtcGbEWf9UTdJe1AG013',
         'JTVwtBsdt3PaaYeyICd8PJm3lJu2'
@@ -443,7 +532,104 @@
       let currentFilter = 'all';
       let allReviews = [];
       let reviewCounts = { all: 0, positif: 0, netral: 0, negatif: 0 };
+      let currentReplyReviewId = null;
 
+      // --- MODAL UTILITY FUNCTIONS ---
+
+      function showNotification(message, type = 'success') {
+          const modal = document.getElementById('notificationModal');
+          const content = document.getElementById('notificationModalContent');
+          const icon = document.getElementById('notificationIcon');
+          const msg = document.getElementById('notificationMessage');
+
+          content.classList.remove('notification-success', 'notification-error', 'notification-warning');
+          
+          if (type === 'success') {
+              icon.className = 'fas fa-check-circle';
+              content.classList.add('notification-success');
+          } else if (type === 'error' || type === true) { // type=true for backward compatibility
+              icon.className = 'fas fa-times-circle';
+              content.classList.add('notification-error');
+          } else if (type === 'warning') {
+               icon.className = 'fas fa-exclamation-triangle';
+              content.classList.add('notification-warning');
+          }
+          
+          msg.textContent = message;
+          modal.style.display = 'flex';
+          document.body.style.overflow = 'hidden';
+
+          // Auto-close for success/warning messages
+          if (type === 'success' || type === 'warning') {
+              setTimeout(closeNotificationModal, 3000);
+          }
+      }
+
+      function closeNotificationModal() {
+          document.getElementById('notificationModal').style.display = 'none';
+          document.body.style.overflow = 'auto';
+      }
+
+      function openReplyModal(reviewId, reviewerName, currentReplyText) {
+          const user = auth.currentUser;
+          if (!user || !ADMIN_UIDS.includes(user.uid)) {
+              showNotification('Akses ditolak! Hanya admin yang dapat membalas.', 'error');
+              return;
+          }
+          
+          currentReplyReviewId = reviewId;
+          document.getElementById('replyReviewerName').textContent = reviewerName || 'Anonim';
+          document.getElementById('replyTextarea').value = currentReplyText || '';
+          
+          document.getElementById('replyModal').style.display = 'flex';
+          document.body.style.overflow = 'hidden';
+      }
+
+      function closeReplyModal() {
+          document.getElementById('replyModal').style.display = 'none';
+          document.body.style.overflow = 'auto';
+          currentReplyReviewId = null;
+      }
+
+      function sendReply() {
+          const replyText = document.getElementById('replyTextarea').value.trim();
+          if (replyText.length < 5) {
+              showNotification('Balasan minimal 5 karakter.', 'warning');
+              return;
+          }
+          
+          const user = auth.currentUser;
+          if (!user) { showNotification('Anda harus login untuk membalas.', 'error'); return; }
+
+          db.collection('users').doc(user.uid).get().then(doc => {
+              const adminName = doc.exists && doc.data().name ? doc.data().name : (user.displayName || 'Admin Sejuk Teknik');
+              
+              const updateData = {
+                  reply: {
+                      text: replyText,
+                      adminName: adminName,
+                      adminUid: user.uid,
+                      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                      likes: [],
+                      dislikes: []
+                  }
+              };
+
+              return db.collection('reviews').doc(currentReplyReviewId).update(updateData);
+          })
+          .then(() => {
+              closeReplyModal();
+              showNotification('Balasan admin berhasil dikirim/diubah!', 'success');
+              loadReviews(); // Reload untuk update tampilan
+          })
+          .catch(error => {
+              console.error('Error sending reply:', error);
+              showNotification('Gagal mengirim balasan: ' + error.message, 'error');
+          });
+      }
+
+
+      // --- HELPER FUNCTIONS ---
       function timeSince(date) {
           const seconds = Math.floor((new Date() - date) / 1000);
           let interval = seconds / 31536000;
@@ -473,7 +659,17 @@
           return `<div class="review-stars">${starsHtml}</div>`;
       }
 
-      // RENDER REVIEWS (pinned first)
+      function escapeHtml(text) {
+          if (!text) return '';
+          return text
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/\"/g, '&quot;')
+            .replace(/\'/g, '&#039;');
+      }
+
+      // --- RENDER FUNCTIONS ---
       function renderReviews(filter) {
           const list = document.getElementById('reviewsList');
           list.innerHTML = '';
@@ -488,7 +684,7 @@
               return;
           }
 
-          // pinned first
+          // Sort: pinned first
           filteredReviews.sort((a,b) => {
               if ((a.pinned?true:false) === (b.pinned?true:false)) {
                   return b.timestamp?.toDate?.() - a.timestamp?.toDate?.();
@@ -500,31 +696,28 @@
               const reviewCard = document.createElement('div');
               reviewCard.classList.add('review-card');
 
-              const reviewDate = review.timestamp ? review.timestamp.toDate() : new Date();
+              const reviewDate = review.timestamp ? (review.timestamp.toDate ? review.timestamp.toDate() : new Date(review.timestamp.seconds * 1000)) : new Date();
               const timeString = timeSince(reviewDate);
               const sentiment = review.sentiment;
 
               // Prepare reply area
               let replyHtml = '';
               if (review.reply && review.reply.text) {
-                  // display reply
                   const adminName = review.reply.adminName || review.reply.adminUid || 'Admin';
                   const likes = (review.reply.likes || []).length || 0;
                   const dislikes = (review.reply.dislikes || []).length || 0;
                   replyHtml = `
                     <div class="reply-block">
-                      <div style="font-weight:700;">${adminName}</div>
+                      <div style="font-weight:700;">${escapeHtml(adminName)}</div>
                       <div class="reply-text">${escapeHtml(review.reply.text)}</div>
                       <div class="reply-actions">
                         <button class="small-btn" onclick="voteOnReply('${review.id}','like')">👍🏻 <span id="like-count-${review.id}">${likes}</span></button>
                         <button class="small-btn" onclick="voteOnReply('${review.id}','dislike')">👎🏻 <span id="dislike-count-${review.id}">${dislikes}</span></button>
-                        <button class="small-btn" onclick="openReplyModal('${review.id}')">Tutup</button>
                       </div>
                     </div>
                   `;
               }
 
-              // Admin controls visible only to admin UIDs (handled later when auth state known)
               const pinnedBadge = review.pinned ? '<span title="Pinned" class="pin">📌 Pinned</span>' : '';
 
               reviewCard.innerHTML = `
@@ -544,68 +737,45 @@
                   ${replyHtml}
               `;
 
-              // Append and then render admin area (so DOM exists)
               list.appendChild(reviewCard);
-
-              // add 'Balas' or 'Lihat Balasan' buttons depending on state and auth
-              renderAdminAreaForReview(review.id, review.reply);
+              renderAdminAreaForReview(review.id, review.reply, review.reviewerName);
           });
       }
 
-      // Create admin area buttons (reply/pin) depending on current user
-      function renderAdminAreaForReview(reviewId, reply) {
+      function renderAdminAreaForReview(reviewId, reply, reviewerName) {
           const container = document.getElementById(`admin-area-${reviewId}`);
           if (!container) return;
 
-          // Clear
           container.innerHTML = '';
-
-          // If user is admin, show buttons
           const user = auth.currentUser;
           const isAdmin = user && ADMIN_UIDS.includes(user.uid);
 
           if (isAdmin) {
-              // Reply button (shows inline textarea)
               const replyBtn = document.createElement('button');
               replyBtn.className = 'small-btn';
               replyBtn.textContent = reply && reply.text ? 'Edit Balasan' : 'Balas';
-              replyBtn.onclick = () => openReplyEditor(reviewId, reply);
+              replyBtn.onclick = () => openReplyModal(reviewId, reviewerName, reply?.text);
               container.appendChild(replyBtn);
 
-              // Pin toggle
               const pinBtn = document.createElement('button');
               pinBtn.className = 'small-btn pin';
-              pinBtn.textContent = '📌 Pin';
+              pinBtn.textContent = reviewId.pinned ? 'Unpin' : '📌 Pin';
               pinBtn.onclick = () => togglePin(reviewId);
               container.appendChild(pinBtn);
           } else {
-              // If not admin but there is no reply: show nothing; if reply exists show 'Lihat Balasan' (scroll to it)
               if (reply && reply.text) {
                   const showBtn = document.createElement('button');
                   showBtn.className = 'small-btn';
                   showBtn.textContent = 'Lihat Balasan';
                   showBtn.onclick = () => {
-                      // scroll to the reply block
-                      const el = document.querySelector(`#reviewsList .reply-block`);
-                      if (el) el.scrollIntoView({ behavior: 'smooth' });
+                      const el = container.closest('.review-card').querySelector('.reply-block');
+                      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
                   };
                   container.appendChild(showBtn);
               }
           }
       }
 
-      // Escape HTML helper to avoid injection when rendering text
-      function escapeHtml(text) {
-          if (!text) return '';
-          return text
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/\"/g, '&quot;')
-            .replace(/\'/g, '&#039;');
-      }
-
-      // Update summary counts and breakdown
       function updateSummary() {
           const totalCount = allReviews.length;
           let totalRatingSum = 0;
@@ -630,7 +800,6 @@
           document.getElementById('countNetral').textContent = reviewCounts.netral;
           document.getElementById('countNegatif').textContent = reviewCounts.negatif;
 
-          // breakdown bars
           const breakdownContainer = document.getElementById('ratingBreakdown');
           breakdownContainer.innerHTML = '';
           for (let i = 5; i >= 1; i--) {
@@ -649,15 +818,14 @@
           }
       }
 
-      // LOAD REVIEWS from firestore
+      // --- FIREBASE OPERATIONS ---
+
       function loadReviews() {
           db.collection('reviews')
             .orderBy('timestamp', 'desc')
             .get()
             .then(snapshot => {
-                allReviews = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data(), sentiment: getSentiment(doc.data().rating) }));
-                // ensure pinned boolean exists
-                allReviews.forEach(r => { if (r.pinned === undefined) r.pinned = false; });
+                allReviews = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data(), sentiment: getSentiment(doc.data().rating), pinned: doc.data().pinned || false }));
                 updateSummary();
                 renderReviews(currentFilter);
             })
@@ -667,16 +835,15 @@
             });
       }
 
-      // SUBMIT REVIEW (unchanged flow)
       document.getElementById('reviewForm').addEventListener('submit', function(e) {
           e.preventDefault();
           const user = auth.currentUser;
-          if (!user) { alert('Anda harus login untuk mengirim ulasan.'); return; }
+          if (!user) { showNotification('Anda harus login untuk mengirim ulasan.', 'error'); return; }
 
           const rating = parseInt(document.getElementById('selectedRating').value);
           const reviewText = document.getElementById('reviewText').value.trim();
-          if (rating === 0) { alert('Silakan pilih jumlah bintang.'); return; }
-          if (reviewText.length < 10) { alert('Ulasan minimal harus 10 karakter.'); return; }
+          if (rating === 0) { showNotification('Silakan pilih jumlah bintang.', 'warning'); return; }
+          if (reviewText.length < 10) { showNotification('Ulasan minimal harus 10 karakter.', 'warning'); return; }
 
           document.getElementById('submitReviewBtn').disabled = true;
           document.getElementById('submitReviewBtn').textContent = 'Mengirim...';
@@ -693,61 +860,24 @@
                   pinned: false
               });
           }).then(() => {
-              alert('Ulasan Anda berhasil dikirim! Terima kasih.');
+              showNotification('Makasih atas ulasannya!', 'success'); // <-- Ganti Alert
               document.getElementById('reviewForm').reset();
               document.getElementById('selectedRating').value = '0';
-              document.getElementById('starPicker').querySelectorAll('i').forEach(star => star.classList.remove('selected'));
+              document.getElementById('starPicker').querySelectorAll('i').forEach(star => star.classList.remove('selected', 'fas'));
               document.getElementById('submitReviewBtn').disabled = false;
               document.getElementById('submitReviewBtn').textContent = 'Kirim Ulasan';
               loadReviews();
           }).catch(error => {
               console.error('Error writing document: ', error);
-              alert('Gagal mengirim ulasan: ' + error.message);
+              showNotification('Gagal mengirim ulasan: ' + error.message, 'error'); // <-- Ganti Alert
               document.getElementById('submitReviewBtn').disabled = false;
               document.getElementById('submitReviewBtn').textContent = 'Kirim Ulasan';
           });
       });
 
-      // OPEN inline reply editor for admins
-      function openReplyEditor(reviewId, existingReply) {
-          // find review card and append editor
-          const card = document.querySelector(`#reviewsList .review-card:nth-child(${Array.from(document.querySelectorAll('#reviewsList .review-card')).findIndex(c=>c.querySelector('#admin-area-'+reviewId)) + 1})`);
-          // simpler: show a prompt (keeps UI simple)
-          const currentText = existingReply && existingReply.text ? existingReply.text : '';
-          const text = prompt('Tulis balasan untuk ulasan ini (HTML tidak diizinkan):', currentText);
-          if (text === null) return; // cancelled
-          const user = auth.currentUser;
-          if (!user) { alert('Harus login sebagai admin untuk membalas.'); return; }
-          if (!ADMIN_UIDS.includes(user.uid)) { alert('Anda bukan admin.'); return; }
-
-          // get admin name from users collection if possible
-          db.collection('users').doc(user.uid).get().then(doc => {
-              const adminName = (doc.exists && doc.data().name) ? doc.data().name : (user.displayName || 'Admin');
-              const replyObj = {
-                  adminUid: user.uid,
-                  adminName: adminName,
-                  text: text,
-                  timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                  likes: [],
-                  dislikes: []
-              };
-              return db.collection('reviews').doc(reviewId).update({ reply: replyObj });
-          }).then(()=>{
-              alert('Balasan tersimpan.');
-              loadReviews();
-          }).catch(err=>{ console.error(err); alert('Gagal menyimpan balasan: '+err.message); });
-      }
-
-      // open reply modal -> since we used prompt for editing, this will just scroll to reply
-      function openReplyModal(reviewId){
-          const el = document.getElementById(`like-count-${reviewId}`);
-          if (el) el.scrollIntoView({ behavior: 'smooth' });
-      }
-
-      // Voting on reply (like/dislike) — must be logged in
       function voteOnReply(reviewId, type) {
           const user = auth.currentUser;
-          if (!user) { alert('Silakan login untuk memberikan reaksi.'); return; }
+          if (!user) { showNotification('Silakan login untuk memberikan reaksi.', 'error'); return; }
 
           const reviewRef = db.collection('reviews').doc(reviewId);
           return db.runTransaction(transaction => {
@@ -756,37 +886,50 @@
                   const reply = doc.data().reply || { likes: [], dislikes: [] };
                   const likes = new Set(reply.likes || []);
                   const dislikes = new Set(reply.dislikes || []);
+                  
                   if (type === 'like'){
                       if (likes.has(user.uid)) { likes.delete(user.uid); } else { likes.add(user.uid); dislikes.delete(user.uid); }
                   } else {
                       if (dislikes.has(user.uid)) { dislikes.delete(user.uid); } else { dislikes.add(user.uid); likes.delete(user.uid); }
                   }
+                  
                   const newReply = Object.assign({}, reply, { likes: Array.from(likes), dislikes: Array.from(dislikes) });
                   transaction.update(reviewRef, { reply: newReply });
                   return { likes: newReply.likes.length, dislikes: newReply.dislikes.length };
               });
           }).then(({likes, dislikes}) => {
+              // Quick update on the current view for better UX
               document.getElementById(`like-count-${reviewId}`).textContent = likes;
               document.getElementById(`dislike-count-${reviewId}`).textContent = dislikes;
-          }).catch(err => { console.error(err); alert('Gagal merekam reaksi: '+err); });
+          }).catch(err => { 
+              console.error(err); 
+              showNotification('Gagal merekam reaksi: ' + (err.message || err), 'error'); 
+          });
       }
 
-      // Toggle pin (admins only)
       function togglePin(reviewId) {
           const user = auth.currentUser;
-          if (!user || !ADMIN_UIDS.includes(user.uid)) { alert('Hanya admin yang dapat mem-pin ulasan.'); return; }
+          if (!user || !ADMIN_UIDS.includes(user.uid)) { showNotification('Hanya admin yang dapat mem-pin ulasan.', 'error'); return; }
+          
           const ref = db.collection('reviews').doc(reviewId);
           ref.get().then(doc =>{
               if (!doc.exists) throw 'Not found';
-              const currently = !!doc.data().pinned;
-              return ref.update({ pinned: !currently });
-          }).then(()=>{ loadReviews(); }).catch(err=>{ console.error(err); alert('Gagal toggle pin: '+err); });
+              const currentlyPinned = !!doc.data().pinned;
+              return ref.update({ pinned: !currentlyPinned });
+          }).then(()=>{ 
+              showNotification(`Ulasan berhasil di-${currentlyPinned ? 'unpin' : 'pin'}!`, 'success');
+              loadReviews(); 
+          }).catch(err=>{ 
+              console.error(err); 
+              showNotification('Gagal toggle pin: ' + (err.message || err), 'error'); 
+          });
       }
 
-      // Star picker logic (unchanged)
+      // --- INITIALIZATION ---
       document.addEventListener('DOMContentLoaded', function() {
           loadReviews();
 
+          // Star Picker Logic (unchanged)
           document.getElementById('starPicker').addEventListener('mouseover', function(e) {
               const stars = this.querySelectorAll('i');
               if (e.target.classList.contains('fa-star')) {
@@ -803,7 +946,6 @@
                   const rating = parseInt(e.target.getAttribute('data-rating'));
                   document.getElementById('selectedRating').value = rating;
                   this.querySelectorAll('i').forEach(star => star.classList.remove('selected'));
-                  if (parseInt(e.target.getAttribute('data-rating')) <= rating) {}
                   this.querySelectorAll('i').forEach(star => {
                       star.classList.remove('fas', 'far');
                       star.classList.add(parseInt(star.getAttribute('data-rating')) <= rating ? 'fas' : 'far');
@@ -820,6 +962,7 @@
               });
           });
 
+          // Filter Button Logic
           document.querySelectorAll('.filter-btn').forEach(button => {
               button.addEventListener('click', function() {
                   document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
@@ -834,14 +977,13 @@
               const formContainer = document.getElementById('reviewFormContainer');
               const loginWarning = document.getElementById('loginWarning');
 
-              // populate auth buttons area
               const authArea = document.querySelector('.auth-buttons');
               authArea.innerHTML = '';
               if (user) {
-                  const btn = document.createElement('button'); btn.className='auth-btn signup-btn'; btn.textContent='Logout'; btn.onclick = ()=> auth.signOut();
+                  const btn = document.createElement('button'); btn.className='auth-btn signup-btn'; btn.textContent='Logout'; btn.onclick = ()=> auth.signOut().then(()=>showNotification('Berhasil Logout', 'success')).catch(e=>showNotification('Gagal Logout', 'error'));
                   authArea.appendChild(btn);
               } else {
-                  const lbtn = document.createElement('button'); lbtn.className='auth-btn login-btn'; lbtn.textContent='Login'; lbtn.onclick = ()=> alert('Buka modal login');
+                  const lbtn = document.createElement('button'); lbtn.className='auth-btn login-btn'; lbtn.textContent='Login'; lbtn.onclick = ()=> showNotification('Fitur Login/Daftar belum diimplementasikan.', 'warning');
                   authArea.appendChild(lbtn);
               }
 
@@ -855,8 +997,7 @@
                   loginWarning.style.display = 'block';
               }
 
-              // re-render admin areas (so admin buttons appear/disappear correctly)
-              // small delay to ensure reviews are loaded
+              // Re-render admin controls (delay for review load)
               setTimeout(()=>{ renderReviews(currentFilter); }, 200);
           });
       });

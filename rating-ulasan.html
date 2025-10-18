@@ -416,6 +416,27 @@
       .small-btn:hover {
           opacity: 0.9;
       }
+      
+      /* Notification Bar Styles (NEW) */
+      #notificationBar {
+        position: fixed;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 90%;
+        max-width: 400px;
+        padding: 10px 20px;
+        text-align: center;
+        color: white;
+        border-radius: 0 0 8px 8px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        z-index: 1005;
+        transition: top 0.3s ease-in-out;
+        display: none; /* Default hidden */
+      }
+      .notification-success { background-color: var(--success); }
+      .notification-error { background-color: var(--danger); }
+      /* End Notification Bar Styles */
 
       /* Reply Modal Styles (Custom Admin Pop-up) */
       .reply-modal-content {
@@ -474,6 +495,9 @@
     </style>
   </head>
   <body>
+    <!-- Notification Bar (NEW) -->
+    <div id="notificationBar" style="top: -50px;"></div>
+
     <!-- Modal Backdrop -->
     <div id="modalBackdrop" class="modal-backdrop"></div>
 
@@ -597,7 +621,7 @@
       const auth = firebase.auth();
       const db = firebase.firestore();
 
-      // Admin UIDs allowed to reply/pin (dari request pertama dan kedua)
+      // Admin UIDs allowed to reply/pin
       const ADMIN_UIDS = [
         'f3M49osGvtcGbEWf9UTdJe1AG013',
         '7aIizseExGVPkqNJouqt3nMdWtE3',
@@ -651,13 +675,27 @@
             .replace(/\"/g, '&quot;')
             .replace(/\'/g, '&#039;');
       }
+      
+      // NEW: Simple notification pop-up replacement
+      function showNotification(message, isError = false) {
+          const bar = document.getElementById('notificationBar');
+          bar.textContent = message;
+          bar.classList.remove('notification-success', 'notification-error');
+          bar.classList.add(isError ? 'notification-error' : 'notification-success');
+          bar.style.top = '0'; 
+
+          setTimeout(() => {
+              bar.style.top = '-50px'; 
+          }, 3000);
+      }
+
 
       // --- Custom Reply Modal Functions ---
       let currentReplyReviewId = null;
 
       function openReplyModal(reviewId, reviewerName, currentReplyText) {
           if (!isAdmin) {
-              alert('Akses ditolak!'); 
+              showNotification('Akses ditolak! Hanya admin yang dapat membalas.', true); 
               return;
           }
           currentReplyReviewId = reviewId;
@@ -681,7 +719,8 @@
       function sendReply() {
           const replyText = document.getElementById('replyTextarea').value.trim();
           if (replyText.length < 5) {
-              alert('Balasan minimal 5 karakter.');
+              // Tetap pakai alert/notifikasi untuk validasi input di dalam modal
+              alert('Balasan minimal 5 karakter.'); 
               return;
           }
 
@@ -702,13 +741,13 @@
               return db.collection('reviews').doc(currentReplyReviewId).update(updateData);
           })
           .then(() => {
-              alert('Balasan admin berhasil dikirim/diubah!');
+              showNotification('Balasan admin berhasil dikirim/diubah!', false); // <-- Ganti Alert
               closeReplyModal();
               loadReviews(); // Reload untuk update tampilan
           })
           .catch(error => {
               console.error('Error sending reply:', error);
-              alert('Gagal mengirim balasan: ' + error.message);
+              showNotification('Gagal mengirim balasan: ' + error.message, true); // <-- Ganti Alert
           });
       }
 
@@ -863,7 +902,6 @@
                   
                   if (currentUserId) {
                       // Ambil reaksi user jika sudah login
-                      // ID dokumen reaksi adalah kombinasi UID user dan ID review
                       const reactionDocRef = db.collection('reactions').doc(`${currentUserId}_${doc.id}`);
                       const reactionDoc = await transaction.get(reactionDocRef);
                       userReaction = reactionDoc.exists ? reactionDoc.data().type : null;
@@ -894,6 +932,7 @@
               renderReviews(currentFilter);
           }).catch(error => {
               console.error("Error loading reviews:", error);
+              // Menampilkan pesan error yang dikontrol, kemungkinan karena rules Firebase
               reviewsListElement.innerHTML = '<p style="text-align: center; color: red;">Gagal memuat ulasan. Silakan cek koneksi atau rules Firebase Anda.</p>';
           });
       }
@@ -902,12 +941,12 @@
       document.getElementById('reviewForm').addEventListener('submit', function(e) {
           e.preventDefault();
           const user = auth.currentUser;
-          if (!user) { alert('Anda harus login untuk mengirim ulasan.'); return; }
-
+          if (!user) { alert('Anda harus login untuk mengirim ulasan.'); return; } // <-- Tetap pakai alert untuk auth
+          
           const rating = parseInt(document.getElementById('selectedRating').value);
           const reviewText = document.getElementById('reviewText').value.trim();
-          if (rating === 0) { alert('Silakan pilih jumlah bintang.'); return; }
-          if (reviewText.length < 10) { alert('Ulasan minimal harus 10 karakter.'); return; }
+          if (rating === 0) { alert('Silakan pilih jumlah bintang.'); return; } // <-- Tetap pakai alert untuk validasi form
+          if (reviewText.length < 10) { alert('Ulasan minimal harus 10 karakter.'); return; } // <-- Tetap pakai alert untuk validasi form
 
           document.getElementById('submitReviewBtn').disabled = true;
           document.getElementById('submitReviewBtn').textContent = 'Mengirim...';
@@ -924,7 +963,7 @@
                   pinned: false
               });
           }).then(() => {
-              alert('Ulasan Anda berhasil dikirim! Terima kasih.');
+              showNotification('Ulasan Anda berhasil dikirim! Terima kasih.', false); // <-- Ganti Alert
               document.getElementById('reviewForm').reset();
               document.getElementById('selectedRating').value = '0';
               document.getElementById('starPicker').querySelectorAll('i').forEach(star => star.classList.remove('selected', 'fas', 'far'));
@@ -933,7 +972,7 @@
               loadReviews();
           }).catch(error => {
               console.error('Error writing document: ', error);
-              alert('Gagal mengirim ulasan: ' + error.message);
+              showNotification('Gagal mengirim ulasan: ' + error.message, true); // <-- Ganti Alert
               document.getElementById('submitReviewBtn').disabled = false;
               document.getElementById('submitReviewBtn').textContent = 'Kirim Ulasan';
           });
@@ -942,7 +981,7 @@
       // Toggle pin (admins only)
       function togglePin(reviewId, isPinned) {
           if (!isAdmin) {
-              alert('Hanya admin yang dapat mem-pin ulasan.'); 
+              showNotification('Hanya admin yang dapat mem-pin ulasan.', true); // <-- Ganti Alert
               return;
           }
 
@@ -950,19 +989,19 @@
               pinned: isPinned
           })
           .then(() => {
-              alert(`Ulasan berhasil di-${isPinned ? 'pin' : 'unpin'}!`);
+              showNotification(`Ulasan berhasil di-${isPinned ? 'pin' : 'unpin'}!`, false); // <-- Ganti Alert
               loadReviews(); // Reload untuk update urutan
           })
           .catch(error => {
               console.error('Error toggling pin:', error);
-              alert('Gagal mengubah status pin: ' + error.message);
+              showNotification('Gagal mengubah status pin: ' + error.message, true); // <-- Ganti Alert
           });
       }
 
       // Voting on reply (like/dislike) — must be logged in
       function voteOnReply(reviewId, type) {
           const user = auth.currentUser;
-          if (!user) { alert('Silakan login untuk memberikan reaksi.'); return; }
+          if (!user) { showNotification('Silakan login untuk memberikan reaksi.', true); return; } // <-- Ganti Alert
 
           const reviewRef = db.collection('reviews').doc(reviewId);
           const reactionDocRef = db.collection('reactions').doc(`${user.uid}_${reviewId}`);
@@ -1020,7 +1059,7 @@
               loadReviews(); 
           }).catch(err => { 
               console.error("Transaction failed: ", err); 
-              alert('Gagal merekam reaksi: ' + err.message); 
+              showNotification('Gagal merekam reaksi: ' + err.message, true); // <-- Ganti Alert
           });
       }
       

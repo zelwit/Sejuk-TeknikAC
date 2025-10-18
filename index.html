@@ -26,6 +26,9 @@
         --gray: #718096;
         --white: #ffffff;
         --coin: #ffd700;
+        /* Tambahan: Variabel Success/Danger untuk status operasional */
+        --success: #4caf50;
+        --danger: #f44336;
       }
       * {
         box-sizing: border-box;
@@ -1384,9 +1387,121 @@
           display: none;
         }
       }
+      
+      /* --- NEW STYLE: Operational Status Widget --- */
+      .status-widget {
+        max-width: 1200px;
+        margin: 1.5rem auto;
+        padding: 1rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-weight: 600;
+        transition: all 0.3s ease;
+      }
+      .status-widget.open {
+        background-color: var(--success);
+        color: var(--white);
+      }
+      .status-widget.closed {
+        background-color: var(--danger);
+        color: var(--white);
+      }
+      .status-indicator {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .status-indicator i {
+        font-size: 1.5rem;
+      }
+      .employee-status {
+        font-size: 0.9em;
+        opacity: 0.8;
+      }
+      
+      /* --- NEW STYLE: Event Pop-up Modal --- */
+      .event-modal {
+        position: fixed;
+        z-index: 4000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.6);
+        display: none; 
+        justify-content: center;
+        align-items: center;
+        backdrop-filter: blur(3px);
+      }
+      .event-content {
+        background-color: var(--white);
+        padding: 30px;
+        border-radius: 12px;
+        max-width: 450px;
+        width: 90%;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        animation: modalSlideUp 0.4s ease-out;
+      }
+      .event-header {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 15px;
+      }
+      .event-message {
+        margin-bottom: 20px;
+        line-height: 1.5;
+      }
+      .event-footer {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+      }
+      .event-close-btn {
+        background: var(--gray);
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+      }
+      .event-dismiss-btn {
+        background: transparent;
+        color: var(--gray);
+        border: none;
+        font-size: 0.9em;
+        cursor: pointer;
+        align-self: center;
+      }
+      @media (max-width: 768px) {
+          /* ... gaya yang sudah ada ... */
+          .status-widget {
+              flex-direction: column;
+              text-align: center;
+          }
+          .employee-status {
+              margin-top: 5px;
+          }
+      }
     </style>
   </head>
   <body>
+    <!-- Event Pop-up Modal (NEW: Sinkronisasi Admin Panel) -->
+    <div class="event-modal" id="eventModal">
+      <div class="event-content" id="eventModalContent">
+        <div class="event-header" id="eventTitleModal">Judul Event</div>
+        <p class="event-message" id="eventMessageModal">Isi Pesan Detail Event.</p>
+        <div class="event-footer">
+          <button class="event-close-btn" id="eventCloseBtn">Oke, Mengerti</button>
+          <button class="event-dismiss-btn" id="eventDismissBtn" style="display: none;">
+            <i class="fas fa-eye-slash"></i> Jangan tampilkan lagi
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- User Info Top Right (hidden by default) -->
     <div class="user-info-top" id="userInfoTop" style="display: none;">
       <div class="user-details-text">
@@ -1497,6 +1612,14 @@
           >❄️ Sewa AC Murah - Mulai Rp 500.000/bulan ❄️</a
         >
       </marquee>
+    </div>
+    <!-- Operational Status Widget (NEW: Sinkronisasi Admin Panel) -->
+    <div class="status-widget" id="operationalStatusWidget">
+        <div class="status-indicator">
+            <i class="fas fa-circle-notch fa-spin"></i>
+            <span id="serviceStatusText">Memuat Status Layanan...</span>
+        </div>
+        <div class="employee-status" id="employeeStatusText">Memuat Status Karyawan...</div>
     </div>
     <nav>
       <div class="nav-container">
@@ -2169,6 +2292,9 @@
       let isFirstSignup = false;
       // Variable Global untuk menyimpan data user yang sedang diproses untuk konfirmasi
       let pendingUserData = null;
+      // Variable Global untuk melacak status operasional (NEW)
+      let isServiceOpenGlobal = false;
+      let isUserLoggedInGlobal = false;
 
       // ===============================================
       // FUNGSI BARU: GENERIC ALERT MODAL (Menggantikan alert())
@@ -2236,6 +2362,8 @@
         } else if (formalMessage.includes("hadiah user baru")) {
           title = "Hadiah Siap! 🎁";
           message = "Hadiah *user* baru udh dikirim di **Inbox** kamu yah! Cek gih! 🎉";
+        } else if (formalMessage.includes("Pop-up Disembunyikan")) {
+          title = "Pop-up Disembunyikan 🤫";
         }
         // Tambahkan logika lain sesuai kebutuhan
 
@@ -2657,39 +2785,184 @@
           window.alert("Akun dibatalkan. Silakan login atau daftar ulang."); // Diganti ke window.alert
         };
       }
-
-      // Disable/Enable Service Cards
-      function toggleServiceCards(enable) {
-        const serviceCards = document.querySelectorAll(".service-card");
-        const sensitiveServices = ["cuci-ac", "sewa-ac"]; // Service yang di-disable jika belum login
-        
-        serviceCards.forEach((card) => {
-          const serviceType = card.getAttribute("data-service-type");
-          if (sensitiveServices.includes(serviceType)) {
-            if (enable) {
-              card.classList.remove("disabled");
-              // Hapus event listener pencegah (biarkan tombol berjalan normal)
-              card.querySelectorAll(".btn").forEach((btn) => {
-                  btn.onclick = null;
-              });
-            } else {
-              card.classList.add("disabled");
-              // Tambahkan event listener untuk mencegah navigasi langsung dari button di dalam card
-              card.querySelectorAll(".btn").forEach((btn) => {
-                btn.onclick = (e) => {
-                  e.preventDefault();
-                  showCustomAlert(
-                    "Eh, Belum Login! 😅", 
-                    "Kamu harus *Login* dulu nih kalau mau pesan layanan *Service/Sewa AC*. Yuk, *Sign Up* dulu!",
-                    true
-                  );
-                };
-              });
-            }
+      
+      // ===============================================
+      // FUNGSI BARU UNTUK SINKRONISASI DENGAN ADMIN PANEL
+      // ===============================================
+      
+      // Cek Status Layanan (Duplikat dari Admin Panel)
+      function checkServiceStatus(settings) {
+          // 1. Cek Force Status
+          if (settings.forceStatus === 'open') {
+              return true;
+          } else if (settings.forceStatus === 'close') {
+              return false;
           }
-        });
+          
+          // 2. Cek Jadwal Normal
+          const now = new Date();
+          const localTime = now.getHours() * 60 + now.getMinutes();
+
+          const [openH, openM] = (settings.openTime || '09:00').split(':').map(Number);
+          const openMinutes = openH * 60 + openM;
+
+          const [closeH, closeM] = (settings.closeTime || '19:00').split(':').map(Number);
+          const closeMinutes = closeH * 60 + closeM;
+
+          // Asumsi jam buka: 09:00, jam tutup: 19:00. Buka jika waktu saat ini di antara jam buka dan tutup.
+          return localTime >= openMinutes && localTime < closeMinutes;
       }
       
+      // 1. Operational Status & Employee Status (Dari settings/operational)
+      function loadOperationalStatus(isLoggedIn) {
+          const widget = document.getElementById('operationalStatusWidget');
+          const statusText = document.getElementById('serviceStatusText');
+          const employeeText = document.getElementById('employeeStatusText');
+          const icon = widget.querySelector('i');
+          
+          db.collection('settings').doc('operational').onSnapshot(doc => {
+              if (doc.exists) {
+                  const settings = doc.data();
+                  const isOpen = checkServiceStatus(settings);
+                  
+                  isServiceOpenGlobal = isOpen; // Update global status
+                  
+                  widget.classList.remove('open', 'closed');
+                  widget.classList.add(isOpen ? 'open' : 'closed');
+                  statusText.textContent = isOpen ? 'LAYANAN DIBUKA' : 'LAYANAN DITUTUP';
+                  icon.className = isOpen ? 'fas fa-check-circle' : 'fas fa-times-circle';
+
+                  employeeText.textContent = settings.employeeStatus ? `Status Karyawan: ${settings.employeeStatus}` : 'Status Karyawan: Memuat...';
+                  
+                  // Perbarui status card setelah mendapatkan status operasional
+                  toggleServiceCards(isLoggedIn, isOpen);
+
+              } else {
+                  // Default jika data belum ada
+                  statusText.textContent = 'LAYANAN DITUTUP (Default)';
+                  employeeText.textContent = 'Data operasional belum diatur.';
+                  widget.classList.remove('open');
+                  widget.classList.add('closed');
+                  icon.className = 'fas fa-times-circle';
+                  
+                  isServiceOpenGlobal = false;
+                  toggleServiceCards(isLoggedIn, false);
+              }
+          }, error => {
+              console.error("Error loading operational settings:", error);
+              statusText.textContent = 'Gagal memuat status.';
+              employeeText.textContent = '';
+          });
+      }
+      
+      // 2. Event Pop-up Global (Dari settings/event_popup)
+      function loadEventPopup() {
+          const modal = document.getElementById('eventModal');
+          const titleEl = document.getElementById('eventTitleModal');
+          const messageEl = document.getElementById('eventMessageModal');
+          const contentEl = document.getElementById('eventModalContent');
+          const dismissBtn = document.getElementById('eventDismissBtn');
+          const closeBtn = document.getElementById('eventCloseBtn');
+          
+          // Cek apakah user sudah pernah dismiss event ini
+          if (localStorage.getItem('st_event_dismissed') === 'true') {
+              return; 
+          }
+
+          db.collection('settings').doc('event_popup').get().then(doc => {
+              if (doc.exists) {
+                  const data = doc.data();
+                  const now = new Date();
+                  const start = data.start ? data.start.toDate() : null;
+                  const end = data.end ? data.end.toDate() : null;
+
+                  // Cek apakah event sedang aktif
+                  if (start && end && now >= start && now <= end) {
+                      titleEl.textContent = data.title;
+                      messageEl.textContent = data.message;
+                      contentEl.style.backgroundColor = data.color || 'var(--primary)';
+                      
+                      // Sesuaikan warna teks jika background gelap
+                      const isDarkColor = data.color && (data.color.includes('--primary') || data.color.includes('--secondary') || data.color.includes('--danger'));
+                      contentEl.style.color = isDarkColor ? 'white' : 'var(--dark)';
+                      
+                      // Tampilkan tombol dismiss jika diizinkan
+                      dismissBtn.style.display = data.dismissible !== false ? 'block' : 'none';
+                      
+                      modal.style.display = 'flex';
+                      document.body.style.overflow = 'hidden';
+
+                      // Handle tombol close
+                      closeBtn.onclick = () => {
+                          modal.style.display = 'none';
+                          document.body.style.overflow = 'auto';
+                      };
+                      
+                      // Handle tombol dismiss permanen
+                      dismissBtn.onclick = () => {
+                          localStorage.setItem('st_event_dismissed', 'true');
+                          modal.style.display = 'none';
+                          document.body.style.overflow = 'auto';
+                          window.alert("Pop-up Disembunyikan", "Pop-up ini tidak akan muncul lagi sampai Admin membuat event baru. 😉");
+                      };
+                  }
+              }
+          }).catch(error => {
+              console.error("Error loading event pop-up:", error);
+          });
+      }
+
+      // Modifikasi: Disable/Enable Service Cards - Sekarang tergantung pada isServiceOpen juga
+      function toggleServiceCards(isLoggedIn, isServiceOpen) {
+          const serviceCards = document.querySelectorAll(".service-card");
+          const sensitiveServices = ["cuci-ac", "sewa-ac"]; 
+          
+          serviceCards.forEach((card) => {
+              const serviceType = card.getAttribute("data-service-type");
+              
+              if (sensitiveServices.includes(serviceType)) {
+                  if (isLoggedIn && isServiceOpen) {
+                      card.classList.remove("disabled");
+                      // Reset event listener agar tombol kembali berfungsi normal
+                      card.querySelectorAll(".btn").forEach((btn) => {
+                          btn.onclick = null;
+                      });
+                      card.classList.add("enabled"); // Tambahkan kelas untuk visual
+                  } else {
+                      card.classList.add("disabled");
+                      card.classList.remove("enabled");
+
+                      // Perbarui teks overlay sesuai status
+                      const overlayContent = card.querySelector(".card.disabled::after");
+                      if(overlayContent) { // Jika ada after content
+                         overlayContent.content = !isLoggedIn ? 'Login untuk Memesan' : 'Layanan Sedang Tutup';
+                      }
+                      
+                      // Tambahkan event listener pencegah
+                      card.querySelectorAll(".btn").forEach((btn) => {
+                          btn.onclick = (e) => {
+                              e.preventDefault();
+                              if (!isLoggedIn) {
+                                  showCustomAlert(
+                                      "Eh, Belum Login! 😅", 
+                                      "Kamu harus *Login* dulu nih kalau mau pesan layanan *Service/Sewa AC*. Yuk, *Sign Up* dulu!",
+                                      true
+                                  );
+                              } else if (!isServiceOpen) {
+                                  showCustomAlert(
+                                      "Layanan Tutup! 😴", 
+                                      "Maaf, layanan kami sedang *tutup* sesuai **Jam Operasional** yang tertera di atas. Silakan coba lagi nanti ya!",
+                                      true
+                                  );
+                              }
+                          };
+                      });
+                  }
+              }
+          });
+      }
+
+
       // Main script on DOMContentLoaded
       document.addEventListener("DOMContentLoaded", function () {
         const authButtonsContainer = document.querySelector(".auth-buttons");
@@ -2697,22 +2970,25 @@
         const signupModal = document.getElementById("signupModal");
         const userInfoTop = document.getElementById("userInfoTop");
 
-        // Panggil fungsi testimoni
+        // Panggil fungsi sinkronisasi utama
+        loadEventPopup();
         loadTestimonials();
-
-        // Panggil fungsi update rating
         updateRatingDisplay();
+        animateCounters();
 
         // Function to update UI based on auth state
         const updateAuthUI = (user) => {
+          isUserLoggedInGlobal = !!user; // Update global login status
+          
+          // Panggil status operasional dengan status login user
+          // Ini akan memicu toggleServiceCards di dalamnya
+          loadOperationalStatus(isUserLoggedInGlobal); 
+          
           // Clear existing buttons
           authButtonsContainer.innerHTML = "";
 
           if (user) {
             // User is signed in
-            toggleServiceCards(true); // Enable Cards
-
-            // Get user data including SJCoin and details
             db.collection("users")
               .doc(user.uid)
               .get()
@@ -2742,13 +3018,8 @@
               .catch((error) => {
                 console.error("Error getting user data:", error);
               });
-
-            // Logout button with confirmation
-            // Catatan: Logout dipindah ke Profile Page atau harus ditempatkan di tempat lain jika diperlukan di Index
           } else {
             // User is signed out
-            toggleServiceCards(false); // Disable Cards
-
             authButtonsContainer.innerHTML = `
               <button class="auth-btn login-btn" id="loginBtn">Login</button>
               <button class="auth-btn signup-btn" id="signupBtn">Sign Up</button>
@@ -2767,6 +3038,7 @@
               .getElementById("signupBtn")
               .addEventListener("click", () => {
                 signupModal.style.display = "block";
+                goToStep(1);
               });
           }
         };

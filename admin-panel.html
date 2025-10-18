@@ -15,7 +15,8 @@
     />
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.9.1/firebase-firestore-compat.js"></script>
+    <!-- Pastikan versi Firestore di sini 9.9.1 atau lebih tinggi jika Anda melihat pesan deprecation -->
+    <script src="https://www.gstatic.com/firebasejs/9.9.1/firebase-firestore-compat.js"></script> 
     <style>
       /* --- VARIABEL & RESET DASAR --- */
       :root {
@@ -138,7 +139,7 @@
         font-family: "Poppins", sans-serif;
       }
       
-      /* --- Review List Styles (Sama seperti rating-ulasan.html) --- */
+      /* --- Review List Styles --- */
       .review-card {
         background: var(--light);
         padding: 1rem;
@@ -174,7 +175,7 @@
       .admin-controls .unpin-btn { background-color: var(--gray); }
       .admin-controls .edit-reply-btn { background-color: var(--primary); }
       
-      /* Reply Modal Styles (Reuse dari rating-ulasan.html) */
+      /* Reply Modal Styles */
       .modal-overlay {
         position: fixed;
         top: 0;
@@ -224,7 +225,7 @@
           gap: 10px;
       }
 
-      /* Alert Modal (Reuse dari inbox.html/index.html) */
+      /* Alert Modal & User Search Results */
       #genericAlertModal { z-index: 3000; }
       .confirm-yes.error-style { background-color: var(--danger); }
       .notification-list-target { 
@@ -233,12 +234,14 @@
           border: 1px solid #eee;
           border-radius: 8px;
           padding: 10px;
+          background: var(--white);
       }
       .user-list-item {
           padding: 8px;
           border-bottom: 1px dashed #eee;
           cursor: pointer;
           transition: background-color 0.2s;
+          line-height: 1.2;
       }
       .user-list-item:hover { background-color: var(--primary-light); }
       .user-list-item:last-child { border-bottom: none; }
@@ -248,6 +251,14 @@
         font-weight: 600;
       }
       
+      /* Order Table Styles */
+      .orders-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+      .orders-table th, .orders-table td { 
+          border: 1px solid #ddd; padding: 10px; text-align: left; font-size: 0.9em;
+      }
+      .orders-table th { background-color: var(--primary-light); color: var(--primary); }
+      .orders-table tr:nth-child(even) { background-color: #f9f9f9; }
+
     </style>
   </head>
   <body>
@@ -340,7 +351,6 @@
         <div class="card">
           <h3>Daftar Pesanan Terbaru</h3>
           <p id="ordersList">Memuat data pesanan...</p>
-          <!-- Logika untuk menampilkan dan mengelola pesanan akan ditambahkan di sini -->
         </div>
       </div>
 
@@ -394,7 +404,7 @@
       }
       
       window.alert = function (message) {
-        const isError = message.toLowerCase().includes("gagal") || message.toLowerCase().includes("error");
+        const isError = message.toLowerCase().includes("gagal") || message.toLowerCase().includes("error") || message.toLowerCase().includes("tolak");
         showCustomAlert(isError ? "Operasi Gagal! 💔" : "Sip, Berhasil! ✅", message, isError);
       };
 
@@ -613,34 +623,70 @@
         const query = document.getElementById('userSearch').value.toLowerCase().trim();
         const resultsContainer = document.getElementById('userSearchResults');
         resultsContainer.style.display = 'none';
+        resultsContainer.innerHTML = '';
         
+        // Reset target user jika kotak pencarian kosong
         if (query.length < 3) {
+            targetUser = { uid: null, name: null };
+            document.getElementById('selectedUser').style.display = 'none';
             resultsContainer.innerHTML = '<p style="padding: 10px;">Ketik minimal 3 huruf.</p>';
             return;
         }
+        
+        resultsContainer.innerHTML = '<p style="padding: 10px; color: var(--primary);">Mencari...</p>';
+        resultsContainer.style.display = 'block';
 
-        // Cari berdasarkan nama atau email
-        db.collection('users')
-          .where('name', '>=', query)
-          .where('name', '<=', query + '\uf8ff')
-          .limit(10)
-          .get()
-          .then(snapshot => {
-            resultsContainer.innerHTML = '';
-            resultsContainer.style.display = 'block';
+
+        // --- GABUNGKAN PENCARIAN NAMA DAN EMAIL ---
+        // Catatan: Range query di Firestore hanya dapat dilakukan pada satu field. 
+        // Untuk mencari di dua field, kita harus melakukan dua query terpisah dan menggabungkannya.
+        const searchPromises = [
+          // Cari berdasarkan Nama
+          db.collection('users')
+            .where('name', '>=', query)
+            .where('name', '<=', query + '\uf8ff')
+            .limit(10)
+            .get(),
+          // Cari berdasarkan Email
+          db.collection('users')
+            .where('email', '>=', query)
+            .where('email', '<=', query + '\uf8ff')
+            .limit(10)
+            .get()
+        ];
+
+        Promise.all(searchPromises)
+          .then(results => {
+            const nameSnapshot = results[0];
+            const emailSnapshot = results[1];
+            const combinedDocs = {};
+
+            // Gabungkan hasil dan pastikan tidak ada duplikat (menggunakan ID sebagai kunci)
+            nameSnapshot.docs.forEach(doc => combinedDocs[doc.id] = { id: doc.id, ...doc.data() });
+            emailSnapshot.docs.forEach(doc => combinedDocs[doc.id] = { id: doc.id, ...doc.data() });
+
+            const users = Object.values(combinedDocs);
             
-            if (snapshot.empty) {
+            resultsContainer.innerHTML = '';
+
+            if (users.length === 0) {
                 resultsContainer.innerHTML = '<p style="padding: 10px;">User tidak ditemukan.</p>';
                 return;
             }
 
-            snapshot.forEach(doc => {
-                const user = doc.data();
+            users.forEach(user => {
                 const item = document.createElement('div');
                 item.classList.add('user-list-item');
-                item.setAttribute('data-uid', doc.id);
-                item.setAttribute('data-name', user.name || user.email);
-                item.innerHTML = `<strong>${user.name || user.email}</strong> <span style="font-size: 0.8em; color: var(--gray);">${doc.id.substring(0, 8)}...</span>`;
+                item.setAttribute('data-uid', user.id);
+                // Pilih nama jika ada, jika tidak, pakai email
+                const displayName = escapeHtml(user.name || user.email.split('@')[0]);
+                item.setAttribute('data-name', displayName); 
+                
+                item.innerHTML = `
+                  <strong>${displayName}</strong> 
+                  <span style="font-size: 0.9em; color: var(--gray);">${escapeHtml(user.email)}</span> 
+                  <span style="font-size: 0.7em; color: var(--gray); display: block;">UID: ${user.id.substring(0, 8)}...</span>
+                `;
                 
                 item.addEventListener('click', selectUser);
                 resultsContainer.appendChild(item);
@@ -676,13 +722,17 @@
           document.getElementById('selectedUserUID').textContent = targetUser.uid;
           document.getElementById('selectedUser').style.display = 'block';
           document.getElementById('userSearchResults').style.display = 'none';
+          document.getElementById('userSearch').value = targetUser.name; // Isi kolom search dengan nama yang dipilih
       }
       
       // 2. Kirim Notifikasi Logic
       document.getElementById('notificationForm').addEventListener('submit', function(e) {
         e.preventDefault();
         
+        const sendNotifBtn = document.getElementById('sendNotifBtn');
+        
         if (!targetUser.uid) {
+            // Memperbaiki masalah: Pastikan validasi berjalan DULU sebelum pesan sukses/gagal
             window.alert('Pilih pengguna tujuan terlebih dahulu.');
             return;
         }
@@ -691,8 +741,12 @@
         const content = document.getElementById('notifContent').value.trim();
         const coinReward = parseInt(document.getElementById('coinReward').value) || 0;
         
-        if (title.length < 3 || content.length < 5) {
-            window.alert('Judul minimal 3 karakter dan Isi Pesan minimal 5 karakter.');
+        if (title.length < 3) {
+            window.alert('Judul minimal 3 karakter.');
+            return;
+        }
+        if (content.length < 5) {
+            window.alert('Isi Pesan minimal 5 karakter.');
             return;
         }
         
@@ -706,20 +760,27 @@
             coinReward: coinReward
         };
         
-        document.getElementById('sendNotifBtn').disabled = true;
+        sendNotifBtn.disabled = true;
+        sendNotifBtn.textContent = 'Mengirim...';
         
         db.collection('notifications').add(notificationData)
         .then(() => {
-            window.alert(`Notifikasi berhasil dikirim ke ${targetUser.name} (${coinReward} SJCoin).`);
-            // Reset form dan target user
+            // Setelah berhasil, kirim notifikasi sukses, lalu reset
+            window.alert(`Notifikasi berhasil dikirim ke ${targetUser.name}. Hadiah: ${coinReward} SJCoin.`);
+            
+            // Reset UI
             document.getElementById('notificationForm').reset();
             targetUser = { uid: null, name: null };
             document.getElementById('selectedUser').style.display = 'none';
-            document.getElementById('sendNotifBtn').disabled = false;
+            document.getElementById('userSearch').value = ''; 
+            sendNotifBtn.textContent = 'Kirim Notifikasi';
+            sendNotifBtn.disabled = false;
         })
         .catch(error => {
+            // Tangkap error, kirim notifikasi error, lalu reset tombol
             window.alert('Gagal mengirim notifikasi: ' + error.message, true);
-            document.getElementById('sendNotifBtn').disabled = false;
+            sendNotifBtn.textContent = 'Kirim Notifikasi';
+            sendNotifBtn.disabled = false;
         });
       });
 
@@ -730,7 +791,6 @@
           const list = document.getElementById('ordersList');
           list.innerHTML = '<p>Memuat daftar pesanan...</p>';
           
-          // Asumsi Anda memiliki koleksi 'orders' di Firestore
           db.collection('orders').orderBy('timestamp', 'desc').limit(50).get()
           .then(snapshot => {
               if (snapshot.empty) {
@@ -738,18 +798,42 @@
                   return;
               }
               
-              let html = '<table><thead><tr><th>ID Pesanan</th><th>User</th><th>Layanan</th><th>Status</th><th>Aksi</th></tr></thead><tbody>';
+              let tableHtml = `
+                  <style>
+                      .orders-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+                      .orders-table th, .orders-table td { 
+                          border: 1px solid #ddd; padding: 10px; text-align: left; font-size: 0.9em;
+                      }
+                      .orders-table th { background-color: var(--primary-light); color: var(--primary); }
+                      .orders-table tr:nth-child(even) { background-color: #f9f9f9; }
+                  </style>
+                  <table class="orders-table">
+                  <thead>
+                      <tr>
+                          <th>ID Pesanan</th>
+                          <th>User</th>
+                          <th>Layanan</th>
+                          <th>Status</th>
+                          <th>Waktu</th>
+                          <th>Aksi</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+              `;
               
               snapshot.forEach(doc => {
                   const order = doc.data();
                   const orderId = doc.id;
+                  const date = order.timestamp ? (order.timestamp.toDate ? order.timestamp.toDate() : new Date(order.timestamp.seconds * 1000)) : new Date();
+                  const formattedTime = date.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', day: '2-digit', month: 'short' });
                   
-                  html += `
+                  tableHtml += `
                       <tr>
                           <td>${orderId.substring(0, 6)}...</td>
                           <td>${order.userName || order.userId.substring(0, 6)}...</td>
                           <td>${order.serviceType || 'N/A'}</td>
-                          <td>${order.status || 'Baru'}</td>
+                          <td><span style="color: ${order.status === 'Selesai' ? 'var(--success)' : (order.status === 'Baru' ? 'var(--secondary)' : 'var(--primary)')}; font-weight: 600;">${order.status || 'Baru'}</span></td>
+                          <td>${formattedTime}</td>
                           <td>
                               <button class="btn" style="padding: 5px 10px; font-size: 0.8em;" onclick="viewOrder('${orderId}')">Detail</button>
                               <button class="btn-danger" style="padding: 5px 10px; font-size: 0.8em;" onclick="deleteOrder('${orderId}')">Hapus</button>
@@ -758,7 +842,7 @@
                   `;
               });
               
-              list.innerHTML = html + '</tbody></table>';
+              list.innerHTML = tableHtml + '</tbody></table>';
           })
           .catch(e => {
               list.innerHTML = `<p style="color: var(--danger);">Gagal memuat pesanan. (${e.message})</p>`;

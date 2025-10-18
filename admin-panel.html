@@ -15,7 +15,6 @@
     />
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
-    <!-- Pastikan versi Firestore di sini 9.9.1 atau lebih tinggi jika Anda melihat pesan deprecation -->
     <script src="https://www.gstatic.com/firebasejs/9.9.1/firebase-firestore-compat.js"></script> 
     <style>
       /* --- VARIABEL & RESET DASAR --- */
@@ -175,7 +174,7 @@
       .admin-controls .unpin-btn { background-color: var(--gray); }
       .admin-controls .edit-reply-btn { background-color: var(--primary); }
       
-      /* Reply Modal Styles */
+      /* Modal Styles (General) */
       .modal-overlay {
         position: fixed;
         top: 0;
@@ -193,7 +192,7 @@
         padding: 1.5rem;
         border-radius: 12px;
         width: 90%;
-        max-width: 400px;
+        max-width: 450px;
         position: relative;
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
       }
@@ -251,13 +250,17 @@
         font-weight: 600;
       }
       
-      /* Order Table Styles */
-      .orders-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-      .orders-table th, .orders-table td { 
+      /* Order/User Table Styles */
+      .data-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+      .data-table th, .data-table td { 
           border: 1px solid #ddd; padding: 10px; text-align: left; font-size: 0.9em;
       }
-      .orders-table th { background-color: var(--primary-light); color: var(--primary); }
-      .orders-table tr:nth-child(even) { background-color: #f9f9f9; }
+      .data-table th { background-color: var(--primary-light); color: var(--primary); }
+      .data-table tr:nth-child(even) { background-color: #f9f9f9; }
+
+      /* User Detail Modal Specific */
+      .user-detail-list strong { display: inline-block; width: 120px; color: var(--primary); }
+      .user-detail-list p { border-bottom: 1px dashed var(--light); padding-bottom: 5px; margin-bottom: 5px; }
 
     </style>
   </head>
@@ -288,6 +291,27 @@
         </div>
       </div>
     </div>
+    
+    <!-- Modal for User Details -->
+    <div class="modal-overlay" id="userDetailModal">
+      <div class="modal-content" style="max-width: 550px;">
+        <button class="close-btn" onclick="closeUserDetailModal()">×</button>
+        <h3 id="userDetailTitle">Detail Pengguna: Loading...</h3>
+        <div id="userDetailContent" class="user-detail-list">
+           <p><strong>Nama:</strong> <span id="detailName"></span></p>
+           <p><strong>Email:</strong> <span id="detailEmail"></span></p>
+           <p><strong>Alamat:</strong> <span id="detailAddress"></span></p>
+           <p><strong>No. HP:</strong> <span id="detailPhone"></span></p>
+           <p><strong>SJCoin:</strong> <span id="detailSJCoin" style="color: var(--coin); font-weight: 600;"></span></p>
+           <p><strong>Bergabung:</strong> <span id="detailJoined"></span></p>
+           <p><strong>UID:</strong> <span id="detailUID" style="font-size: 0.9em;"></span></p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-danger" onclick="deleteUser()">Hapus User</button>
+        </div>
+      </div>
+    </div>
+
 
     <header>
       <h1>Admin Panel</h1>
@@ -297,6 +321,7 @@
         <button class="tab-btn active" data-tab="reviews">Kelola Ulasan</button>
         <button class="tab-btn" data-tab="notif">Kirim Notifikasi</button>
         <button class="tab-btn" data-tab="orders">Kelola Pesanan</button>
+        <button class="tab-btn" data-tab="users">User List</button>
       </div>
     </header>
 
@@ -316,16 +341,28 @@
       <div id="notif" class="tab-content">
         <div class="card">
             <h3>Kirim Hadiah/Pesan ke User</h3>
-            <p>Pilih user yang akan menerima notifikasi:</p>
+            <p>Pilih user yang akan menerima notifikasi. Ketik 'ALL' untuk broadcast.</p>
             
             <div id="userSearchArea" class="form-group">
-                <input type="text" id="userSearch" placeholder="Cari User (Nama/Email)">
+                <input type="text" id="userSearch" placeholder="Cari User (Nama/Email) atau ketik ALL">
                 <div id="userSearchResults" class="notification-list-target" style="margin-top: 10px; display: none;">
                     <!-- Hasil pencarian user -->
                 </div>
                 <p id="selectedUser" style="margin-top: 10px; font-weight: 600; color: var(--success); display: none;">
-                    ✅ Terpilih: <span id="selectedUserName"></span> (<span id="selectedUserUID"></span>)
+                    ✅ Target: <span id="selectedUserName"></span> 
+                    <span id="selectedUserUID" style="font-size: 0.8em; color: var(--gray);"></span>
                 </p>
+            </div>
+            
+            <div class="form-group">
+                <label for="notifTitleSelect">Saran Judul</label>
+                <select id="notifTitleSelect">
+                    <option value="CUSTOM">-- Judul Kustom --</option>
+                    <option value="Selamat Bergabung!">Selamat Bergabung!</option>
+                    <option value="Hadiah Klaim Koin!">Hadiah Klaim Koin!</option>
+                    <option value="Update Status Pesanan!">Update Status Pesanan!</option>
+                    <option value="Promosi Terbaru!">Promosi Terbaru!</option>
+                </select>
             </div>
 
             <form id="notificationForm" style="margin-top: 15px;">
@@ -353,6 +390,14 @@
           <p id="ordersList">Memuat data pesanan...</p>
         </div>
       </div>
+      
+      <!-- Tab Konten: User List -->
+      <div id="users" class="tab-content">
+        <div class="card">
+          <h3>Semua Pengguna Terdaftar</h3>
+          <p id="usersList">Memuat data pengguna...</p>
+        </div>
+      </div>
 
     </div>
 
@@ -377,7 +422,8 @@
       let isAdmin = false;
       let allReviews = [];
       let currentReplyReviewId = null;
-      let targetUser = { uid: null, name: null }; // Untuk Kirim Notifikasi
+      // Diperbarui untuk mendukung mode 'ALL' (broadcast)
+      let targetUser = { uid: null, name: null, isAll: false }; 
 
       // --- UTILITY MODAL & ALERT FUNCTIONS ---
 
@@ -439,6 +485,7 @@
           // Muat data spesifik saat tab dibuka
           if (tabId === 'reviews') loadReviews();
           if (tabId === 'orders') loadOrders();
+          if (tabId === 'users') loadUsers();
         });
       });
 
@@ -618,6 +665,16 @@
 
       // --- NOTIFICATION MANAGEMENT (Notif Tab) ---
 
+      // Event listener untuk saran judul
+      document.getElementById('notifTitleSelect').addEventListener('change', function() {
+          const select = this;
+          const input = document.getElementById('notifTitle');
+          if (select.value !== 'CUSTOM') {
+              input.value = select.value;
+          }
+          input.focus();
+      });
+
       // 1. User Search Logic
       document.getElementById('userSearch').addEventListener('input', debounce(() => {
         const query = document.getElementById('userSearch').value.toLowerCase().trim();
@@ -625,10 +682,22 @@
         resultsContainer.style.display = 'none';
         resultsContainer.innerHTML = '';
         
-        // Reset target user jika kotak pencarian kosong
-        if (query.length < 3) {
-            targetUser = { uid: null, name: null };
+        // Cek mode Broadcast
+        if (query === 'all' || query === 'All' || query === 'ALL') {
+            targetUser = { uid: 'ALL_BROADCAST', name: 'SEMUA PENGGUNA', isAll: true };
+            document.getElementById('selectedUserName').textContent = 'SEMUA PENGGUNA';
+            document.getElementById('selectedUserUID').textContent = '(BROADCAST MODE)';
+            document.getElementById('selectedUser').style.display = 'block';
+            resultsContainer.innerHTML = '<p style="padding: 10px; font-weight: 600;">Mode BROADCAST dipilih. Notifikasi akan dikirim ke semua user terdaftar.</p>';
+            resultsContainer.style.display = 'block';
+            return;
+        } else {
+            targetUser = { uid: null, name: null, isAll: false };
             document.getElementById('selectedUser').style.display = 'none';
+        }
+        
+        // Reset target user jika kotak pencarian kurang dari 3
+        if (query.length < 3) {
             resultsContainer.innerHTML = '<p style="padding: 10px;">Ketik minimal 3 huruf.</p>';
             return;
         }
@@ -638,21 +707,9 @@
 
 
         // --- GABUNGKAN PENCARIAN NAMA DAN EMAIL ---
-        // Catatan: Range query di Firestore hanya dapat dilakukan pada satu field. 
-        // Untuk mencari di dua field, kita harus melakukan dua query terpisah dan menggabungkannya.
         const searchPromises = [
-          // Cari berdasarkan Nama
-          db.collection('users')
-            .where('name', '>=', query)
-            .where('name', '<=', query + '\uf8ff')
-            .limit(10)
-            .get(),
-          // Cari berdasarkan Email
-          db.collection('users')
-            .where('email', '>=', query)
-            .where('email', '<=', query + '\uf8ff')
-            .limit(10)
-            .get()
+          db.collection('users').where('name', '>=', query).where('name', '<=', query + '\uf8ff').limit(10).get(),
+          db.collection('users').where('email', '>=', query).where('email', '<=', query + '\uf8ff').limit(10).get()
         ];
 
         Promise.all(searchPromises)
@@ -661,7 +718,6 @@
             const emailSnapshot = results[1];
             const combinedDocs = {};
 
-            // Gabungkan hasil dan pastikan tidak ada duplikat (menggunakan ID sebagai kunci)
             nameSnapshot.docs.forEach(doc => combinedDocs[doc.id] = { id: doc.id, ...doc.data() });
             emailSnapshot.docs.forEach(doc => combinedDocs[doc.id] = { id: doc.id, ...doc.data() });
 
@@ -678,7 +734,6 @@
                 const item = document.createElement('div');
                 item.classList.add('user-list-item');
                 item.setAttribute('data-uid', user.id);
-                // Pilih nama jika ada, jika tidak, pakai email
                 const displayName = escapeHtml(user.name || user.email.split('@')[0]);
                 item.setAttribute('data-name', displayName); 
                 
@@ -695,7 +750,7 @@
           .catch(e => {
             resultsContainer.innerHTML = `<p style="padding: 10px; color: var(--danger);">Gagal mencari user: ${e.message}</p>`;
           });
-      }, 500)); // Debounce untuk mengurangi beban Firebase
+      }, 500)); 
 
       function debounce(func, delay) {
         let timeout;
@@ -709,20 +764,18 @@
           const selectedItem = e.target.closest('.user-list-item');
           if (!selectedItem) return;
 
-          // Hapus kelas 'selected' dari semua item lain
           document.querySelectorAll('.user-list-item').forEach(item => item.classList.remove('selected'));
           selectedItem.classList.add('selected');
 
-          // Set target user global
           targetUser.uid = selectedItem.getAttribute('data-uid');
           targetUser.name = selectedItem.getAttribute('data-name');
+          targetUser.isAll = false;
           
-          // Update UI
           document.getElementById('selectedUserName').textContent = targetUser.name;
           document.getElementById('selectedUserUID').textContent = targetUser.uid;
           document.getElementById('selectedUser').style.display = 'block';
           document.getElementById('userSearchResults').style.display = 'none';
-          document.getElementById('userSearch').value = targetUser.name; // Isi kolom search dengan nama yang dipilih
+          document.getElementById('userSearch').value = targetUser.name; 
       }
       
       // 2. Kirim Notifikasi Logic
@@ -732,7 +785,6 @@
         const sendNotifBtn = document.getElementById('sendNotifBtn');
         
         if (!targetUser.uid) {
-            // Memperbaiki masalah: Pastikan validasi berjalan DULU sebelum pesan sukses/gagal
             window.alert('Pilih pengguna tujuan terlebih dahulu.');
             return;
         }
@@ -750,38 +802,78 @@
             return;
         }
         
-        const notificationData = {
-            userId: targetUser.uid,
-            title: title,
-            content: content,
-            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-            read: false,
-            claimed: false,
-            coinReward: coinReward
-        };
-        
         sendNotifBtn.disabled = true;
         sendNotifBtn.textContent = 'Mengirim...';
         
-        db.collection('notifications').add(notificationData)
-        .then(() => {
-            // Setelah berhasil, kirim notifikasi sukses, lalu reset
-            window.alert(`Notifikasi berhasil dikirim ke ${targetUser.name}. Hadiah: ${coinReward} SJCoin.`);
+        // LOGIKA KIRIM NOTIFIKASI
+        if (targetUser.isAll) {
+            // MODE BROADCAST
+            db.collection('users').get().then(snapshot => {
+                const batch = db.batch();
+                let sentCount = 0;
+                
+                snapshot.forEach(userDoc => {
+                    const notificationData = {
+                        userId: userDoc.id, // UID setiap user
+                        title: title,
+                        content: content,
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                        read: false,
+                        claimed: false,
+                        coinReward: coinReward
+                    };
+                    batch.set(db.collection('notifications').doc(), notificationData);
+                    sentCount++;
+                });
+
+                return batch.commit().then(() => sentCount);
+            })
+            .then((sentCount) => {
+                window.alert(`SUCCESS: Notifikasi berhasil dikirim ke ${sentCount} pengguna.`);
+                // Reset UI
+                document.getElementById('notificationForm').reset();
+                targetUser = { uid: null, name: null, isAll: false };
+                document.getElementById('selectedUser').style.display = 'none';
+                document.getElementById('userSearch').value = ''; 
+                sendNotifBtn.textContent = 'Kirim Notifikasi';
+                sendNotifBtn.disabled = false;
+            })
+            .catch(error => {
+                window.alert('Gagal mengirim notifikasi BROADCAST: ' + error.message, true);
+                sendNotifBtn.textContent = 'Kirim Notifikasi';
+                sendNotifBtn.disabled = false;
+            });
+
+        } else {
+            // MODE INDIVIDUAL
+            const notificationData = {
+                userId: targetUser.uid,
+                title: title,
+                content: content,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                read: false,
+                claimed: false,
+                coinReward: coinReward
+            };
             
-            // Reset UI
-            document.getElementById('notificationForm').reset();
-            targetUser = { uid: null, name: null };
-            document.getElementById('selectedUser').style.display = 'none';
-            document.getElementById('userSearch').value = ''; 
-            sendNotifBtn.textContent = 'Kirim Notifikasi';
-            sendNotifBtn.disabled = false;
-        })
-        .catch(error => {
-            // Tangkap error, kirim notifikasi error, lalu reset tombol
-            window.alert('Gagal mengirim notifikasi: ' + error.message, true);
-            sendNotifBtn.textContent = 'Kirim Notifikasi';
-            sendNotifBtn.disabled = false;
-        });
+            db.collection('notifications').add(notificationData)
+            .then(() => {
+                window.alert(`Notifikasi berhasil dikirim ke ${targetUser.name}. Hadiah: ${coinReward} SJCoin.`);
+                
+                // Reset UI
+                document.getElementById('notificationForm').reset();
+                targetUser = { uid: null, name: null, isAll: false };
+                document.getElementById('selectedUser').style.display = 'none';
+                document.getElementById('userSearch').value = ''; 
+                sendNotifBtn.textContent = 'Kirim Notifikasi';
+                sendNotifBtn.disabled = false;
+            })
+            .catch(error => {
+                window.alert('Gagal mengirim notifikasi: ' + error.message, true);
+                sendNotifBtn.textContent = 'Kirim Notifikasi';
+                sendNotifBtn.disabled = false;
+            });
+        }
       });
 
 
@@ -799,15 +891,7 @@
               }
               
               let tableHtml = `
-                  <style>
-                      .orders-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-                      .orders-table th, .orders-table td { 
-                          border: 1px solid #ddd; padding: 10px; text-align: left; font-size: 0.9em;
-                      }
-                      .orders-table th { background-color: var(--primary-light); color: var(--primary); }
-                      .orders-table tr:nth-child(even) { background-color: #f9f9f9; }
-                  </style>
-                  <table class="orders-table">
+                  <table class="data-table">
                   <thead>
                       <tr>
                           <th>ID Pesanan</th>
@@ -864,6 +948,119 @@
           })
           .catch(e => {
               window.alert('Gagal menghapus pesanan: ' + e.message, true);
+          });
+      }
+
+      // --- USER LIST MANAGEMENT (Users Tab) ---
+
+      function loadUsers() {
+        const list = document.getElementById('usersList');
+        list.innerHTML = '<p>Memuat daftar pengguna...</p>';
+
+        db.collection('users').orderBy('createdAt', 'desc').limit(100).get()
+        .then(snapshot => {
+            if (snapshot.empty) {
+                list.innerHTML = '<p>Tidak ada pengguna terdaftar.</p>';
+                return;
+            }
+
+            let tableHtml = `
+                  <table class="data-table">
+                  <thead>
+                      <tr>
+                          <th>Nama</th>
+                          <th>Email</th>
+                          <th>SJCoin</th>
+                          <th>Bergabung</th>
+                          <th>Aksi</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+              `;
+
+            snapshot.forEach(doc => {
+                const user = doc.data();
+                const userId = doc.id;
+                const date = user.createdAt ? (user.createdAt.toDate ? user.createdAt.toDate() : new Date(user.createdAt.seconds * 1000)) : new Date();
+                const formattedDate = date.toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric' });
+                
+                tableHtml += `
+                    <tr>
+                        <td>${escapeHtml(user.name || 'N/A')}</td>
+                        <td>${escapeHtml(user.email || 'N/A')}</td>
+                        <td><span style="color: var(--coin); font-weight: 600;">${user.sjcoin || 0}</span></td>
+                        <td>${formattedDate}</td>
+                        <td>
+                            <button class="btn" style="padding: 5px 10px; font-size: 0.8em;" onclick="viewUserDetail('${userId}')">Detail</button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            list.innerHTML = tableHtml + '</tbody></table>';
+        })
+        .catch(e => {
+            list.innerHTML = `<p style="color: var(--danger);">Gagal memuat daftar pengguna. (${e.message})</p>`;
+        });
+      }
+
+      function viewUserDetail(userId) {
+          db.collection('users').doc(userId).get()
+          .then(doc => {
+              if (!doc.exists) {
+                  window.alert('Detail pengguna tidak ditemukan.', true);
+                  return;
+              }
+              const user = doc.data();
+              const date = user.createdAt ? (user.createdAt.toDate ? user.createdAt.toDate() : new Date(user.createdAt.seconds * 1000)) : new Date();
+              const formattedDate = date.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
+
+              document.getElementById('userDetailTitle').textContent = `Detail Pengguna: ${user.name || user.email}`;
+              document.getElementById('detailName').textContent = user.name || 'Belum diisi';
+              document.getElementById('detailEmail').textContent = user.email || 'N/A';
+              document.getElementById('detailAddress').textContent = user.address || 'Belum diisi';
+              document.getElementById('detailPhone').textContent = user.phone || 'Belum diisi';
+              document.getElementById('detailSJCoin').textContent = user.sjcoin || 0;
+              document.getElementById('detailJoined').textContent = formattedDate;
+              document.getElementById('detailUID').textContent = userId;
+              
+              // Set atribut untuk fungsi delete
+              document.getElementById('userDetailModal').setAttribute('data-target-uid', userId);
+
+              openUserDetailModal();
+          })
+          .catch(e => {
+              window.alert('Gagal mengambil detail pengguna: ' + e.message, true);
+          });
+      }
+      
+      function openUserDetailModal() {
+          document.getElementById('userDetailModal').style.display = 'flex';
+          document.body.style.overflow = 'hidden';
+      }
+
+      function closeUserDetailModal() {
+          document.getElementById('userDetailModal').style.display = 'none';
+          document.body.style.overflow = 'auto';
+      }
+
+      function deleteUser() {
+          const userId = document.getElementById('userDetailModal').getAttribute('data-target-uid');
+          if (!userId) return;
+          
+          if (!confirm(`Yakin ingin MENGHAPUS PERMANEN pengguna ini: ${userId}? (Semua data akan hilang!)`)) return;
+          
+          // 1. Delete Firestore User Data
+          db.collection('users').doc(userId).delete()
+          .then(() => {
+              // 2. Delete Firebase Auth User (Ini membutuhkan Cloud Function atau dilakukan di Firebase Admin SDK)
+              // Karena ini di client-side, kita hanya bisa menghapus data Firestore.
+              window.alert(`Data pengguna ${userId.substring(0, 8)}... berhasil dihapus dari Firestore. **PENTING:** Hapus juga akunnya dari Firebase Authentication Console!`);
+              closeUserDetailModal();
+              loadUsers();
+          })
+          .catch(e => {
+              window.alert('Gagal menghapus data pengguna: ' + e.message, true);
           });
       }
       

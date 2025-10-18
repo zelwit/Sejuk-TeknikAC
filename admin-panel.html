@@ -304,38 +304,7 @@
         color: var(--primary);
       }
       
-      /* Tabs */
-      .tabs {
-        display: flex;
-        margin-bottom: 1.5rem;
-        border-bottom: 2px solid #eee;
-      }
-      
-      .tab-btn {
-        background: transparent;
-        border: none;
-        padding: 10px 20px;
-        cursor: pointer;
-        font-weight: 600;
-        color: var(--gray);
-        border-bottom: 3px solid transparent;
-        transition: all 0.3s;
-      }
-      
-      .tab-btn.active {
-        color: var(--primary);
-        border-bottom: 3px solid var(--primary);
-      }
-      
-      .tab-content {
-        display: none;
-      }
-      
-      .tab-content.active {
-        display: block;
-      }
-      
-      /* Cards & Forms */
+      /* General Content Card Styles (Reusable) */
       .card {
         background: var(--white);
         padding: 1.5rem;
@@ -356,7 +325,8 @@
         font-weight: 600;
         color: var(--dark);
       }
-      
+
+      /* Form & Input Styles */
       .form-group {
         margin-bottom: 1rem;
       }
@@ -409,60 +379,6 @@
       .btn-sm {
         padding: 0.4rem 0.8rem;
         font-size: 0.85rem;
-      }
-      
-      /* Review List Styles */
-      .review-card {
-        background: var(--light);
-        padding: 1rem;
-        border-radius: 8px;
-        margin-bottom: 1rem;
-        border-left: 5px solid var(--primary);
-        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-      }
-      
-      .review-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 0.5rem;
-      }
-      
-      .review-stars i {
-        color: #ffc107;
-      }
-      
-      .review-footer {
-        display: flex;
-        justify-content: space-between;
-        font-size: 0.85rem;
-        margin-top: 0.5rem;
-        gap: 0.5rem;
-        flex-wrap: wrap;
-        align-items: center;
-      }
-      
-      .admin-controls button {
-        margin-left: 5px;
-        cursor: pointer;
-        border: none;
-        background: var(--secondary);
-        color: var(--white);
-        padding: 5px 10px;
-        border-radius: 50px;
-        font-weight: 500;
-      }
-      
-      .admin-controls button:hover {
-        opacity: 0.9;
-      }
-      
-      .admin-controls .unpin-btn {
-        background-color: var(--gray);
-      }
-      
-      .admin-controls .edit-reply-btn {
-        background-color: var(--primary);
       }
       
       /* Modal Styles (General) */
@@ -520,125 +436,53 @@
         gap: 10px;
       }
       
-      /* Alert Modal & User Search Results */
-      #genericAlertModal {
-        z-index: 3000;
-      }
-      
-      .confirm-yes.error-style {
-        background-color: var(--danger);
-      }
-      
-      .notification-list-target {
-        max-height: 400px;
-        overflow-y: auto;
-        border: 1px solid #eee;
+      /* Review List Styles */
+      .review-card {
+        background: var(--light);
+        padding: 1rem;
         border-radius: 8px;
-        padding: 10px;
-        background: var(--white);
+        margin-bottom: 1rem;
+        border-left: 5px solid var(--primary);
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
       }
-      
+      .review-stars i { color: #ffc107; }
+      /* User Search & Table Styles */
+      .notification-list-target { 
+          max-height: 400px; 
+          overflow-y: auto;
+          border: 1px solid #eee;
+          border-radius: 8px;
+          padding: 10px;
+          background: var(--white);
+      }
       .user-list-item {
-        padding: 8px;
-        border-bottom: 1px dashed #eee;
-        cursor: pointer;
-        transition: background-color 0.2s;
-        line-height: 1.2;
+          padding: 8px;
+          border-bottom: 1px dashed #eee;
+          cursor: pointer;
+          transition: background-color 0.2s;
+          line-height: 1.2;
       }
-      
-      .user-list-item:hover {
-        background-color: var(--primary-light);
+      .user-list-item:hover { background-color: var(--primary-light); }
+      .user-detail-list strong { display: inline-block; width: 120px; color: var(--primary); }
+      .data-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+
+      /* System Status Section */
+      .status-group {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
       }
-      
-      .user-list-item:last-child {
-        border-bottom: none;
+      .status-card {
+        text-align: center;
+        padding: 1.5rem;
+        border-radius: 10px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
       }
-      
-      .user-list-item.selected {
-        background-color: var(--primary);
-        color: var(--white);
-        font-weight: 600;
-      }
-      
-      /* Order/User Table Styles */
-      .data-table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 15px;
-      }
-      
-      .data-table th,
-      .data-table td {
-        border: 1px solid #ddd;
-        padding: 12px;
-        text-align: left;
-        font-size: 0.9em;
-      }
-      
-      .data-table th {
-        background-color: var(--primary-light);
-        color: var(--primary);
-        font-weight: 600;
-      }
-      
-      .data-table tr:nth-child(even) {
-        background-color: #f9f9f9;
-      }
-      
-      .data-table tr:hover {
-        background-color: var(--primary-light);
-      }
-      
-      /* User Detail Modal Specific */
-      .user-detail-list strong {
-        display: inline-block;
-        width: 120px;
-        color: var(--primary);
-      }
-      
-      .user-detail-list p {
-        border-bottom: 1px dashed var(--light);
-        padding-bottom: 5px;
-        margin-bottom: 5px;
-      }
-      
-      /* Responsive */
-      .mobile-menu-toggle {
-        display: none;
-        background: none;
-        border: none;
-        color: var(--dark);
-        font-size: 1.5rem;
-        cursor: pointer;
-      }
-      
-      @media (max-width: 992px) {
-        .charts-section {
-          grid-template-columns: 1fr;
-        }
-      }
-      
-      @media (max-width: 768px) {
-        .sidebar {
-          transform: translateX(-100%);
-        }
-        
-        .sidebar.active {
-          transform: translateX(0);
-        }
-        
-        .main-content {
-          margin-left: 0;
-        }
-        
-        .mobile-menu-toggle {
-          display: block;
-        }
-        
-        .dashboard-overview {
-          grid-template-columns: 1fr;
-        }
-      }
+      .status-open { background-color: var(--success); color: var(--white); }
+      .status-closed { background-color: var(--danger); color: var(--white); }
+      .status-label { font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem; }
+      .status-time { font-size: 1.2rem; margin-bottom: 1rem; }
+
     </style>
   </head>
   <body>
@@ -702,13 +546,19 @@
             <i class="fas fa-star"></i> Kelola Ulasan
           </a>
           <a href="#" class="menu-item" data-page="notif">
-            <i class="fas fa-bell"></i> Kirim Notifikasi
+            <i class="fas fa-bullhorn"></i> Kirim Notifikasi
+          </a>
+          <a href="#" class="menu-item" data-page="events">
+            <i class="fas fa-calendar-alt"></i> Event Pop-up
           </a>
           <a href="#" class="menu-item" data-page="orders">
             <i class="fas fa-shopping-cart"></i> Kelola Pesanan
           </a>
           <a href="#" class="menu-item" data-page="users">
             <i class="fas fa-users"></i> User List
+          </a>
+          <a href="#" class="menu-item" data-page="sistem">
+            <i class="fas fa-cog"></i> Sistem (Buka/Tutup)
           </a>
         </div>
         <div class="sidebar-footer">
@@ -833,7 +683,7 @@
           <div id="notifPage" class="page-content" style="display: none;">
             <div class="card">
               <div class="card-header">
-                <h3 class="card-title">Kirim Hadiah/Pesan ke User</h3>
+                <h3 class="card-title">Kirim Pesan ke User</h3>
               </div>
               <p>Pilih user yang akan menerima notifikasi. Ketik 'ALL' untuk broadcast.</p>
               
@@ -876,6 +726,57 @@
               </form>
             </div>
           </div>
+
+          <!-- Tab Konten: Event Pop-up -->
+          <div id="eventsPage" class="page-content" style="display: none;">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Event Pop-up Global</h3>
+                </div>
+                
+                <form id="eventForm">
+                    <div class="form-group">
+                        <label for="eventTitle">Judul Event (Akan muncul di Pop-up)</label>
+                        <input type="text" id="eventTitle" placeholder="Contoh: Diskon Servis AC 50%" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="eventMessage">Pesan Detail (Isi Pop-up)</label>
+                        <textarea id="eventMessage" rows="4" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="eventColor">Warna Pop-up (Background)</label>
+                        <select id="eventColor">
+                            <option value="var(--primary)">Biru (Primary)</option>
+                            <option value="var(--secondary)">Oranye (Secondary)</option>
+                            <option value="var(--success)">Hijau (Success)</option>
+                            <option value="var(--danger)">Merah (Danger)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="eventStart">Mulai Event</label>
+                        <input type="datetime-local" id="eventStart" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="eventEnd">Akhir Event</label>
+                        <input type="datetime-local" id="eventEnd" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Event Pop-up Dismiss</label>
+                        <div>
+                            <input type="checkbox" id="eventDismiss" checked>
+                            <label for="eventDismiss" style="display: inline; font-weight: normal;">Izinkan user menyembunyikan pop-up secara permanen (Opsi: "Tidak muncul lagi")</label>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn">Simpan/Update Event</button>
+                    <button type="button" class="btn btn-danger" onclick="deleteEvent()" style="margin-left: 10px;">Hapus Event</button>
+                </form>
+
+                <div class="card" style="margin-top: 20px; background: var(--primary-light);">
+                    <p style="font-weight: 600;">Status Event Saat Ini:</p>
+                    <p id="currentEventStatus">Memuat...</p>
+                </div>
+            </div>
+          </div>
           
           <!-- Tab Konten: Kelola Pesanan -->
           <div id="ordersPage" class="page-content" style="display: none;">
@@ -896,6 +797,51 @@
               <p id="usersList">Memuat data pengguna...</p>
             </div>
           </div>
+          
+          <!-- Tab Konten: Sistem -->
+          <div id="sistemPage" class="page-content" style="display: none;">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Pengaturan Sistem Operasional</h3>
+                </div>
+                
+                <div class="status-group">
+                    <!-- Jam Buka/Tutup -->
+                    <div class="card">
+                        <h4 style="color: var(--secondary); margin-bottom: 15px;">Jam Buka Layanan</h4>
+                        <div id="openStatusDisplay" class="status-card">
+                            <p class="status-label">Memuat Status...</p>
+                            <p class="status-time" id="scheduledTime"></p>
+                        </div>
+                        <div style="margin-top: 15px;">
+                            <label for="openTime">Jam Buka (HH:mm)</label>
+                            <input type="time" id="openTime" value="09:00">
+                            <label for="closeTime">Jam Tutup (HH:mm)</label>
+                            <input type="time" id="closeTime" value="19:00">
+                            <button class="btn btn-sm" onclick="saveOperationalHours()" style="margin-top: 10px;">Simpan Jadwal</button>
+                            <button class="btn btn-sm" onclick="toggleForceOpen()" id="forceToggleBtn" style="margin-top: 10px; background-color: var(--success);">Buka Sekarang</button>
+                        </div>
+                    </div>
+
+                    <!-- Status Karyawan -->
+                    <div class="card">
+                        <h4 style="color: var(--secondary); margin-bottom: 15px;">Status Karyawan (Global)</h4>
+                        <div class="form-group">
+                            <label for="employeeStatus">Pilih Status Karyawan</label>
+                            <select id="employeeStatus" onchange="saveEmployeeStatus()">
+                                <option value="Siaga - Siap Mengerjakan">Siaga - Siap Mengerjakan</option>
+                                <option value="Sedang Servis AC">Sedang Servis AC</option>
+                                <option value="Sedang Cuci AC">Sedang Cuci AC</option>
+                                <option option value="Sedang Instalasi">Sedang Instalasi</option>
+                                <option value="Istirahat/Off Duty">Istirahat/Off Duty</option>
+                            </select>
+                        </div>
+                        <p style="font-size: 0.9em; color: var(--gray);">Status ini akan muncul di widget Home Page.</p>
+                    </div>
+                </div>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
@@ -921,8 +867,7 @@
       let isAdmin = false;
       let allReviews = [];
       let currentReplyReviewId = null;
-      // Diperbarui untuk mendukung mode 'ALL' (broadcast)
-      let targetUser = { uid: null, name: null, isAll: false }; 
+      let targetUser = { uid: null, name: null, isAll: false }; // Untuk Kirim Notifikasi
 
       // --- UTILITY MODAL & ALERT FUNCTIONS ---
 
@@ -995,6 +940,8 @@
           if (page === 'reviews') loadReviews();
           if (page === 'orders') loadOrders();
           if (page === 'users') loadUsers();
+          if (page === 'events') loadEventSettings();
+          if (page === 'sistem') loadSystemSettings();
           
           // Close mobile menu if open
           if (window.innerWidth <= 768) {
@@ -1049,13 +996,8 @@
       // --- DASHBOARD FUNCTIONS ---
       
       function loadDashboard() {
-        // Load statistics
         loadStatistics();
-        
-        // Load charts
         loadCharts();
-        
-        // Load recent activities
         loadRecentActivities();
       }
       
@@ -1086,9 +1028,10 @@
       }
       
       function loadCharts() {
-        // Orders Chart
+        // Orders Chart (Placeholder data)
         const ordersCtx = document.getElementById('ordersChart').getContext('2d');
-        const ordersChart = new Chart(ordersCtx, {
+        if (window.ordersChartInstance) window.ordersChartInstance.destroy();
+        window.ordersChartInstance = new Chart(ordersCtx, {
           type: 'line',
           data: {
             labels: ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'],
@@ -1101,20 +1044,13 @@
               tension: 0.3
             }]
           },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-              y: {
-                beginAtZero: true
-              }
-            }
-          }
+          options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } } }
         });
         
-        // Reviews Chart
+        // Reviews Chart (Placeholder data)
         const reviewsCtx = document.getElementById('reviewsChart').getContext('2d');
-        const reviewsChart = new Chart(reviewsCtx, {
+        if (window.reviewsChartInstance) window.reviewsChartInstance.destroy();
+        window.reviewsChartInstance = new Chart(reviewsCtx, {
           type: 'doughnut',
           data: {
             labels: ['5 Bintang', '4 Bintang', '3 Bintang', '2 Bintang', '1 Bintang'],
@@ -1137,10 +1073,7 @@
               borderWidth: 1
             }]
           },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false
-          }
+          options: { responsive: true, maintainAspectRatio: false }
         });
       }
       
@@ -1148,60 +1081,48 @@
         const activitiesContainer = document.getElementById('recentActivities');
         activitiesContainer.innerHTML = '<p style="text-align:center;">Memuat aktivitas terbaru...</p>';
         
-        // Get recent reviews
-        db.collection('reviews').orderBy('timestamp', 'desc').limit(5).get()
-        .then(reviewsSnapshot => {
-          // Get recent orders
-          return db.collection('orders').orderBy('timestamp', 'desc').limit(5).get()
-          .then(ordersSnapshot => {
-            // Get recent notifications
-            return db.collection('notifications').orderBy('timestamp', 'desc').limit(5).get()
-            .then(notificationsSnapshot => {
-              // Combine and sort activities
+        // Asumsi data: reviews, orders, notifications
+        const activitiesPromises = [
+            db.collection('reviews').orderBy('timestamp', 'desc').limit(5).get(),
+            db.collection('orders').orderBy('timestamp', 'desc').limit(5).get(),
+            db.collection('notifications').orderBy('timestamp', 'desc').limit(5).get()
+        ];
+        
+        Promise.all(activitiesPromises)
+        .then(([reviewsSnapshot, ordersSnapshot, notificationsSnapshot]) => {
               let activities = [];
               
               reviewsSnapshot.forEach(doc => {
                 const data = doc.data();
                 activities.push({
-                  type: 'review',
-                  title: `Ulasan baru dari ${data.reviewerName || 'Anonim'}`,
-                  time: data.timestamp,
-                  icon: 'fa-star',
-                  color: 'warning'
+                  type: 'review', title: `Ulasan baru dari ${data.reviewerName || 'Anonim'}`,
+                  time: data.timestamp, icon: 'fa-star', color: 'warning'
                 });
               });
               
               ordersSnapshot.forEach(doc => {
                 const data = doc.data();
                 activities.push({
-                  type: 'order',
-                  title: `Pesanan baru dari ${data.userName || 'User'}`,
-                  time: data.timestamp,
-                  icon: 'fa-shopping-cart',
-                  color: 'success'
+                  type: 'order', title: `Pesanan baru dari ${data.userName || 'User'}`,
+                  time: data.timestamp, icon: 'fa-shopping-cart', color: 'success'
                 });
               });
               
               notificationsSnapshot.forEach(doc => {
                 const data = doc.data();
                 activities.push({
-                  type: 'notification',
-                  title: `Notifikasi: ${data.title}`,
-                  time: data.timestamp,
-                  icon: 'fa-bell',
-                  color: 'primary'
+                  type: 'notification', title: `Notifikasi: ${data.title}`,
+                  time: data.timestamp, icon: 'fa-bell', color: 'primary'
                 });
               });
               
-              // Sort by time (newest first)
               activities.sort((a, b) => {
                 if (!a.time) return 1;
                 if (!b.time) return -1;
                 return b.time.toDate() - a.time.toDate();
               });
               
-              // Take top 5
-              activities = activities.slice(0, 5);
+              activities = activities.slice(0, 5); // Ambil 5 teratas
               
               // Render activities
               if (activities.length === 0) {
@@ -1230,8 +1151,6 @@
               activitiesHtml += '</ul>';
               
               activitiesContainer.innerHTML = activitiesHtml;
-            });
-          });
         })
         .catch(e => {
           activitiesContainer.innerHTML = `<p style="text-align:center; color: var(--danger);">Gagal memuat aktivitas: ${e.message}</p>`;
@@ -1240,7 +1159,7 @@
       
       // --- REVIEW MANAGEMENT FUNCTIONS (Review Tab) ---
       
-      function loadReviews() {
+      function loadReviews() { /* ... (Kode loadReviews tidak berubah) ... */
         const list = document.getElementById('reviewsList');
         list.innerHTML = '<p style="text-align:center;">Memuat ulasan...</p>';
         
@@ -1252,7 +1171,7 @@
         });
       }
 
-      function renderReviewsList(){
+      function renderReviewsList(){ /* ... (Kode renderReviewsList tidak berubah) ... */
           const list = document.getElementById('reviewsList'); 
           list.innerHTML='';
           if(allReviews.length===0){ list.innerHTML='<p style="text-align:center;">Belum ada ulasan.</p>'; return; }
@@ -1288,7 +1207,7 @@
           });
       }
 
-      function togglePin(reviewId, isPinned) {
+      function togglePin(reviewId, isPinned) { /* ... (Kode togglePin tidak berubah) ... */
           db.collection('reviews').doc(reviewId).update({
               pinned: isPinned
           })
@@ -1301,7 +1220,7 @@
           });
       }
 
-      function deleteReview(reviewId) {
+      function deleteReview(reviewId) { /* ... (Kode deleteReview tidak berubah) ... */
           if (!confirm("Apakah Anda yakin ingin menghapus ulasan ini secara permanen?")) return; // Ganti dengan modal konfirmasi jika mau
           
           db.collection('reviews').doc(reviewId).delete()
@@ -1316,7 +1235,7 @@
 
       // --- ADMIN REPLY MODAL FUNCTIONS ---
       
-      function openReplyModal(reviewId, reviewerName, existingText) {
+      function openReplyModal(reviewId, reviewerName, existingText) { /* ... (Kode openReplyModal tidak berubah) ... */
           currentReplyReviewId = reviewId;
           document.getElementById('replyReviewerName').textContent = reviewerName;
           document.getElementById('replyTextarea').value = existingText || '';
@@ -1324,7 +1243,7 @@
           document.body.style.overflow = 'hidden';
       }
       
-      function closeReplyModal() {
+      function closeReplyModal() { /* ... (Kode closeReplyModal tidak berubah) ... */
           document.getElementById('replyModal').style.display = 'none';
           document.body.style.overflow = 'auto';
           currentReplyReviewId = null;
@@ -1332,7 +1251,7 @@
       
       document.getElementById('sendReplyBtn').addEventListener('click', sendReply);
 
-      function sendReply() {
+      function sendReply() { /* ... (Kode sendReply tidak berubah) ... */
           const replyText = document.getElementById('replyTextarea').value.trim();
           if (replyText.length < 5) {
               window.alert('Balasan minimal 5 karakter.');
@@ -1342,7 +1261,6 @@
           const user = auth.currentUser;
 
           db.collection('users').doc(user.uid).get().then(doc => {
-              // Ambil nama admin dari koleksi users
               const adminName = doc.exists && doc.data().name ? doc.data().name : (user.displayName || 'Admin Sejuk Teknik');
               
               const updateData = {
@@ -1583,9 +1501,241 @@
       });
 
 
+      // --- EVENT POP-UP MANAGEMENT (Events Tab) ---
+
+      function loadEventSettings() {
+          const form = document.getElementById('eventForm');
+          const statusDisplay = document.getElementById('currentEventStatus');
+          statusDisplay.textContent = 'Memuat...';
+
+          db.collection('settings').doc('event_popup').get()
+              .then(doc => {
+                  if (doc.exists) {
+                      const data = doc.data();
+                      document.getElementById('eventTitle').value = data.title || '';
+                      document.getElementById('eventMessage').value = data.message || '';
+                      document.getElementById('eventColor').value = data.color || 'var(--primary)';
+                      document.getElementById('eventStart').value = data.start ? formatDateTimeLocal(data.start.toDate()) : '';
+                      document.getElementById('eventEnd').value = data.end ? formatDateTimeLocal(data.end.toDate()) : '';
+                      document.getElementById('eventDismiss').checked = data.dismissible !== false;
+                      
+                      renderEventStatus(data);
+                  } else {
+                      statusDisplay.innerHTML = 'Belum ada event pop-up yang tersimpan.';
+                  }
+              })
+              .catch(e => {
+                  statusDisplay.innerHTML = `Gagal memuat event: ${e.message}`;
+              });
+      }
+
+      function saveEvent(e) {
+          e.preventDefault();
+          
+          const start = new Date(document.getElementById('eventStart').value);
+          const end = new Date(document.getElementById('eventEnd').value);
+
+          if (start >= end) {
+              window.alert('Tanggal Mulai harus sebelum Tanggal Berakhir.', true);
+              return;
+          }
+          
+          const eventData = {
+              title: document.getElementById('eventTitle').value.trim(),
+              message: document.getElementById('eventMessage').value.trim(),
+              color: document.getElementById('eventColor').value,
+              start: firebase.firestore.Timestamp.fromDate(start),
+              end: firebase.firestore.Timestamp.fromDate(end),
+              dismissible: document.getElementById('eventDismiss').checked,
+              updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+          };
+
+          db.collection('settings').doc('event_popup').set(eventData)
+              .then(() => {
+                  window.alert('Event Pop-up berhasil disimpan/diperbarui! Akan segera muncul di Home Page.');
+                  loadEventSettings();
+              })
+              .catch(e => {
+                  window.alert('Gagal menyimpan event: ' + e.message, true);
+              });
+      }
+      
+      document.getElementById('eventForm').addEventListener('submit', saveEvent);
+
+      function deleteEvent() {
+          if (!confirm("Apakah Anda yakin ingin MENGHAPUS Event Pop-up ini? (Ini akan segera hilang dari Home Page)")) return;
+
+          db.collection('settings').doc('event_popup').delete()
+              .then(() => {
+                  window.alert('Event Pop-up berhasil dihapus.');
+                  loadEventSettings();
+              })
+              .catch(e => {
+                  window.alert('Gagal menghapus event: ' + e.message, true);
+              });
+      }
+
+      function renderEventStatus(data) {
+          const statusDisplay = document.getElementById('currentEventStatus');
+          const now = new Date();
+          const start = data.start ? data.start.toDate() : null;
+          const end = data.end ? data.end.toDate() : null;
+
+          let statusText = '';
+          let statusColor = '';
+
+          if (!start || !end) {
+              statusText = 'TIDAK AKTIF: Event belum diatur.';
+              statusColor = 'var(--gray)';
+          } else if (now < start) {
+              statusText = `BELUM MULAI. Aktif pada: ${start.toLocaleString('id-ID')}`;
+              statusColor = 'var(--primary)';
+          } else if (now >= start && now <= end) {
+              statusText = `LIVE. Berakhir pada: ${end.toLocaleString('id-ID')}`;
+              statusColor = 'var(--success)';
+          } else {
+              statusText = `KEDALUWARSA. Berakhir pada: ${end.toLocaleString('id-ID')}`;
+              statusColor = 'var(--danger)';
+          }
+
+          statusDisplay.innerHTML = `<p style="color: ${statusColor};">${statusText}</p>
+                                     <p><strong>Judul:</strong> ${escapeHtml(data.title)}</p>
+                                     <p><strong>Pesan:</strong> ${escapeHtml(data.message.substring(0, 80))}...</p>`;
+      }
+      
+      function formatDateTimeLocal(date) {
+          const y = date.getFullYear();
+          const m = (date.getMonth() + 1).toString().padStart(2, '0');
+          const d = date.getDate().toString().padStart(2, '0');
+          const h = date.getHours().toString().padStart(2, '0');
+          const min = date.getMinutes().toString().padStart(2, '0');
+          return `${y}-${m}-${d}T${h}:${min}`;
+      }
+
+
+      // --- SYSTEM MANAGEMENT (Sistem Tab) ---
+
+      let currentSystemSettings = {};
+
+      function loadSystemSettings() {
+          const display = document.getElementById('openStatusDisplay');
+          const forceBtn = document.getElementById('forceToggleBtn');
+
+          db.collection('settings').doc('operational').onSnapshot(doc => {
+              if (doc.exists) {
+                  currentSystemSettings = doc.data();
+                  
+                  // Display Waktu Operasional
+                  document.getElementById('openTime').value = currentSystemSettings.openTime || '09:00';
+                  document.getElementById('closeTime').value = currentSystemSettings.closeTime || '19:00';
+                  document.getElementById('scheduledTime').textContent = `Jadwal: ${currentSystemSettings.openTime || '09:00'} - ${currentSystemSettings.closeTime || '19:00'} WIB`;
+
+                  // Display Status Karyawan
+                  document.getElementById('employeeStatus').value = currentSystemSettings.employeeStatus || 'Siaga - Siap Mengerjakan';
+
+                  // Display Status Buka/Tutup
+                  const isOpen = checkServiceStatus(currentSystemSettings);
+                  display.classList.remove('status-open', 'status-closed');
+                  display.classList.add(isOpen ? 'status-open' : 'status-closed');
+                  display.querySelector('.status-label').textContent = isOpen ? 'LAYANAN SEDANG DIBUKA' : 'LAYANAN SEDANG DITUTUP';
+
+                  // Force Toggle Button
+                  if (currentSystemSettings.forceStatus === 'open') {
+                      forceBtn.textContent = 'Tutup Paksa (Aktif)';
+                      forceBtn.style.backgroundColor = 'var(--danger)';
+                  } else if (currentSystemSettings.forceStatus === 'close') {
+                      forceBtn.textContent = 'Buka Paksa (Aktif)';
+                      forceBtn.style.backgroundColor = 'var(--success)';
+                  } else {
+                      forceBtn.textContent = isOpen ? 'Tutup Paksa' : 'Buka Paksa';
+                      forceBtn.style.backgroundColor = isOpen ? 'var(--danger)' : 'var(--success)';
+                  }
+              }
+          });
+      }
+
+      function checkServiceStatus(settings) {
+          const now = new Date();
+          const localTime = now.getHours() * 60 + now.getMinutes();
+
+          const [openH, openM] = (settings.openTime || '09:00').split(':').map(Number);
+          const openMinutes = openH * 60 + openM;
+
+          const [closeH, closeM] = (settings.closeTime || '19:00').split(':').map(Number);
+          const closeMinutes = closeH * 60 + closeM;
+
+          let isOpen = localTime >= openMinutes && localTime < closeMinutes;
+          
+          if (settings.forceStatus === 'open') {
+              isOpen = true;
+          } else if (settings.forceStatus === 'close') {
+              isOpen = false;
+          }
+          
+          return isOpen;
+      }
+
+      function saveOperationalHours() {
+          const openTime = document.getElementById('openTime').value;
+          const closeTime = document.getElementById('closeTime').value;
+          
+          db.collection('settings').doc('operational').update({
+              openTime: openTime,
+              closeTime: closeTime,
+              forceStatus: null, // Reset force status saat jadwal diubah
+              updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+          })
+          .then(() => {
+              window.alert('Jadwal operasional berhasil diperbarui.');
+          })
+          .catch(e => {
+              window.alert('Gagal menyimpan jadwal: ' + e.message, true);
+          });
+      }
+
+      function toggleForceOpen() {
+          const currentForceStatus = currentSystemSettings.forceStatus;
+          let newForceStatus = null;
+          
+          if (currentForceStatus === 'open') {
+              newForceStatus = 'close';
+          } else if (currentForceStatus === 'close') {
+              newForceStatus = null;
+          } else {
+              // Jika tidak ada force status, terapkan force open
+              newForceStatus = 'open';
+          }
+          
+          db.collection('settings').doc('operational').update({
+              forceStatus: newForceStatus,
+              updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+          })
+          .then(() => {
+              window.alert(`Status layanan berhasil diatur ke ${newForceStatus ? (newForceStatus === 'open' ? 'Buka Paksa' : 'Tutup Paksa') : 'Normal (Ikuti Jadwal)'}.`);
+          })
+          .catch(e => {
+              window.alert('Gagal mengubah status paksa: ' + e.message, true);
+          });
+      }
+
+      function saveEmployeeStatus() {
+          const status = document.getElementById('employeeStatus').value;
+          
+          db.collection('settings').doc('operational').update({
+              employeeStatus: status,
+              updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+          })
+          .then(() => {
+              window.alert('Status karyawan berhasil diperbarui.');
+          })
+          .catch(e => {
+              window.alert('Gagal menyimpan status karyawan: ' + e.message, true);
+          });
+      }
+
       // --- ORDER MANAGEMENT (Orders Tab) ---
       
-      function loadOrders() {
+      function loadOrders() { /* ... (Kode loadOrders tidak berubah) ... */
           const list = document.getElementById('ordersList');
           list.innerHTML = '<p>Memuat daftar pesanan...</p>';
           
@@ -1639,12 +1789,11 @@
           });
       }
       
-      // Dummy functions for Orders tab (perlu implementasi nyata)
-      function viewOrder(orderId) {
+      function viewOrder(orderId) { /* ... (Kode viewOrder tidak berubah) ... */
           window.alert(`Menampilkan detail untuk Order ID: ${orderId}. Implementasi detail penuh belum tersedia.`);
       }
       
-      function deleteOrder(orderId) {
+      function deleteOrder(orderId) { /* ... (Kode deleteOrder tidak berubah) ... */
           if (!confirm("Yakin ingin menghapus pesanan ini?")) return;
           
           db.collection('orders').doc(orderId).delete()
@@ -1659,7 +1808,7 @@
 
       // --- USER LIST MANAGEMENT (Users Tab) ---
 
-      function loadUsers() {
+      function loadUsers() { /* ... (Kode loadUsers tidak berubah) ... */
         const list = document.getElementById('usersList');
         list.innerHTML = '<p>Memuat daftar pengguna...</p>';
 
@@ -1691,13 +1840,13 @@
                 const formattedDate = date.toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric' });
                 
                 tableHtml += `
-                    <tr>
+                    <tr onclick="viewUserDetail('${userId}')" style="cursor: pointer;">
                         <td>${escapeHtml(user.name || 'N/A')}</td>
                         <td>${escapeHtml(user.email || 'N/A')}</td>
                         <td><span style="color: var(--coin); font-weight: 600;">${user.sjcoin || 0}</span></td>
                         <td>${formattedDate}</td>
                         <td>
-                            <button class="btn btn-sm" onclick="viewUserDetail('${userId}')">Detail</button>
+                            <button class="btn btn-sm" onclick="event.stopPropagation(); viewUserDetail('${userId}')">Detail</button>
                         </td>
                     </tr>
                 `;
@@ -1710,7 +1859,7 @@
         });
       }
 
-      function viewUserDetail(userId) {
+      function viewUserDetail(userId) { /* ... (Kode viewUserDetail tidak berubah) ... */
           db.collection('users').doc(userId).get()
           .then(doc => {
               if (!doc.exists) {
@@ -1730,7 +1879,6 @@
               document.getElementById('detailJoined').textContent = formattedDate;
               document.getElementById('detailUID').textContent = userId;
               
-              // Set atribut untuk fungsi delete
               document.getElementById('userDetailModal').setAttribute('data-target-uid', userId);
 
               openUserDetailModal();
@@ -1740,27 +1888,24 @@
           });
       }
       
-      function openUserDetailModal() {
+      function openUserDetailModal() { /* ... (Kode openUserDetailModal tidak berubah) ... */
           document.getElementById('userDetailModal').style.display = 'flex';
           document.body.style.overflow = 'hidden';
       }
 
-      function closeUserDetailModal() {
+      function closeUserDetailModal() { /* ... (Kode closeUserDetailModal tidak berubah) ... */
           document.getElementById('userDetailModal').style.display = 'none';
           document.body.style.overflow = 'auto';
       }
 
-      function deleteUser() {
+      function deleteUser() { /* ... (Kode deleteUser tidak berubah) ... */
           const userId = document.getElementById('userDetailModal').getAttribute('data-target-uid');
           if (!userId) return;
           
           if (!confirm(`Yakin ingin MENGHAPUS PERMANEN pengguna ini: ${userId}? (Semua data akan hilang!)`)) return;
           
-          // 1. Delete Firestore User Data
           db.collection('users').doc(userId).delete()
           .then(() => {
-              // 2. Delete Firebase Auth User (Ini membutuhkan Cloud Function atau dilakukan di Firebase Admin SDK)
-              // Karena ini di client-side, kita hanya bisa menghapus data Firestore.
               window.alert(`Data pengguna ${userId.substring(0, 8)}... berhasil dihapus dari Firestore. **PENTING:** Hapus juga akunnya dari Firebase Authentication Console!`);
               closeUserDetailModal();
               loadUsers();

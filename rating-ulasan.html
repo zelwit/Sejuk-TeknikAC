@@ -26,8 +26,6 @@
         --gray: #718096;
         --white: #ffffff;
         --coin: #ffd700;
-        --success: #4caf50;
-        --danger: #f44336;
       }
       * {
         box-sizing: border-box;
@@ -263,7 +261,7 @@
         color: #ffc107;
       }
       
-      /* --- Review List & Cards --- */
+      /* --- Review List & Filters --- */
       .filter-buttons {
         text-align: center;
         margin-bottom: 2rem;
@@ -290,11 +288,6 @@
         border-radius: 12px;
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
         margin-bottom: 1.5rem;
-        position: relative;
-      }
-      .review-card.pinned {
-        border: 2px solid var(--secondary);
-        box-shadow: 0 4px 15px rgba(255, 122, 0, 0.3);
       }
       .review-header {
         display: flex;
@@ -346,156 +339,32 @@
         color: var(--gray);
       }
 
-      /* Admin & Reply Styles */
-      .admin-actions {
-        margin-top: 10px;
-        display: flex;
-        gap: 10px;
+      /* Modal and other shared styles from index (simplified) */
+      .notification-btn {
+        /* simplified or removed as they are not needed on this page */
+        display: none; 
       }
-      .admin-actions button {
-        background: var(--primary);
-        color: var(--white);
-        padding: 5px 10px;
-        border-radius: 5px;
-        border: none;
-        font-size: 0.85rem;
-        cursor: pointer;
-      }
-      .admin-actions button:hover {
-        opacity: 0.9;
-      }
-      .admin-actions .pin-btn.pinned {
-        background-color: var(--secondary);
-      }
-
-      /* Balasan */
-      .reply-container {
-        margin-top: 15px;
-        padding: 10px;
-        background-color: var(--light);
-        border-left: 3px solid var(--primary);
-        border-radius: 4px;
-      }
-      .reply-header {
-        font-weight: 600;
-        color: var(--primary);
-        margin-bottom: 5px;
-      }
-      .reply-body {
-        font-size: 0.95rem;
-        color: var(--dark);
-      }
-
-      /* Reactions */
-      .reaction-buttons {
-        display: flex;
-        align-items: center;
-        gap: 15px;
-        margin-top: 10px;
-        font-size: 0.9rem;
-      }
-      .reaction-buttons button {
-        background: none;
-        border: none;
-        cursor: pointer;
-        padding: 0;
-        color: var(--gray);
-        transition: color 0.2s;
-        font-weight: 500;
-      }
-      .reaction-buttons button:hover {
-        color: var(--primary);
-      }
-      .reaction-buttons button.reacted {
-        color: var(--success);
-        font-weight: 600;
-      }
-
-      /* Reply Modal Styles */
-      .reply-modal-content {
-        background-color: #fefefe;
-        margin: 10% auto;
-        padding: 20px;
-        border-radius: 10px;
-        max-width: 500px;
-        width: 80%;
-        position: relative;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
-      }
-      .reply-modal-content h4 {
-        color: var(--primary);
-        margin-bottom: 10px;
-      }
-      .reply-modal-content textarea {
-        width: 100%;
-        padding: 10px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        margin-bottom: 10px;
-        font-family: 'Poppins', sans-serif;
-      }
-
-
-      /* Media Queries for Mobile Optimization */
+      
       @media (max-width: 768px) {
         .rating-summary {
           flex-direction: column;
-          padding: 1.5rem 1rem;
-        }
-        .average-rating {
-          margin-bottom: 1rem;
         }
         .rating-breakdown {
-          width: 100%;
+          width: 90%;
+          margin-top: 1rem;
         }
         .filter-buttons {
-          display: grid;
-          grid-template-columns: repeat(2, 1fr);
-          gap: 10px;
-          padding: 0 1rem;
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
         }
-        .review-card {
-            padding: 1rem;
-        }
-        .review-header {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 5px;
-        }
-        .review-stars {
-            margin-left: 30px; /* Align stars */
-        }
-        .review-footer {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 10px;
-        }
-        .admin-actions {
-            flex-direction: column;
-            gap: 5px;
-            width: 100%;
-        }
-        .admin-actions button {
-            width: 100%;
+        .filter-btn {
+          margin: 5px;
         }
       }
     </style>
   </head>
   <body>
-    <!-- Reply Modal -->
-    <div id="replyModal" class="modal">
-        <div class="reply-modal-content">
-            <span class="close-btn" onclick="document.getElementById('replyModal').style.display='none'">&times;</span>
-            <h4>Balas Ulasan dari <span id="replyReviewerName" style="color: var(--secondary);"></span></h4>
-            <textarea id="replyTextarea" placeholder="Tulis balasan Anda di sini..." rows="6"></textarea>
-            <div style="display: flex; justify-content: flex-end; gap: 10px;">
-                <button class="btn" style="background-color: #f44336;" onclick="document.getElementById('replyModal').style.display='none'">Batal</button>
-                <button class="btn" id="sendReplyBtn">Kirim Balasan</button>
-            </div>
-        </div>
-    </div>
-
-
     <!-- Simplified Navigation for rating page consistency -->
     <nav>
       <div class="nav-container">
@@ -564,7 +433,7 @@
       <div class="review-form-container" id="loginWarning" style="text-align: center;">
         <h3>Ingin Memberi Ulasan?</h3>
         <p>Silakan **Login** atau **Sign Up** terlebih dahulu untuk berbagi pengalaman Anda.</p>
-        <button class="btn login-btn" onclick="window.location.href='index.html'">Login / Daftar</button>
+        <button class="btn login-btn" onclick="alert('Buka modal Login/Signup')">Login / Daftar</button>
       </div>
 
       <!-- Review Filter Buttons -->
@@ -588,14 +457,6 @@
     </footer>
 
     <script>
-      // GANTI DENGAN UID ADMIN ANDA
-      const ADMIN_UIDS = [
-          'f3M49osGvtcGbEWf9UTdJe1AG013', // Admin 1
-          '7aIizseExGVPkqNJouqt3nMdWtE3', // Admin 2
-          'JTVwtBsdt3PaaYeyICd8PJm3lJu2', // Admin 3 (UID Baru)
-      ];
-      // End Admin UIDs
-
       // Initialize Firebase (MUST match your index.html config)
       const firebaseConfig = {
         apiKey: "AIzaSyDtLHSz7-KU97ALJTQvLRQTG5yj7brcsvc", 
@@ -614,10 +475,6 @@
       let currentFilter = 'all';
       let allReviews = []; // Cache semua ulasan
       let reviewCounts = { all: 0, positif: 0, netral: 0, negatif: 0 };
-      let currentUserId = null;
-      let isAdmin = false;
-
-      // --- Utility Functions ---
 
       // Utility: Konversi timestamp ke "x days ago"
       function timeSince(date) {
@@ -651,76 +508,28 @@
           return `<div class="review-stars">${starsHtml}</div>`;
       }
 
-      // --- Core Rendering Logic ---
-
       // Fungsi untuk merender daftar ulasan
       function renderReviews(filter) {
           const list = document.getElementById('reviewsList');
           list.innerHTML = '';
-          
-          // 1. Filter Reviews
           let filteredReviews = allReviews;
 
           if (filter !== 'all') {
               filteredReviews = allReviews.filter(review => review.sentiment === filter);
           }
-          
-          // 2. Sort: Pinned reviews selalu di atas
-          filteredReviews.sort((a, b) => {
-              if (a.isPinned && !b.isPinned) return -1;
-              if (!a.isPinned && b.isPinned) return 1;
-              // Setelah pinned, urutkan berdasarkan waktu terbaru
-              return b.timestamp.seconds - a.timestamp.seconds; 
-          });
 
           if (filteredReviews.length === 0) {
               list.innerHTML = `<p style="text-align: center; color: var(--gray);">Belum ada ulasan untuk kategori ${filter}.</p>`;
               return;
           }
 
-          // 3. Render Cards
           filteredReviews.forEach(review => {
               const reviewCard = document.createElement('div');
               reviewCard.classList.add('review-card');
-              if (review.isPinned) reviewCard.classList.add('pinned');
 
               const reviewDate = review.timestamp ? review.timestamp.toDate() : new Date();
               const timeString = timeSince(reviewDate);
               const sentiment = review.sentiment;
-              
-              const adminStatusActions = isAdmin ? `
-                <div class="admin-actions">
-                    <button 
-                        class="reply-btn" 
-                        onclick="openReplyModal('${review.id}', '${review.reviewerName || 'Anonim'}', '${review.adminReply || ''}')"
-                    >
-                        ${review.adminReply ? 'Edit Balasan' : 'Balas Ulasan'}
-                    </button>
-                    <button 
-                        class="pin-btn ${review.isPinned ? 'pinned' : ''}" 
-                        onclick="togglePin('${review.id}', ${!review.isPinned})"
-                    >
-                        ${review.isPinned ? '<i class="fas fa-thumbtack"></i> Pinned' : 'Pin Ulasan'}
-                    </button>
-                </div>
-              ` : '';
-              
-              const replySection = review.adminReply ? `
-                <div class="reply-container">
-                    <div class="reply-header">Balasan dari Admin:</div>
-                    <div class="reply-body">${review.adminReply}</div>
-                    <div class="reaction-buttons">
-                        <span style="color: var(--dark);">Terima kasih atas balasannya!</span>
-                        <button onclick="recordReaction('${review.id}', 'like')" data-reaction="like" class="${review.userReaction === 'like' ? 'reacted' : ''}">
-                            👍🏻 ${review.likes || 0}
-                        </button>
-                        <button onclick="recordReaction('${review.id}', 'dislike')" data-reaction="dislike" class="${review.userReaction === 'dislike' ? 'reacted' : ''}">
-                            👎🏻 ${review.dislikes || 0}
-                        </button>
-                    </div>
-                </div>
-              ` : (isAdmin ? '' : (review.userReaction ? `<div class="reaction-buttons"><button onclick="recordReaction('${review.id}', 'like')" data-reaction="like" class="${review.userReaction === 'like' ? 'reacted' : ''}">👍🏻 ${review.likes || 0}</button><button onclick="recordReaction('${review.id}', 'dislike')" data-reaction="dislike" class="${review.userReaction === 'dislike' ? 'reacted' : ''}">👎🏻 ${review.dislikes || 0}</button></div>` : ''));
-
 
               reviewCard.innerHTML = `
                   <div class="review-header">
@@ -731,24 +540,11 @@
                       ${renderStars(review.rating)}
                   </div>
                   <div class="review-body">${review.reviewText}</div>
-                  
-                  ${adminStatusActions} 
-                  
-                  ${replySection}
-
                   <div class="review-footer">
                       <span class="sentiment-tag tag-${sentiment}">${sentiment.toUpperCase()}</span>
                       <span class="time-ago">${timeString}</span>
                   </div>
               `;
-              
-              // Tambahkan event listener untuk tombol balasan jika bukan admin dan sudah ada balasan
-              if (!isAdmin && review.adminReply) {
-                  const replyActionBtn = document.createElement('div');
-                  replyActionBtn.innerHTML = `<button class="btn" style="padding: 5px 10px; margin-top: 10px; font-size: 0.9rem;" onclick="toggleReplyView(this, '${review.id}')">${review.adminReply ? 'Lihat Balasan' : ''}</button>`;
-                  reviewCard.querySelector('.review-body').appendChild(replyActionBtn);
-              }
-              
               list.appendChild(reviewCard);
           });
       }
@@ -806,211 +602,86 @@
 
       // Fungsi utama: Memuat semua ulasan dari Firestore
       function loadReviews() {
-          const reviewsListElement = document.getElementById('reviewsList');
-          reviewsListElement.innerHTML = '<p style="text-align: center; color: var(--gray);">Memuat ulasan...</p>';
-
-          // Set up query
-          let reviewsRef = db.collection('reviews');
-
-          // Cek apakah user telah login
-          if (!currentUserId) {
-              // Jika belum login, jalankan query tanpa attachment user-specific data
-              reviewsRef.orderBy('isPinned', 'desc').orderBy('timestamp', 'desc').get()
-                  .then(processSnapshot)
-                  .catch(handleLoadError);
-          } else {
-              // Jika sudah login, gunakan Transaction untuk membaca ulasan dan data reaksinya
-              db.runTransaction(async (transaction) => {
-                  // 1. Ambil semua ulasan
-                  const reviewsSnapshot = await transaction.get(reviewsRef.orderBy('isPinned', 'desc').orderBy('timestamp', 'desc'));
-                  const reviews = [];
-                  
-                  // 2. Ambil data reaksi user untuk setiap ulasan
-                  for (const doc of reviewsSnapshot.docs) {
-                      const reviewData = doc.data();
-                      const reactionDocRef = db.collection('reactions').doc(`${currentUserId}_${doc.id}`);
-                      const reactionDoc = await transaction.get(reactionDocRef);
-                      
-                      reviews.push({
-                          id: doc.id,
-                          ...reviewData,
-                          sentiment: getSentiment(reviewData.rating),
-                          userReaction: reactionDoc.exists ? reactionDoc.data().type : null 
-                      });
-                  }
-                  return reviews;
-              }).then(reviews => {
-                  processSnapshot(reviews);
-              }).catch(handleLoadError);
-          }
-          
-          function processSnapshot(reviews) {
-              allReviews = reviews;
-              updateSummary();
-              renderReviews(currentFilter);
-          }
-          
-          function handleLoadError(error) {
-              console.error("Error loading reviews:", error);
-              reviewsListElement.innerHTML = '<p style="text-align: center; color: red;">Gagal memuat ulasan. Silakan cek koneksi atau rules Firebase Anda.</p>';
-          }
+          db.collection('reviews')
+            .orderBy('timestamp', 'desc')
+            .get()
+            .then(snapshot => {
+                allReviews = snapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data(),
+                    sentiment: getSentiment(doc.data().rating) // Tambahkan sentiment ke objek
+                }));
+                
+                updateSummary();
+                renderReviews(currentFilter);
+            })
+            .catch(error => {
+                console.error("Error loading reviews:", error);
+                document.getElementById('reviewsList').innerHTML = '<p style="text-align: center; color: red;">Gagal memuat ulasan. Silakan cek koneksi atau rules Firebase Anda.</p>';
+            });
       }
 
-      // --- Admin Reply Logic ---
-
-      let currentReplyReviewId = null;
-
-      function openReplyModal(reviewId, reviewerName, currentReply) {
-          if (!isAdmin) {
-              alert('Akses ditolak!');
-              return;
-          }
-          currentReplyReviewId = reviewId;
-          document.getElementById('replyReviewerName').textContent = reviewerName;
-          document.getElementById('replyTextarea').value = currentReply;
-          document.getElementById('replyModal').style.display = 'flex';
-      }
-      
-      document.getElementById('sendReplyBtn').addEventListener('click', sendReply);
-
-      function sendReply() {
-          const replyText = document.getElementById('replyTextarea').value.trim();
-          if (replyText.length < 5) {
-              alert('Balasan minimal 5 karakter.');
+      // Handle Submission
+      document.getElementById('reviewForm').addEventListener('submit', function(e) {
+          e.preventDefault();
+          const user = auth.currentUser;
+          if (!user) {
+              alert('Anda harus login untuk mengirim ulasan.');
               return;
           }
 
-          db.collection('reviews').doc(currentReplyReviewId).update({
-              adminReply: replyText
-          })
-          .then(() => {
-              alert('Balasan admin berhasil dikirim/diubah!');
-              document.getElementById('replyModal').style.display = 'none';
-              loadReviews(); // Reload untuk update tampilan
-          })
-          .catch(error => {
-              console.error('Error sending reply:', error);
-              alert('Gagal mengirim balasan: ' + error.message);
-          });
-      }
+          const rating = parseInt(document.getElementById('selectedRating').value);
+          const reviewText = document.getElementById('reviewText').value.trim();
 
-      // --- Pinning Logic (Admin) ---
-
-      function togglePin(reviewId, isPinned) {
-          if (!isAdmin) {
-              alert('Akses ditolak!');
+          if (rating === 0) {
+              alert('Silakan pilih jumlah bintang.');
+              return;
+          }
+          if (reviewText.length < 10) {
+              alert('Ulasan minimal harus 10 karakter.');
               return;
           }
 
-          db.collection('reviews').doc(reviewId).update({
-              isPinned: isPinned
-          })
-          .then(() => {
-              alert(`Ulasan berhasil di-${isPinned ? 'pin' : 'unpin'}!`);
-              loadReviews(); // Reload untuk update urutan
-          })
-          .catch(error => {
-              console.error('Error toggling pin:', error);
-              alert('Gagal mengubah status pin.');
-          });
-      }
-      
-      // --- Reaction Logic (Like/Dislike) ---
+          document.getElementById('submitReviewBtn').disabled = true;
+          document.getElementById('submitReviewBtn').textContent = 'Mengirim...';
 
-      function recordReaction(reviewId, reactionType) {
-          if (!currentUserId) {
-              alert('Anda harus login untuk memberikan reaksi.');
-              return;
-          }
-          
-          const reactionDocRef = db.collection('reactions').doc(`${currentUserId}_${reviewId}`);
-          const reviewDocRef = db.collection('reviews').doc(reviewId);
-          
-          db.runTransaction(async (transaction) => {
-              const reactionDoc = await transaction.get(reactionDocRef);
-              const reviewDoc = await transaction.get(reviewDocRef);
-              
-              if (!reviewDoc.exists) throw new Error("Ulasan tidak ditemukan.");
-              
-              const currentReviewData = reviewDoc.data();
-              let newLikes = currentReviewData.likes || 0;
-              let newDislikes = currentReviewData.dislikes || 0;
-              let finalReactionType = reactionType;
-              
-              if (reactionDoc.exists) {
-                  const currentReaction = reactionDoc.data().type;
-                  
-                  if (currentReaction === reactionType) {
-                      // Sudah bereaksi dengan tipe yang sama -> Batalkan reaksi
-                      if (reactionType === 'like') newLikes--;
-                      if (reactionType === 'dislike') newDislikes--;
-                      transaction.delete(reactionDocRef);
-                      finalReactionType = null;
-                  } else {
-                      // Mengubah reaksi (like ke dislike, atau sebaliknya)
-                      if (reactionType === 'like') {
-                          newLikes++;
-                          newDislikes--;
-                      } else {
-                          newDislikes++;
-                          newLikes--;
-                      }
-                      transaction.update(reactionDocRef, { type: reactionType });
-                  }
-              } else {
-                  // Reaksi Baru
-                  if (reactionType === 'like') newLikes++;
-                  if (reactionType === 'dislike') newDislikes++;
-                  transaction.set(reactionDocRef, { userId: currentUserId, reviewId: reviewId, type: reactionType });
+          // Dapatkan nama pengguna dari dokumen 'users' jika ada, jika tidak, gunakan display name
+          let reviewerName = user.displayName || 'Anonim';
+          db.collection('users').doc(user.uid).get().then(doc => {
+              if (doc.exists && doc.data().name) {
+                  reviewerName = doc.data().name;
               }
 
-              // Update counter di dokumen review
-              transaction.update(reviewDocRef, { likes: newLikes, dislikes: newDislikes });
-
-              return finalReactionType;
-
-          }).then(() => {
-              alert('Reaksi Anda berhasil dicatat!');
-              loadReviews(); // Muat ulang untuk update counter
-          }).catch(error => {
-              console.error("Transaction failed: ", error);
-              alert('Gagal mencatat reaksi: ' + error.message);
+              return db.collection('reviews').add({
+                  userId: user.uid,
+                  reviewerName: reviewerName,
+                  rating: rating,
+                  reviewText: reviewText,
+                  timestamp: firebase.firestore.FieldValue.serverTimestamp()
+              });
+          })
+          .then(() => {
+              alert('Ulasan Anda berhasil dikirim! Terima kasih.');
+              document.getElementById('reviewForm').reset();
+              document.getElementById('selectedRating').value = '0';
+              document.getElementById('starPicker').querySelectorAll('i').forEach(star => star.classList.remove('selected'));
+              
+              document.getElementById('submitReviewBtn').disabled = false;
+              document.getElementById('submitReviewBtn').textContent = 'Kirim Ulasan';
+              
+              loadReviews(); // Reload data
+          })
+          .catch(error => {
+              console.error("Error writing document: ", error);
+              alert('Gagal mengirim ulasan: ' + error.message);
+              document.getElementById('submitReviewBtn').disabled = false;
+              document.getElementById('submitReviewBtn').textContent = 'Kirim Ulasan';
           });
-      }
+      });
 
-
-      // --- Initialization ---
 
       document.addEventListener('DOMContentLoaded', function() {
-          // Check Auth State
-          auth.onAuthStateChanged((user) => {
-              const formContainer = document.getElementById('reviewFormContainer');
-              const loginWarning = document.getElementById('loginWarning');
-
-              isAdmin = user && ADMIN_UIDS.includes(user.uid);
-              currentUserId = user ? user.uid : null;
-
-              if (user) {
-                  // Logged in: Show form, hide warning
-                  formContainer.style.display = 'block';
-                  loginWarning.style.display = 'none';
-                  
-                  // Perbarui nama di form setelah mendapatkan data dari Firestore
-                  db.collection('users').doc(user.uid).get().then(doc => {
-                     if (doc.exists && doc.data().name) {
-                          document.getElementById('reviewerName').textContent = doc.data().name;
-                      } else {
-                           document.getElementById('reviewerName').textContent = user.displayName || user.email.split('@')[0];
-                      }
-                  });
-              } else {
-                  // Not logged in: Hide form, show warning
-                  formContainer.style.display = 'none';
-                  loginWarning.style.display = 'block';
-              }
-              
-              loadReviews(); // Load ulasan setelah status admin diketahui
-          });
+          loadReviews(); // Initial load
 
           // Star Picker Logic
           document.getElementById('starPicker').addEventListener('mouseover', function(e) {
@@ -1059,23 +730,32 @@
                   renderReviews(currentFilter);
               });
           });
-          
-          // Initialize loadReviews is now inside auth.onAuthStateChanged
+
+          // Auth State Check (Show/Hide Form)
+          auth.onAuthStateChanged((user) => {
+              const formContainer = document.getElementById('reviewFormContainer');
+              const loginWarning = document.getElementById('loginWarning');
+
+              if (user) {
+                  // Logged in: Show form, hide warning
+                  formContainer.style.display = 'block';
+                  loginWarning.style.display = 'none';
+                  // Display reviewer name (ambil dari email sebelum dapet dari firestore)
+                  document.getElementById('reviewerName').textContent = user.displayName || user.email;
+                  
+                  // Perbarui nama di form setelah mendapatkan data dari Firestore
+                  db.collection('users').doc(user.uid).get().then(doc => {
+                     if (doc.exists && doc.data().name) {
+                          document.getElementById('reviewerName').textContent = doc.data().name;
+                      }
+                  });
+              } else {
+                  // Not logged in: Hide form, show warning
+                  formContainer.style.display = 'none';
+                  loginWarning.style.display = 'block';
+              }
+          });
       });
-      
-      // Mengubah Tampilan Balasan (Toggle)
-      function toggleReplyView(button, reviewId) {
-          const reviewCard = button.closest('.review-card');
-          const replyContainer = reviewCard.querySelector('.reply-container');
-          
-          if (replyContainer.style.display === 'none' || replyContainer.style.display === '') {
-              replyContainer.style.display = 'block';
-              button.textContent = 'Tutup Balasan';
-          } else {
-              replyContainer.style.display = 'none';
-              button.textContent = 'Lihat Balasan';
-          }
-      }
     </script>
   </body>
 </html>

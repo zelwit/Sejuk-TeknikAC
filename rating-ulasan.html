@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Rating & Ulasan | Sejuk Teknik AC</title>
+    <title>Rating & Ulasan | Sejuk Teknik AC (Updated)</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
@@ -37,6 +37,8 @@
         color: var(--dark);
         line-height: 1.6;
         background-color: var(--light);
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
       }
       header {
         background: linear-gradient(135deg, var(--primary), #004c99);
@@ -50,11 +52,6 @@
         margin: 0;
         font-size: 2.5rem;
         font-weight: 700;
-      }
-      header p {
-        font-size: 1.1rem;
-        margin-top: 0.5rem;
-        opacity: 0.9;
       }
       nav {
         background-color: var(--white);
@@ -95,15 +92,6 @@
       nav a.active {
         color: var(--primary);
       }
-      nav a.active::after {
-        content: "";
-        position: absolute;
-        width: 100%;
-        height: 2px;
-        bottom: -5px;
-        left: 0;
-        background-color: var(--primary);
-      }
       .auth-buttons {
         display: flex;
         gap: 10px;
@@ -121,41 +109,34 @@
         color: var(--primary);
         border: 2px solid var(--primary);
       }
-      .login-btn:hover {
-        background-color: var(--primary);
-        color: white;
-      }
       .signup-btn {
         background-color: var(--primary);
         color: white;
       }
-      .signup-btn:hover {
-        background-color: #0052a3;
-      }
       .content {
-        padding: 2rem 1rem;
+        padding: 1.5rem;
         max-width: 1000px;
         margin: 0 auto;
       }
       .section-title {
         text-align: center;
-        margin-bottom: 2rem;
+        margin-bottom: 1.5rem;
       }
       .section-title h2 {
-        font-size: 2rem;
+        font-size: 1.6rem;
         color: var(--primary);
-        margin-bottom: 1rem;
+        margin-bottom: 0.5rem;
       }
       .btn {
         display: inline-block;
         background-color: var(--primary);
         color: var(--white);
-        padding: 0.8rem 1.8rem;
+        padding: 0.6rem 1rem;
         border-radius: 50px;
         text-decoration: none;
         font-weight: 500;
         transition: all 0.3s ease;
-        box-shadow: 0 4px 10px rgba(0, 102, 204, 0.3);
+        box-shadow: 0 4px 10px rgba(0, 102, 204, 0.12);
         border: 2px solid var(--primary);
         cursor: pointer;
       }
@@ -181,34 +162,28 @@
         border-radius: 8px;
         font-family: "Poppins", sans-serif;
       }
-      
+
       /* --- RATING SPECIFIC STYLES --- */
       .rating-summary {
         background: var(--primary-light);
-        padding: 2rem;
+        padding: 1rem;
         border-radius: 12px;
-        margin-bottom: 2rem;
+        margin-bottom: 1rem;
         display: flex;
         justify-content: space-around;
         align-items: center;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-      }
-      .average-rating {
-        text-align: center;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03);
+        gap: 1rem;
       }
       .average-rating h3 {
-        font-size: 3.5rem;
+        font-size: 2rem;
         color: var(--primary);
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.3rem;
         line-height: 1;
-      }
-      .total-reviews {
-        color: var(--gray);
-        font-size: 0.9rem;
       }
       .star-rating-display {
         color: #ffc107;
-        font-size: 1.5rem;
+        font-size: 1.2rem;
       }
       .rating-breakdown {
         width: 60%;
@@ -237,19 +212,19 @@
         height: 100%;
         background-color: var(--primary);
       }
-      
+
       /* --- Review Form --- */
       .review-form-container {
         background: var(--white);
-        padding: 2rem;
+        padding: 1rem;
         border-radius: 12px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-        margin-bottom: 2rem;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03);
+        margin-bottom: 1rem;
       }
       .star-picker {
         display: flex;
         gap: 5px;
-        font-size: 2rem;
+        font-size: 1.4rem;
         color: var(--gray);
         margin-bottom: 1rem;
         cursor: pointer;
@@ -260,65 +235,67 @@
       .star-picker i.selected {
         color: #ffc107;
       }
-      
+
       /* --- Review List & Filters --- */
       .filter-buttons {
         text-align: center;
-        margin-bottom: 2rem;
+        margin-bottom: 1rem;
       }
       .filter-btn {
         background-color: var(--light);
         color: var(--dark);
         border: 1px solid #ddd;
         margin: 0 5px;
-        padding: 8px 15px;
+        padding: 8px 12px;
         border-radius: 50px;
         cursor: pointer;
         transition: all 0.2s;
+        font-size: 0.9rem;
       }
       .filter-btn.active {
         background-color: var(--primary);
         color: var(--white);
         border-color: var(--primary);
       }
-      
+
       .review-card {
         background: var(--white);
-        padding: 1.5rem;
+        padding: 1rem;
         border-radius: 12px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-        margin-bottom: 1.5rem;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+        margin-bottom: 1rem;
+        width: 100%;
       }
       .review-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 1rem;
+        margin-bottom: 0.5rem;
       }
       .reviewer-info {
         font-weight: 600;
         color: var(--primary);
         display: flex;
         align-items: center;
-      }
-      .reviewer-info i {
-        margin-right: 10px;
-        font-size: 1.2rem;
+        gap: 8px;
       }
       .review-stars {
         color: #ffc107;
-        font-size: 1.1rem;
+        font-size: 1rem;
       }
       .review-body {
-        font-size: 1rem;
+        font-size: 0.95rem;
         color: var(--dark);
-        margin-bottom: 1rem;
+        margin-bottom: 0.75rem;
+        white-space: pre-wrap;
       }
       .review-footer {
         display: flex;
         justify-content: space-between;
         align-items: center;
         font-size: 0.85rem;
+        gap: 1rem;
+        flex-wrap: wrap;
       }
       .sentiment-tag {
         padding: 4px 10px;
@@ -339,45 +316,39 @@
         color: var(--gray);
       }
 
-      /* Modal and other shared styles from index (simplified) */
-      .notification-btn {
-        /* simplified or removed as they are not needed on this page */
-        display: none; 
+      .reply-block {
+        background: #fbfdff;
+        border-left: 3px solid var(--primary);
+        padding: 0.75rem;
+        border-radius: 8px;
+        margin-top: 0.75rem;
       }
-      
+      .reply-text { white-space: pre-wrap; }
+      .reply-actions { display:flex; gap:8px; align-items:center; margin-top:6px; }
+      .small-btn { background: transparent; border: none; cursor:pointer; font-weight:600; }
+
+      .admin-controls { display:flex; gap:8px; align-items:center; }
+      .pin { color: #ffb300; }
+
+      /* MOBILE OPTIMIZATIONS */
       @media (max-width: 768px) {
-        .rating-summary {
-          flex-direction: column;
-        }
-        .rating-breakdown {
-          width: 90%;
-          margin-top: 1rem;
-        }
-        .filter-buttons {
-          display: flex;
-          flex-wrap: wrap;
-          justify-content: center;
-        }
-        .filter-btn {
-          margin: 5px;
-        }
+        .rating-summary { flex-direction: column; align-items: flex-start; }
+        .rating-breakdown { width: 100%; }
+        .nav-links { display: none; }
+        .nav-container { gap: 10px; }
+        .section-title h2 { font-size: 1.25rem; }
+        .review-body { font-size: 0.95rem; }
       }
     </style>
   </head>
   <body>
-    <!-- Simplified Navigation for rating page consistency -->
     <nav>
       <div class="nav-container">
         <a href="index.html" class="logo">Sejuk Teknik</a>
         <div class="nav-links">
           <a href="index.html"><i class="fas fa-home"></i> Beranda</a>
           <a href="layanan.html"><i class="fas fa-tools"></i> Layanan</a>
-          <a href="AC-Placement-Planner.html"><i class="fas fa-cube"></i> 3D AC Planner</a>
-          <a href="tentang.html"><i class="fas fa-info-circle"></i> Tentang</a>
-          <a href="https://wa.me/6285817818216"><i class="fas fa-envelope"></i> Kontak</a>
-          <a href="faq.html"><i class="fas fa-question-circle"></i> FAQ</a>
           <a href="rating-ulasan.html" class="active"><i class="fas fa-star"></i> Rating & Ulasan</a>
-          <a href="https://maps.app.goo.gl/uTFSMLiKuWcCRUMa6" target="_blank"><i class="fas fa-map-marker-alt"></i> Lokasi</a>
         </div>
         <div class="auth-buttons">
           <!-- Auth buttons will be populated by JS -->
@@ -391,7 +362,6 @@
         <p>Lihat pengalaman mereka sebelum Anda memesan layanan terbaik kami.</p>
       </div>
 
-      <!-- Rating Summary Section -->
       <div class="rating-summary">
         <div class="average-rating">
           <div class="star-rating-display" id="summaryStars">
@@ -400,9 +370,7 @@
           <h3 id="averageScore">0.0</h3>
           <p class="total-reviews" id="totalReviewsText">0 Ulasan Total</p>
         </div>
-        <div class="rating-breakdown" id="ratingBreakdown">
-          <!-- Breakdown bars will be generated here by JS -->
-        </div>
+        <div class="rating-breakdown" id="ratingBreakdown"></div>
       </div>
 
       <!-- Review Form (Hidden by default, shown when logged in) -->
@@ -429,14 +397,12 @@
         </form>
       </div>
 
-      <!-- Login Warning (Shown when not logged in) -->
       <div class="review-form-container" id="loginWarning" style="text-align: center;">
         <h3>Ingin Memberi Ulasan?</h3>
-        <p>Silakan **Login** atau **Sign Up** terlebih dahulu untuk berbagi pengalaman Anda.</p>
+        <p>Silakan <strong>Login</strong> atau <strong>Sign Up</strong> terlebih dahulu untuk berbagi pengalaman Anda.</p>
         <button class="btn login-btn" onclick="alert('Buka modal Login/Signup')">Login / Daftar</button>
       </div>
 
-      <!-- Review Filter Buttons -->
       <div class="filter-buttons">
         <button class="filter-btn active" data-filter="all">Semua Ulasan (<span id="countAll">0</span>)</button>
         <button class="filter-btn" data-filter="positif">Positif (<span id="countPositif">0</span>)</button>
@@ -444,22 +410,19 @@
         <button class="filter-btn" data-filter="negatif">Negatif (<span id="countNegatif">0</span>)</button>
       </div>
 
-      <!-- Review List -->
       <div id="reviewsList">
         <p style="text-align: center; color: var(--gray);">Memuat ulasan...</p>
-        <!-- Reviews will be loaded here -->
       </div>
     </section>
 
-    <!-- Footer (Simplified, adjust as needed) -->
-    <footer class="footer" style="background-color: var(--dark); color: white; padding: 2rem; text-align: center; margin-top: 4rem;">
+    <footer class="footer" style="background-color: var(--dark); color: white; padding: 2rem; text-align: center; margin-top: 2rem;">
         <p>© 2025 Sejuk Teknik AC. All Rights Reserved.</p>
     </footer>
 
     <script>
-      // Initialize Firebase (MUST match your index.html config)
+      // === CONFIG & INIT ===
       const firebaseConfig = {
-        apiKey: "AIzaSyDtLHSz7-KU97ALJTQvLRQTG5yj7brcsvc", 
+        apiKey: "AIzaSyDtLHSz7-KU97ALJTQvLRQTG5yj7brcsvc",
         authDomain: "sejuk-teknik.firebaseapp.com",
         projectId: "sejuk-teknik",
         storageBucket: "sejuk-teknik.appspot.com",
@@ -467,16 +430,20 @@
         appId: "1:733860478343:web:172838a08e702d129ae722",
         measurementId: "G-EDJ6Y6J7GC"
       };
-      
       firebase.initializeApp(firebaseConfig);
       const auth = firebase.auth();
       const db = firebase.firestore();
 
+      // Admin UIDs allowed to reply/pin (from user request)
+      const ADMIN_UIDS = [
+        'f3M49osGvtcGbEWf9UTdJe1AG013',
+        'JTVwtBsdt3PaaYeyICd8PJm3lJu2'
+      ];
+
       let currentFilter = 'all';
-      let allReviews = []; // Cache semua ulasan
+      let allReviews = [];
       let reviewCounts = { all: 0, positif: 0, netral: 0, negatif: 0 };
 
-      // Utility: Konversi timestamp ke "x days ago"
       function timeSince(date) {
           const seconds = Math.floor((new Date() - date) / 1000);
           let interval = seconds / 31536000;
@@ -492,14 +459,12 @@
           return Math.floor(seconds) + " detik lalu";
       }
 
-      // Utility: Mendapatkan sentimen berdasarkan rating
       function getSentiment(rating) {
           if (rating >= 4) return 'positif';
           if (rating === 3) return 'netral';
           return 'negatif';
       }
 
-      // Utility: Merender bintang
       function renderStars(rating) {
           let starsHtml = '';
           for (let i = 1; i <= 5; i++) {
@@ -508,7 +473,7 @@
           return `<div class="review-stars">${starsHtml}</div>`;
       }
 
-      // Fungsi untuk merender daftar ulasan
+      // RENDER REVIEWS (pinned first)
       function renderReviews(filter) {
           const list = document.getElementById('reviewsList');
           list.innerHTML = '';
@@ -523,6 +488,14 @@
               return;
           }
 
+          // pinned first
+          filteredReviews.sort((a,b) => {
+              if ((a.pinned?true:false) === (b.pinned?true:false)) {
+                  return b.timestamp?.toDate?.() - a.timestamp?.toDate?.();
+              }
+              return (b.pinned?1:0) - (a.pinned?1:0);
+          });
+
           filteredReviews.forEach(review => {
               const reviewCard = document.createElement('div');
               reviewCard.classList.add('review-card');
@@ -531,31 +504,112 @@
               const timeString = timeSince(reviewDate);
               const sentiment = review.sentiment;
 
+              // Prepare reply area
+              let replyHtml = '';
+              if (review.reply && review.reply.text) {
+                  // display reply
+                  const adminName = review.reply.adminName || review.reply.adminUid || 'Admin';
+                  const likes = (review.reply.likes || []).length || 0;
+                  const dislikes = (review.reply.dislikes || []).length || 0;
+                  replyHtml = `
+                    <div class="reply-block">
+                      <div style="font-weight:700;">${adminName}</div>
+                      <div class="reply-text">${escapeHtml(review.reply.text)}</div>
+                      <div class="reply-actions">
+                        <button class="small-btn" onclick="voteOnReply('${review.id}','like')">👍🏻 <span id="like-count-${review.id}">${likes}</span></button>
+                        <button class="small-btn" onclick="voteOnReply('${review.id}','dislike')">👎🏻 <span id="dislike-count-${review.id}">${dislikes}</span></button>
+                        <button class="small-btn" onclick="openReplyModal('${review.id}')">Tutup</button>
+                      </div>
+                    </div>
+                  `;
+              }
+
+              // Admin controls visible only to admin UIDs (handled later when auth state known)
+              const pinnedBadge = review.pinned ? '<span title="Pinned" class="pin">📌 Pinned</span>' : '';
+
               reviewCard.innerHTML = `
                   <div class="review-header">
                       <div class="reviewer-info">
                           <i class="fas fa-user-circle"></i>
-                          ${review.reviewerName || 'Anonim'}
+                          ${escapeHtml(review.reviewerName || 'Anonim')} ${pinnedBadge}
                       </div>
                       ${renderStars(review.rating)}
                   </div>
-                  <div class="review-body">${review.reviewText}</div>
+                  <div class="review-body">${escapeHtml(review.reviewText)}</div>
                   <div class="review-footer">
                       <span class="sentiment-tag tag-${sentiment}">${sentiment.toUpperCase()}</span>
                       <span class="time-ago">${timeString}</span>
+                      <div id="admin-area-${review.id}" class="admin-controls"></div>
                   </div>
+                  ${replyHtml}
               `;
+
+              // Append and then render admin area (so DOM exists)
               list.appendChild(reviewCard);
+
+              // add 'Balas' or 'Lihat Balasan' buttons depending on state and auth
+              renderAdminAreaForReview(review.id, review.reply);
           });
       }
 
-      // Fungsi untuk mengupdate ringkasan rating dan bar breakdown
+      // Create admin area buttons (reply/pin) depending on current user
+      function renderAdminAreaForReview(reviewId, reply) {
+          const container = document.getElementById(`admin-area-${reviewId}`);
+          if (!container) return;
+
+          // Clear
+          container.innerHTML = '';
+
+          // If user is admin, show buttons
+          const user = auth.currentUser;
+          const isAdmin = user && ADMIN_UIDS.includes(user.uid);
+
+          if (isAdmin) {
+              // Reply button (shows inline textarea)
+              const replyBtn = document.createElement('button');
+              replyBtn.className = 'small-btn';
+              replyBtn.textContent = reply && reply.text ? 'Edit Balasan' : 'Balas';
+              replyBtn.onclick = () => openReplyEditor(reviewId, reply);
+              container.appendChild(replyBtn);
+
+              // Pin toggle
+              const pinBtn = document.createElement('button');
+              pinBtn.className = 'small-btn pin';
+              pinBtn.textContent = '📌 Pin';
+              pinBtn.onclick = () => togglePin(reviewId);
+              container.appendChild(pinBtn);
+          } else {
+              // If not admin but there is no reply: show nothing; if reply exists show 'Lihat Balasan' (scroll to it)
+              if (reply && reply.text) {
+                  const showBtn = document.createElement('button');
+                  showBtn.className = 'small-btn';
+                  showBtn.textContent = 'Lihat Balasan';
+                  showBtn.onclick = () => {
+                      // scroll to the reply block
+                      const el = document.querySelector(`#reviewsList .reply-block`);
+                      if (el) el.scrollIntoView({ behavior: 'smooth' });
+                  };
+                  container.appendChild(showBtn);
+              }
+          }
+      }
+
+      // Escape HTML helper to avoid injection when rendering text
+      function escapeHtml(text) {
+          if (!text) return '';
+          return text
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/\"/g, '&quot;')
+            .replace(/\'/g, '&#039;');
+      }
+
+      // Update summary counts and breakdown
       function updateSummary() {
           const totalCount = allReviews.length;
           let totalRatingSum = 0;
           const ratingFrequencies = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
-          
-          // Reset counts
           reviewCounts = { all: totalCount, positif: 0, netral: 0, negatif: 0 };
 
           allReviews.forEach(review => {
@@ -567,26 +621,21 @@
           const averageScore = totalCount > 0 ? (totalRatingSum / totalCount).toFixed(1) : 0.0;
           const avgStarRating = Math.round(averageScore);
 
-          // Update Summary Header
           document.getElementById('averageScore').textContent = averageScore;
           document.getElementById('totalReviewsText').textContent = `${totalCount} Ulasan Total`;
           document.getElementById('summaryStars').innerHTML = renderStars(avgStarRating);
-          
-          // Update Filter Counts
+
           document.getElementById('countAll').textContent = reviewCounts.all;
           document.getElementById('countPositif').textContent = reviewCounts.positif;
           document.getElementById('countNetral').textContent = reviewCounts.netral;
           document.getElementById('countNegatif').textContent = reviewCounts.negatif;
 
-
-          // Update Breakdown Bars
+          // breakdown bars
           const breakdownContainer = document.getElementById('ratingBreakdown');
           breakdownContainer.innerHTML = '';
-
           for (let i = 5; i >= 1; i--) {
               const count = ratingFrequencies[i] || 0;
               const percentage = totalCount > 0 ? (count / totalCount) * 100 : 0;
-
               const barHtml = `
                   <div class="rating-bar">
                       <span>${i} <i class="fas fa-star" style="color: #ffc107;"></i></span>
@@ -600,90 +649,144 @@
           }
       }
 
-      // Fungsi utama: Memuat semua ulasan dari Firestore
+      // LOAD REVIEWS from firestore
       function loadReviews() {
           db.collection('reviews')
             .orderBy('timestamp', 'desc')
             .get()
             .then(snapshot => {
-                allReviews = snapshot.docs.map(doc => ({
-                    id: doc.id,
-                    ...doc.data(),
-                    sentiment: getSentiment(doc.data().rating) // Tambahkan sentiment ke objek
-                }));
-                
+                allReviews = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data(), sentiment: getSentiment(doc.data().rating) }));
+                // ensure pinned boolean exists
+                allReviews.forEach(r => { if (r.pinned === undefined) r.pinned = false; });
                 updateSummary();
                 renderReviews(currentFilter);
             })
             .catch(error => {
-                console.error("Error loading reviews:", error);
+                console.error('Error loading reviews:', error);
                 document.getElementById('reviewsList').innerHTML = '<p style="text-align: center; color: red;">Gagal memuat ulasan. Silakan cek koneksi atau rules Firebase Anda.</p>';
             });
       }
 
-      // Handle Submission
+      // SUBMIT REVIEW (unchanged flow)
       document.getElementById('reviewForm').addEventListener('submit', function(e) {
           e.preventDefault();
           const user = auth.currentUser;
-          if (!user) {
-              alert('Anda harus login untuk mengirim ulasan.');
-              return;
-          }
+          if (!user) { alert('Anda harus login untuk mengirim ulasan.'); return; }
 
           const rating = parseInt(document.getElementById('selectedRating').value);
           const reviewText = document.getElementById('reviewText').value.trim();
-
-          if (rating === 0) {
-              alert('Silakan pilih jumlah bintang.');
-              return;
-          }
-          if (reviewText.length < 10) {
-              alert('Ulasan minimal harus 10 karakter.');
-              return;
-          }
+          if (rating === 0) { alert('Silakan pilih jumlah bintang.'); return; }
+          if (reviewText.length < 10) { alert('Ulasan minimal harus 10 karakter.'); return; }
 
           document.getElementById('submitReviewBtn').disabled = true;
           document.getElementById('submitReviewBtn').textContent = 'Mengirim...';
 
-          // Dapatkan nama pengguna dari dokumen 'users' jika ada, jika tidak, gunakan display name
           let reviewerName = user.displayName || 'Anonim';
           db.collection('users').doc(user.uid).get().then(doc => {
-              if (doc.exists && doc.data().name) {
-                  reviewerName = doc.data().name;
-              }
-
+              if (doc.exists && doc.data().name) reviewerName = doc.data().name;
               return db.collection('reviews').add({
                   userId: user.uid,
                   reviewerName: reviewerName,
                   rating: rating,
                   reviewText: reviewText,
-                  timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                  timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                  pinned: false
               });
-          })
-          .then(() => {
+          }).then(() => {
               alert('Ulasan Anda berhasil dikirim! Terima kasih.');
               document.getElementById('reviewForm').reset();
               document.getElementById('selectedRating').value = '0';
               document.getElementById('starPicker').querySelectorAll('i').forEach(star => star.classList.remove('selected'));
-              
               document.getElementById('submitReviewBtn').disabled = false;
               document.getElementById('submitReviewBtn').textContent = 'Kirim Ulasan';
-              
-              loadReviews(); // Reload data
-          })
-          .catch(error => {
-              console.error("Error writing document: ", error);
+              loadReviews();
+          }).catch(error => {
+              console.error('Error writing document: ', error);
               alert('Gagal mengirim ulasan: ' + error.message);
               document.getElementById('submitReviewBtn').disabled = false;
               document.getElementById('submitReviewBtn').textContent = 'Kirim Ulasan';
           });
       });
 
+      // OPEN inline reply editor for admins
+      function openReplyEditor(reviewId, existingReply) {
+          // find review card and append editor
+          const card = document.querySelector(`#reviewsList .review-card:nth-child(${Array.from(document.querySelectorAll('#reviewsList .review-card')).findIndex(c=>c.querySelector('#admin-area-'+reviewId)) + 1})`);
+          // simpler: show a prompt (keeps UI simple)
+          const currentText = existingReply && existingReply.text ? existingReply.text : '';
+          const text = prompt('Tulis balasan untuk ulasan ini (HTML tidak diizinkan):', currentText);
+          if (text === null) return; // cancelled
+          const user = auth.currentUser;
+          if (!user) { alert('Harus login sebagai admin untuk membalas.'); return; }
+          if (!ADMIN_UIDS.includes(user.uid)) { alert('Anda bukan admin.'); return; }
 
+          // get admin name from users collection if possible
+          db.collection('users').doc(user.uid).get().then(doc => {
+              const adminName = (doc.exists && doc.data().name) ? doc.data().name : (user.displayName || 'Admin');
+              const replyObj = {
+                  adminUid: user.uid,
+                  adminName: adminName,
+                  text: text,
+                  timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                  likes: [],
+                  dislikes: []
+              };
+              return db.collection('reviews').doc(reviewId).update({ reply: replyObj });
+          }).then(()=>{
+              alert('Balasan tersimpan.');
+              loadReviews();
+          }).catch(err=>{ console.error(err); alert('Gagal menyimpan balasan: '+err.message); });
+      }
+
+      // open reply modal -> since we used prompt for editing, this will just scroll to reply
+      function openReplyModal(reviewId){
+          const el = document.getElementById(`like-count-${reviewId}`);
+          if (el) el.scrollIntoView({ behavior: 'smooth' });
+      }
+
+      // Voting on reply (like/dislike) — must be logged in
+      function voteOnReply(reviewId, type) {
+          const user = auth.currentUser;
+          if (!user) { alert('Silakan login untuk memberikan reaksi.'); return; }
+
+          const reviewRef = db.collection('reviews').doc(reviewId);
+          return db.runTransaction(transaction => {
+              return transaction.get(reviewRef).then(doc => {
+                  if (!doc.exists) throw 'Dokumen tidak ditemukan';
+                  const reply = doc.data().reply || { likes: [], dislikes: [] };
+                  const likes = new Set(reply.likes || []);
+                  const dislikes = new Set(reply.dislikes || []);
+                  if (type === 'like'){
+                      if (likes.has(user.uid)) { likes.delete(user.uid); } else { likes.add(user.uid); dislikes.delete(user.uid); }
+                  } else {
+                      if (dislikes.has(user.uid)) { dislikes.delete(user.uid); } else { dislikes.add(user.uid); likes.delete(user.uid); }
+                  }
+                  const newReply = Object.assign({}, reply, { likes: Array.from(likes), dislikes: Array.from(dislikes) });
+                  transaction.update(reviewRef, { reply: newReply });
+                  return { likes: newReply.likes.length, dislikes: newReply.dislikes.length };
+              });
+          }).then(({likes, dislikes}) => {
+              document.getElementById(`like-count-${reviewId}`).textContent = likes;
+              document.getElementById(`dislike-count-${reviewId}`).textContent = dislikes;
+          }).catch(err => { console.error(err); alert('Gagal merekam reaksi: '+err); });
+      }
+
+      // Toggle pin (admins only)
+      function togglePin(reviewId) {
+          const user = auth.currentUser;
+          if (!user || !ADMIN_UIDS.includes(user.uid)) { alert('Hanya admin yang dapat mem-pin ulasan.'); return; }
+          const ref = db.collection('reviews').doc(reviewId);
+          ref.get().then(doc =>{
+              if (!doc.exists) throw 'Not found';
+              const currently = !!doc.data().pinned;
+              return ref.update({ pinned: !currently });
+          }).then(()=>{ loadReviews(); }).catch(err=>{ console.error(err); alert('Gagal toggle pin: '+err); });
+      }
+
+      // Star picker logic (unchanged)
       document.addEventListener('DOMContentLoaded', function() {
-          loadReviews(); // Initial load
+          loadReviews();
 
-          // Star Picker Logic
           document.getElementById('starPicker').addEventListener('mouseover', function(e) {
               const stars = this.querySelectorAll('i');
               if (e.target.classList.contains('fa-star')) {
@@ -699,16 +802,12 @@
               if (e.target.classList.contains('fa-star')) {
                   const rating = parseInt(e.target.getAttribute('data-rating'));
                   document.getElementById('selectedRating').value = rating;
+                  this.querySelectorAll('i').forEach(star => star.classList.remove('selected'));
+                  if (parseInt(e.target.getAttribute('data-rating')) <= rating) {}
                   this.querySelectorAll('i').forEach(star => {
-                       star.classList.remove('selected');
-                      if (parseInt(star.getAttribute('data-rating')) <= rating) {
-                          star.classList.add('selected');
-                      }
-                  });
-                   // Tetapkan bintang permanen setelah klik
-                   this.querySelectorAll('i').forEach(star => {
                       star.classList.remove('fas', 'far');
                       star.classList.add(parseInt(star.getAttribute('data-rating')) <= rating ? 'fas' : 'far');
+                      if (parseInt(star.getAttribute('data-rating')) <= rating) star.classList.add('selected');
                   });
               }
           });
@@ -720,8 +819,7 @@
                   star.classList.add(parseInt(star.getAttribute('data-rating')) <= selectedRating ? 'fas' : 'far');
               });
           });
-          
-          // Filter Button Logic
+
           document.querySelectorAll('.filter-btn').forEach(button => {
               button.addEventListener('click', function() {
                   document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
@@ -731,29 +829,35 @@
               });
           });
 
-          // Auth State Check (Show/Hide Form)
+          // Auth state handling
           auth.onAuthStateChanged((user) => {
               const formContainer = document.getElementById('reviewFormContainer');
               const loginWarning = document.getElementById('loginWarning');
 
+              // populate auth buttons area
+              const authArea = document.querySelector('.auth-buttons');
+              authArea.innerHTML = '';
               if (user) {
-                  // Logged in: Show form, hide warning
+                  const btn = document.createElement('button'); btn.className='auth-btn signup-btn'; btn.textContent='Logout'; btn.onclick = ()=> auth.signOut();
+                  authArea.appendChild(btn);
+              } else {
+                  const lbtn = document.createElement('button'); lbtn.className='auth-btn login-btn'; lbtn.textContent='Login'; lbtn.onclick = ()=> alert('Buka modal login');
+                  authArea.appendChild(lbtn);
+              }
+
+              if (user) {
                   formContainer.style.display = 'block';
                   loginWarning.style.display = 'none';
-                  // Display reviewer name (ambil dari email sebelum dapet dari firestore)
                   document.getElementById('reviewerName').textContent = user.displayName || user.email;
-                  
-                  // Perbarui nama di form setelah mendapatkan data dari Firestore
-                  db.collection('users').doc(user.uid).get().then(doc => {
-                     if (doc.exists && doc.data().name) {
-                          document.getElementById('reviewerName').textContent = doc.data().name;
-                      }
-                  });
+                  db.collection('users').doc(user.uid).get().then(doc => { if (doc.exists && doc.data().name) document.getElementById('reviewerName').textContent = doc.data().name; });
               } else {
-                  // Not logged in: Hide form, show warning
                   formContainer.style.display = 'none';
                   loginWarning.style.display = 'block';
               }
+
+              // re-render admin areas (so admin buttons appear/disappear correctly)
+              // small delay to ensure reviews are loaded
+              setTimeout(()=>{ renderReviews(currentFilter); }, 200);
           });
       });
     </script>

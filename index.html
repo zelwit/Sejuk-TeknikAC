@@ -26,7 +26,6 @@
         --gray: #718096;
         --white: #ffffff;
         --coin: #ffd700;
-        /* Tambahan: Variabel Success/Danger untuk status operasional */
         --success: #4caf50;
         --danger: #f44336;
       }
@@ -1319,171 +1318,102 @@
         color: white;
       }
 
-      @media (max-width: 768px) {
-        .nav-container {
+      /* Mobile Nav Optimization (NEW CSS) */
+      .hamburger-menu {
+          display: none; /* Default: hidden on desktop */
+          background: none;
+          border: none;
+          font-size: 1.5rem;
+          color: var(--dark);
+          cursor: pointer;
+          padding: 5px;
+          margin-left: 10px;
+          z-index: 101;
+      }
+      .mobile-nav-links {
+          display: none;
           flex-direction: column;
-          gap: 1rem;
-        }
+          position: absolute;
+          top: 100%;
+          right: 0;
+          width: 250px;
+          background-color: var(--white);
+          box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+          z-index: 99;
+          border-radius: 0 0 8px 8px;
+          padding: 10px 0;
+      }
+      .mobile-nav-links.active {
+          display: flex;
+      }
+      .mobile-nav-links a {
+          padding: 10px 20px;
+          border-bottom: 1px solid #eee;
+          font-weight: 500;
+          color: var(--dark);
+          text-decoration: none;
+          transition: background 0.3s;
+      }
+      .mobile-nav-links a:hover {
+          background-color: var(--primary-light);
+          color: var(--primary);
+      }
+      .desktop-only-nav {
+          display: none; /* Sembunyikan item ini di mode mobile */
+      }
+      .nav-links-wrapper {
+          display: flex;
+          align-items: center;
+      }
+      
+      @media (max-width: 992px) {
         .nav-links {
-          flex-wrap: wrap;
-          justify-content: center;
+          display: none; /* Sembunyikan Nav Links utama di mobile/tablet */
+        }
+        .hamburger-menu {
+          display: block; /* Tampilkan Hamburger Menu */
+        }
+        .nav-container {
+          flex-direction: row;
+          justify-content: space-between;
         }
         .auth-buttons {
-          width: 100%;
-          justify-content: center;
-          margin-top: 10px;
+            display: none; /* Pindahkan tombol auth ke menu mobile jika diperlukan, tapi untuk saat ini biarkan di header info top */
         }
-        header h1 {
-          font-size: 2rem;
+        .nav-links-wrapper {
+            display: flex;
         }
-        .hero h1 {
-          font-size: 1.8rem;
+        .desktop-only {
+            display: none;
         }
-        .cards {
-          grid-template-columns: 1fr;
+        
+        /* Nav Links yang tampil di mobile */
+        .mobile-main-links {
+            display: flex;
+            gap: 1.5rem;
         }
-        .language-switcher {
-          position: static;
-          text-align: center;
-          margin-top: 1rem;
+        .mobile-main-links a {
+            display: block;
         }
-        .modal-content {
-          width: 95%;
-          margin: 20% auto;
-        }
-        .auth-modal-content {
-          width: 95%;
-          margin: 10% auto;
-        }
-        .sjcoin-display {
-          top: 10px;
-          left: 10px;
-          padding: 5px 10px;
-          font-size: 0.9rem;
-        }
+
+        /* Override Auth Buttons di mobile */
         .user-info-top {
           position: static;
           margin-bottom: 10px;
           justify-content: center;
+          background-color: transparent;
+          box-shadow: none;
+          padding: 0;
         }
       }
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-          transform: translateY(-20px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-      
       /* Desktop-only class for device detection */
-      .desktop-only {
+      .desktop-only-item {
         display: inline-block;
       }
       @media (max-width: 992px) {
-        .desktop-only {
+        .desktop-only-item {
           display: none;
         }
-      }
-      
-      /* --- NEW STYLE: Operational Status Widget --- */
-      .status-widget {
-        max-width: 1200px;
-        margin: 1.5rem auto;
-        padding: 1rem;
-        border-radius: 8px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        font-weight: 600;
-        transition: all 0.3s ease;
-      }
-      .status-widget.open {
-        background-color: var(--success);
-        color: var(--white);
-      }
-      .status-widget.closed {
-        background-color: var(--danger);
-        color: var(--white);
-      }
-      .status-indicator {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-      }
-      .status-indicator i {
-        font-size: 1.5rem;
-      }
-      .employee-status {
-        font-size: 0.9em;
-        opacity: 0.8;
-      }
-      
-      /* --- NEW STYLE: Event Pop-up Modal --- */
-      .event-modal {
-        position: fixed;
-        z-index: 4000;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.6);
-        display: none; 
-        justify-content: center;
-        align-items: center;
-        backdrop-filter: blur(3px);
-      }
-      .event-content {
-        background-color: var(--white);
-        padding: 30px;
-        border-radius: 12px;
-        max-width: 450px;
-        width: 90%;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-        animation: modalSlideUp 0.4s ease-out;
-      }
-      .event-header {
-        font-size: 1.5rem;
-        font-weight: 700;
-        margin-bottom: 15px;
-      }
-      .event-message {
-        margin-bottom: 20px;
-        line-height: 1.5;
-      }
-      .event-footer {
-        display: flex;
-        justify-content: space-between;
-        gap: 10px;
-      }
-      .event-close-btn {
-        background: var(--gray);
-        color: white;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 50px;
-        cursor: pointer;
-      }
-      .event-dismiss-btn {
-        background: transparent;
-        color: var(--gray);
-        border: none;
-        font-size: 0.9em;
-        cursor: pointer;
-        align-self: center;
-      }
-      @media (max-width: 768px) {
-          /* ... gaya yang sudah ada ... */
-          .status-widget {
-              flex-direction: column;
-              text-align: center;
-          }
-          .employee-status {
-              margin-top: 5px;
-          }
       }
     </style>
   </head>
@@ -1502,11 +1432,15 @@
       </div>
     </div>
 
-    <!-- User Info Top Right (hidden by default) -->
+    <!-- User Info Top Right (Pintasan ke Profile) -->
     <div class="user-info-top" id="userInfoTop" style="display: none;">
       <div class="user-details-text">
         <span class="user-name" id="userNameTop"></span>
         <span class="user-uid" id="userUidTop"></span>
+        <!-- Tombol Admin Panel (Hidden by default, muncul di Profile Page/Modal) -->
+        <a href="admin-panel.html" class="btn btn-sm" id="adminPanelBtn" style="display: none; background-color: var(--secondary); color: var(--white); margin-top: 5px;">
+            <i class="fas fa-user-shield"></i> Admin Panel
+        </a>
       </div>
       <a href="inbox.html" class="notification-btn" id="inboxButtonTop">
         <i class="fas fa-inbox"></i>
@@ -1613,7 +1547,7 @@
         >
       </marquee>
     </div>
-    <!-- Operational Status Widget (NEW: Sinkronisasi Admin Panel) -->
+    <!-- Operational Status Widget -->
     <div class="status-widget" id="operationalStatusWidget">
         <div class="status-indicator">
             <i class="fas fa-circle-notch fa-spin"></i>
@@ -1624,24 +1558,31 @@
     <nav>
       <div class="nav-container">
         <a href="index.html" class="logo">Sejuk Teknik</a>
-        <div class="nav-links">
-          <a href="index.html"><i class="fas fa-home"></i> Beranda</a>
-          <a href="layanan.html"><i class="fas fa-tools"></i> Layanan</a>
-          <a href="AC-Placement-Planner.html" class="desktop-only"><i class="fas fa-cube"></i> 3D AC Placement Planner</a>
-          <a href="tentang.html"><i class="fas fa-info-circle"></i> Tentang</a>
-          <a href="https://wa.me/6285817818216"
-            ><i class="fas fa-envelope"></i> Kontak</a
-          >
-          <a href="faq.html"><i class="fas fa-question-circle"></i> FAQ</a>
-          <a href="rating-ulasan.html"
-            ><i class="fas fa-star"></i> Rating & Ulasan</a
-          >
-          <a href="keluhan.html"><i class="fas fa-comment-dots"></i> Keluhan</a>
-          <a href="https://maps.app.goo.gl/uTFSMLiKuWcCRUMa6" target="_blank"
-            ><i class="fas fa-map-marker-alt"></i> Lokasi</a
-          >
+        <div class="nav-links-wrapper">
+            <!-- Navigasi Utama (Hanya 3 item di mobile) -->
+            <div class="nav-links mobile-main-links">
+                <a href="index.html"><i class="fas fa-home"></i> Beranda</a>
+                <a href="layanan.html"><i class="fas fa-tools"></i> Layanan</a>
+                <a href="rating-ulasan.html"><i class="fas fa-star"></i> Rating & Ulasan</a>
+            </div>
+            
+            <!-- Hamburger Menu (Muncul di Mobile/Tablet) -->
+            <button class="hamburger-menu" id="hamburgerMenu">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <!-- Navigasi Tersembunyi (Mobile Only) -->
+            <div class="mobile-nav-links" id="mobileNavLinks">
+                <!-- Item yang awalnya disembunyikan di nav-links utama -->
+                <a href="AC-Placement-Planner.html"><i class="fas fa-cube"></i> 3D AC Placement Planner</a>
+                <a href="tentang.html"><i class="fas fa-info-circle"></i> Tentang</a>
+                <a href="https://wa.me/6285817818216"><i class="fas fa-envelope"></i> Kontak</a>
+                <a href="faq.html"><i class="fas fa-question-circle"></i> FAQ</a>
+                <a href="keluhan.html"><i class="fas fa-comment-dots"></i> Keluhan</a>
+                <a href="https://maps.app.goo.gl/uTFSMLiKuWcCRUMa6" target="_blank"><i class="fas fa-map-marker-alt"></i> Lokasi</a>
+            </div>
         </div>
-        <div class="auth-buttons">
+        <div class="auth-buttons desktop-only-item">
           <button class="auth-btn login-btn" id="loginBtn">Login</button>
           <button class="auth-btn signup-btn" id="signupBtn">Sign Up</button>
         </div>
@@ -2283,6 +2224,9 @@
       const auth = firebase.auth();
       const db = firebase.firestore();
 
+      // Daftar UID Admin yang berhak melihat tombol Admin Panel (NEW)
+      const ADMIN_PANEL_UIDS = ['qE0yd2XNRSa0nWojtLvYoxLrsz22', 'JTVwtBsdt3PaaYeyICd8PJm3lJu2'];
+      
       // Cooldown variables
       let lastLoginTime = 0;
       let lastLogoutTime = 0;
@@ -2787,29 +2731,32 @@
       }
       
       // ===============================================
-      // FUNGSI BARU UNTUK SINKRONISASI DENGAN ADMIN PANEL
+      // FUNGSI UNTUK SINKRONISASI DENGAN ADMIN PANEL
       // ===============================================
       
       // Cek Status Layanan (Duplikat dari Admin Panel)
       function checkServiceStatus(settings) {
           // 1. Cek Force Status
-          if (settings.forceStatus === 'open') {
+          if (settings && settings.forceStatus === 'open') {
               return true;
-          } else if (settings.forceStatus === 'close') {
+          } else if (settings && settings.forceStatus === 'close') {
               return false;
           }
           
-          // 2. Cek Jadwal Normal
+          // 2. Cek Jadwal Normal (dengan default 09:00 - 19:00 jika settings kosong)
           const now = new Date();
           const localTime = now.getHours() * 60 + now.getMinutes();
+          
+          // Mengambil dari settings jika ada, jika tidak, gunakan default
+          const openTimeStr = settings?.openTime || '09:00'; 
+          const closeTimeStr = settings?.closeTime || '19:00'; 
 
-          const [openH, openM] = (settings.openTime || '09:00').split(':').map(Number);
+          const [openH, openM] = openTimeStr.split(':').map(Number);
           const openMinutes = openH * 60 + openM;
 
-          const [closeH, closeM] = (settings.closeTime || '19:00').split(':').map(Number);
+          const [closeH, closeM] = closeTimeStr.split(':').map(Number);
           const closeMinutes = closeH * 60 + closeM;
 
-          // Asumsi jam buka: 09:00, jam tutup: 19:00. Buka jika waktu saat ini di antara jam buka dan tutup.
           return localTime >= openMinutes && localTime < closeMinutes;
       }
       
@@ -2820,9 +2767,11 @@
           const employeeText = document.getElementById('employeeStatusText');
           const icon = widget.querySelector('i');
           
+          // Gunakan onSnapshot agar langsung update saat admin mengubah status
           db.collection('settings').doc('operational').onSnapshot(doc => {
-              if (doc.exists) {
-                  const settings = doc.data();
+              const settings = doc.data();
+              
+              if (doc.exists && settings) {
                   const isOpen = checkServiceStatus(settings);
                   
                   isServiceOpenGlobal = isOpen; // Update global status
@@ -2832,26 +2781,28 @@
                   statusText.textContent = isOpen ? 'LAYANAN DIBUKA' : 'LAYANAN DITUTUP';
                   icon.className = isOpen ? 'fas fa-check-circle' : 'fas fa-times-circle';
 
-                  employeeText.textContent = settings.employeeStatus ? `Status Karyawan: ${settings.employeeStatus}` : 'Status Karyawan: Memuat...';
+                  employeeText.textContent = settings.employeeStatus ? `Status Karyawan: ${settings.employeeStatus}` : 'Status Karyawan: Siaga - Siap Mengerjakan';
                   
-                  // Perbarui status card setelah mendapatkan status operasional
                   toggleServiceCards(isLoggedIn, isOpen);
 
               } else {
-                  // Default jika data belum ada
-                  statusText.textContent = 'LAYANAN DITUTUP (Default)';
+                  // Fallback jika dokumen belum ada
+                  const settingsDefault = { openTime: '09:00', closeTime: '19:00', forceStatus: null };
+                  const isOpen = checkServiceStatus(settingsDefault);
+
+                  statusText.textContent = isOpen ? 'LAYANAN DIBUKA (Default)' : 'LAYANAN DITUTUP (Default)';
                   employeeText.textContent = 'Data operasional belum diatur.';
-                  widget.classList.remove('open');
-                  widget.classList.add('closed');
-                  icon.className = 'fas fa-times-circle';
+                  widget.classList.remove('open', 'closed');
+                  widget.classList.add(isOpen ? 'open' : 'closed');
+                  icon.className = isOpen ? 'fas fa-check-circle' : 'fas fa-times-circle';
                   
-                  isServiceOpenGlobal = false;
-                  toggleServiceCards(isLoggedIn, false);
+                  isServiceOpenGlobal = isOpen; // Update global status
+                  toggleServiceCards(isLoggedIn, isOpen);
               }
           }, error => {
               console.error("Error loading operational settings:", error);
               statusText.textContent = 'Gagal memuat status.';
-              employeeText.textContent = '';
+              employeeText.textContent = 'Error koneksi.';
           });
       }
       
@@ -2927,16 +2878,18 @@
                       card.querySelectorAll(".btn").forEach((btn) => {
                           btn.onclick = null;
                       });
-                      card.classList.add("enabled"); // Tambahkan kelas untuk visual
+                      card.classList.add("enabled"); 
                   } else {
                       card.classList.add("disabled");
                       card.classList.remove("enabled");
 
-                      // Perbarui teks overlay sesuai status
-                      const overlayContent = card.querySelector(".card.disabled::after");
-                      if(overlayContent) { // Jika ada after content
-                         overlayContent.content = !isLoggedIn ? 'Login untuk Memesan' : 'Layanan Sedang Tutup';
-                      }
+                      // Set content overlay dinamis
+                      const overlayText = !isLoggedIn ? 'Login untuk Memesan' : 'Layanan Sedang Tutup';
+                      
+                      // Mengganti content CSS ::after secara dinamis
+                      const styleElement = document.createElement('style');
+                      styleElement.innerHTML = `.card.disabled[data-service-type="${serviceType}"]::after { content: "${overlayText}"; }`;
+                      document.head.appendChild(styleElement);
                       
                       // Tambahkan event listener pencegah
                       card.querySelectorAll(".btn").forEach((btn) => {
@@ -2962,6 +2915,14 @@
           });
       }
 
+      // --- MOBILE NAVIGATION TOGGLE (NEW JS) ---
+      document.getElementById('hamburgerMenu').addEventListener('click', function() {
+          const mobileNav = document.getElementById('mobileNavLinks');
+          mobileNav.classList.toggle('active');
+          this.querySelector('i').classList.toggle('fa-bars');
+          this.querySelector('i').classList.toggle('fa-times');
+      });
+      // --- END MOBILE NAVIGATION TOGGLE ---
 
       // Main script on DOMContentLoaded
       document.addEventListener("DOMContentLoaded", function () {
@@ -2969,6 +2930,7 @@
         const loginModal = document.getElementById("loginModal");
         const signupModal = document.getElementById("signupModal");
         const userInfoTop = document.getElementById("userInfoTop");
+        const adminPanelBtn = document.getElementById("adminPanelBtn"); // NEW
 
         // Panggil fungsi sinkronisasi utama
         loadEventPopup();
@@ -2981,11 +2943,14 @@
           isUserLoggedInGlobal = !!user; // Update global login status
           
           // Panggil status operasional dengan status login user
-          // Ini akan memicu toggleServiceCards di dalamnya
           loadOperationalStatus(isUserLoggedInGlobal); 
           
-          // Clear existing buttons
+          // Clear existing desktop auth buttons
           authButtonsContainer.innerHTML = "";
+          
+          // Clear and rebuild Mobile Nav Auth/Admin Link
+          const mobileNav = document.getElementById('mobileNavLinks');
+          mobileNav.querySelectorAll('.mobile-auth-link').forEach(el => el.remove());
 
           if (user) {
             // User is signed in
@@ -3002,15 +2967,31 @@
                 document.getElementById("userUidTop").textContent = `UID: ${user.uid.substring(0, 4)}...`;
                 userInfoTop.style.display = "flex";
                 
-                // Tambahkan event listener untuk info pengguna
-                userInfoTop.addEventListener('click', function() {
-                  window.location.href = `profile.html?uid=${user.uid}`;
-                });
+                // Cek Izin Admin Panel (NEW)
+                if (ADMIN_PANEL_UIDS.includes(user.uid)) {
+                    adminPanelBtn.style.display = 'inline-flex';
+                    // Tambahkan Admin Panel ke menu mobile
+                    const adminLink = document.createElement('a');
+                    adminLink.href = 'admin-panel.html';
+                    adminLink.innerHTML = '<i class="fas fa-user-shield"></i> Admin Panel';
+                    adminLink.classList.add('mobile-auth-link'); // Class marker
+                    mobileNav.prepend(adminLink); // Tampilkan paling atas
+                } else {
+                    adminPanelBtn.style.display = 'none';
+                }
 
                 // Update Coin
                 document.getElementById("sjcoinAmount").textContent =
                   userData.sjcoin || 0;
                 document.getElementById("sjcoinDisplay").style.display = "flex";
+
+                // Add Logout link to Mobile Nav (NEW)
+                const logoutLink = document.createElement('a');
+                logoutLink.href = '#';
+                logoutLink.innerHTML = '<i class="fas fa-sign-out-alt"></i> Logout';
+                logoutLink.classList.add('mobile-auth-link');
+                logoutLink.addEventListener('click', (e) => { e.preventDefault(); showConfirmModal(); });
+                mobileNav.appendChild(logoutLink);
 
                 // Update badge notifikasi segera
                 updateNotificationBadge();
@@ -3020,26 +3001,41 @@
               });
           } else {
             // User is signed out
+            // Desktop Auth Buttons
             authButtonsContainer.innerHTML = `
               <button class="auth-btn login-btn" id="loginBtn">Login</button>
               <button class="auth-btn signup-btn" id="signupBtn">Sign Up</button>
             `;
 
+            // Mobile Auth Links (NEW)
+            const loginLink = document.createElement('a');
+            loginLink.href = '#';
+            loginLink.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login';
+            loginLink.classList.add('mobile-auth-link');
+            loginLink.addEventListener('click', (e) => { e.preventDefault(); loginModal.style.display = 'block'; });
+            
+            const signupLink = document.createElement('a');
+            signupLink.href = '#';
+            signupLink.innerHTML = '<i class="fas fa-user-plus"></i> Sign Up';
+            signupLink.classList.add('mobile-auth-link');
+            signupLink.addEventListener('click', (e) => { e.preventDefault(); signupModal.style.display = 'block'; goToStep(1); });
+
+            mobileNav.appendChild(loginLink);
+            mobileNav.appendChild(signupLink);
+            
             // Hide SJCoin display and user info
             document.getElementById("sjcoinDisplay").style.display = "none";
             userInfoTop.style.display = "none";
-
-            document
-              .getElementById("loginBtn")
-              .addEventListener("click", () => {
+            adminPanelBtn.style.display = 'none';
+            
+            // Re-attach listeners for desktop buttons
+            document.getElementById("loginBtn")?.addEventListener("click", () => {
                 loginModal.style.display = "block";
-              });
-            document
-              .getElementById("signupBtn")
-              .addEventListener("click", () => {
+            });
+            document.getElementById("signupBtn")?.addEventListener("click", () => {
                 signupModal.style.display = "block";
                 goToStep(1);
-              });
+            });
           }
         };
 

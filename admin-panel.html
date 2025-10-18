@@ -482,6 +482,12 @@
       .status-closed { background-color: var(--danger); color: var(--white); }
       .status-label { font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem; }
       .status-time { font-size: 1.2rem; margin-bottom: 1rem; }
+      
+      /* Chart Fix untuk tampilan vertikal panjang */
+      #ordersChart, #reviewsChart {
+          max-height: 300px; 
+          min-height: 250px;
+      }
 
     </style>
   </head>
@@ -651,7 +657,8 @@
                     <span class="chart-option">Tahun</span>
                   </div>
                 </div>
-                <canvas id="ordersChart" height="100"></canvas>
+                <!-- Menambahkan tinggi tetap untuk mengatasi bug chart memanjang -->
+                <canvas id="ordersChart" height="300"></canvas>
               </div>
               <div class="chart-container">
                 <div class="chart-header">
@@ -660,7 +667,8 @@
                     <span class="chart-option active">Rating</span>
                   </div>
                 </div>
-                <canvas id="reviewsChart" height="100"></canvas>
+                <!-- Menambahkan tinggi tetap untuk mengatasi bug chart memanjang -->
+                <canvas id="reviewsChart" height="300"></canvas>
               </div>
             </div>
 
@@ -710,6 +718,12 @@
                 <label for="notifTitleSelect">Saran Judul</label>
                 <select id="notifTitleSelect">
                   <option value="CUSTOM">-- Judul Kustom --</option>
+                  <!-- PENAMBAHAN SARAN JUDUL BARU -->
+                  <option value="Transaksi Berhasil!">Transaksi Berhasil!</option>
+                  <option value="Promo Spesial Hari Ini!">Promo Spesial Hari Ini!</option>
+                  <option value="Hadiah dari Sistem!">Hadiah dari Sistem!</option>
+                  <option value="Perubahan Kebijakan">Perubahan Kebijakan</option>
+                  <option value="Peringatan Akun">Peringatan Akun</option>
                   <option value="Selamat Bergabung!">Selamat Bergabung!</option>
                   <option value="Hadiah Klaim Koin!">Hadiah Klaim Koin!</option>
                   <option value="Update Status Pesanan!">Update Status Pesanan!</option>
@@ -1120,7 +1134,15 @@
               tension: 0.3
             }]
           },
-          options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } } }
+          options: { 
+            responsive: true, 
+            maintainAspectRatio: false, 
+            scales: { 
+              y: { 
+                beginAtZero: true 
+              } 
+            } 
+          }
         });
         
         // Reviews Chart (Placeholder data)
@@ -1993,4 +2015,4 @@
       
     </script>
   </body>
-</html>```
+</html>

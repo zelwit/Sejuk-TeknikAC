@@ -352,19 +352,21 @@
       }
 
       /* Balasan */
-      .reply-block {
+      .reply-container {
         margin-top: 15px;
         padding: 10px;
         background-color: var(--light);
         border-left: 3px solid var(--primary);
         border-radius: 4px;
+        /* Default: Tersembunyi untuk non-admin */
+        display: none; 
       }
       .reply-header {
         font-weight: 600;
         color: var(--primary);
         margin-bottom: 5px;
       }
-      .reply-text {
+      .reply-body {
         font-size: 0.95rem;
         color: var(--dark);
         white-space: pre-wrap;
@@ -402,41 +404,6 @@
       }
       /* Icon only reactions */
       .reaction-buttons i { margin-right: 3px; }
-      
-      .small-btn {
-        background: var(--primary);
-        color: var(--white);
-        border: none;
-        padding: 5px 10px;
-        border-radius: 50px;
-        font-size: 0.75rem;
-        cursor: pointer;
-        transition: opacity 0.2s;
-      }
-      .small-btn:hover {
-          opacity: 0.9;
-      }
-      
-      /* Notification Bar Styles (NEW) */
-      #notificationBar {
-        position: fixed;
-        top: 0;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 90%;
-        max-width: 400px;
-        padding: 10px 20px;
-        text-align: center;
-        color: white;
-        border-radius: 0 0 8px 8px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-        z-index: 1005;
-        transition: top 0.3s ease-in-out;
-        display: none; /* Default hidden */
-      }
-      .notification-success { background-color: var(--success); }
-      .notification-error { background-color: var(--danger); }
-      /* End Notification Bar Styles */
 
       /* Reply Modal Styles (Custom Admin Pop-up) */
       .reply-modal-content {
@@ -495,9 +462,6 @@
     </style>
   </head>
   <body>
-    <!-- Notification Bar (NEW) -->
-    <div id="notificationBar" style="top: -50px;"></div>
-
     <!-- Modal Backdrop -->
     <div id="modalBackdrop" class="modal-backdrop"></div>
 
@@ -621,7 +585,7 @@
       const auth = firebase.auth();
       const db = firebase.firestore();
 
-      // Admin UIDs allowed to reply/pin
+      // Admin UIDs allowed to reply/pin (from user request)
       const ADMIN_UIDS = [
         'f3M49osGvtcGbEWf9UTdJe1AG013',
         '7aIizseExGVPkqNJouqt3nMdWtE3',
@@ -675,27 +639,13 @@
             .replace(/\"/g, '&quot;')
             .replace(/\'/g, '&#039;');
       }
-      
-      // NEW: Simple notification pop-up replacement
-      function showNotification(message, isError = false) {
-          const bar = document.getElementById('notificationBar');
-          bar.textContent = message;
-          bar.classList.remove('notification-success', 'notification-error');
-          bar.classList.add(isError ? 'notification-error' : 'notification-success');
-          bar.style.top = '0'; 
-
-          setTimeout(() => {
-              bar.style.top = '-50px'; 
-          }, 3000);
-      }
-
 
       // --- Custom Reply Modal Functions ---
       let currentReplyReviewId = null;
 
       function openReplyModal(reviewId, reviewerName, currentReplyText) {
           if (!isAdmin) {
-              showNotification('Akses ditolak! Hanya admin yang dapat membalas.', true); 
+              alert('Akses ditolak!'); // Tetap pakai alert untuk admin check simple
               return;
           }
           currentReplyReviewId = reviewId;
@@ -719,8 +669,7 @@
       function sendReply() {
           const replyText = document.getElementById('replyTextarea').value.trim();
           if (replyText.length < 5) {
-              // Tetap pakai alert/notifikasi untuk validasi input di dalam modal
-              alert('Balasan minimal 5 karakter.'); 
+              alert('Balasan minimal 5 karakter.');
               return;
           }
 
@@ -741,13 +690,13 @@
               return db.collection('reviews').doc(currentReplyReviewId).update(updateData);
           })
           .then(() => {
-              showNotification('Balasan admin berhasil dikirim/diubah!', false); // <-- Ganti Alert
+              alert('Balasan admin berhasil dikirim/diubah!');
               closeReplyModal();
               loadReviews(); // Reload untuk update tampilan
           })
           .catch(error => {
               console.error('Error sending reply:', error);
-              showNotification('Gagal mengirim balasan: ' + error.message, true); // <-- Ganti Alert
+              alert('Gagal mengirim balasan: ' + error.message);
           });
       }
 
@@ -782,13 +731,11 @@
               reviewCard.classList.add('review-card');
               if (review.pinned) reviewCard.classList.add('pinned');
 
-              const reviewDate = review.timestamp ? (review.timestamp.toDate ? review.timestamp.toDate() : new Date(review.timestamp.seconds * 1000)) : new Date();
+              const reviewDate = review.timestamp ? review.timestamp.toDate() : new Date();
               const timeString = timeSince(reviewDate);
               const sentiment = review.sentiment;
               
               const hasReply = review.reply && review.reply.text;
-              
-              // Cek apakah admin atau bukan, untuk menentukan tombol aksi yang tampil
               const adminControls = isAdmin ? `
                 <div class="admin-actions">
                     <button class="reply-btn" onclick="openReplyModal('${review.id}', '${escapeHtml(review.reviewerName || 'Anonim')}', '${escapeHtml(review.reply?.text || '')}')">
@@ -842,7 +789,7 @@
       }
 
 
-      // Update summary counts and breakdown
+      // Update summary counts and breakdown (unchanged)
       function updateSummary() {
           const totalCount = allReviews.length;
           let totalRatingSum = 0;
@@ -932,21 +879,20 @@
               renderReviews(currentFilter);
           }).catch(error => {
               console.error("Error loading reviews:", error);
-              // Menampilkan pesan error yang dikontrol, kemungkinan karena rules Firebase
               reviewsListElement.innerHTML = '<p style="text-align: center; color: red;">Gagal memuat ulasan. Silakan cek koneksi atau rules Firebase Anda.</p>';
           });
       }
 
-      // SUBMIT REVIEW
+      // SUBMIT REVIEW (unchanged flow)
       document.getElementById('reviewForm').addEventListener('submit', function(e) {
           e.preventDefault();
           const user = auth.currentUser;
-          if (!user) { alert('Anda harus login untuk mengirim ulasan.'); return; } // <-- Tetap pakai alert untuk auth
-          
+          if (!user) { alert('Anda harus login untuk mengirim ulasan.'); return; }
+
           const rating = parseInt(document.getElementById('selectedRating').value);
           const reviewText = document.getElementById('reviewText').value.trim();
-          if (rating === 0) { alert('Silakan pilih jumlah bintang.'); return; } // <-- Tetap pakai alert untuk validasi form
-          if (reviewText.length < 10) { alert('Ulasan minimal harus 10 karakter.'); return; } // <-- Tetap pakai alert untuk validasi form
+          if (rating === 0) { alert('Silakan pilih jumlah bintang.'); return; }
+          if (reviewText.length < 10) { alert('Ulasan minimal harus 10 karakter.'); return; }
 
           document.getElementById('submitReviewBtn').disabled = true;
           document.getElementById('submitReviewBtn').textContent = 'Mengirim...';
@@ -963,16 +909,16 @@
                   pinned: false
               });
           }).then(() => {
-              showNotification('Ulasan Anda berhasil dikirim! Terima kasih.', false); // <-- Ganti Alert
+              alert('Ulasan Anda berhasil dikirim! Terima kasih.');
               document.getElementById('reviewForm').reset();
               document.getElementById('selectedRating').value = '0';
-              document.getElementById('starPicker').querySelectorAll('i').forEach(star => star.classList.remove('selected', 'fas', 'far'));
+              document.getElementById('starPicker').querySelectorAll('i').forEach(star => star.classList.remove('selected'));
               document.getElementById('submitReviewBtn').disabled = false;
               document.getElementById('submitReviewBtn').textContent = 'Kirim Ulasan';
               loadReviews();
           }).catch(error => {
               console.error('Error writing document: ', error);
-              showNotification('Gagal mengirim ulasan: ' + error.message, true); // <-- Ganti Alert
+              alert('Gagal mengirim ulasan: ' + error.message);
               document.getElementById('submitReviewBtn').disabled = false;
               document.getElementById('submitReviewBtn').textContent = 'Kirim Ulasan';
           });
@@ -981,7 +927,7 @@
       // Toggle pin (admins only)
       function togglePin(reviewId, isPinned) {
           if (!isAdmin) {
-              showNotification('Hanya admin yang dapat mem-pin ulasan.', true); // <-- Ganti Alert
+              alert('Hanya admin yang dapat mem-pin ulasan.'); 
               return;
           }
 
@@ -989,77 +935,45 @@
               pinned: isPinned
           })
           .then(() => {
-              showNotification(`Ulasan berhasil di-${isPinned ? 'pin' : 'unpin'}!`, false); // <-- Ganti Alert
+              alert(`Ulasan berhasil di-${isPinned ? 'pin' : 'unpin'}!`);
               loadReviews(); // Reload untuk update urutan
           })
           .catch(error => {
               console.error('Error toggling pin:', error);
-              showNotification('Gagal mengubah status pin: ' + error.message, true); // <-- Ganti Alert
+              alert('Gagal mengubah status pin: ' + error.message);
           });
       }
 
       // Voting on reply (like/dislike) — must be logged in
       function voteOnReply(reviewId, type) {
           const user = auth.currentUser;
-          if (!user) { showNotification('Silakan login untuk memberikan reaksi.', true); return; } // <-- Ganti Alert
+          if (!user) { alert('Silakan login untuk memberikan reaksi.'); return; }
 
           const reviewRef = db.collection('reviews').doc(reviewId);
-          const reactionDocRef = db.collection('reactions').doc(`${user.uid}_${reviewId}`);
-          
           return db.runTransaction(transaction => {
-              return transaction.get(reviewRef).then(reviewDoc => {
-                  if (!reviewDoc.exists) throw new Error('Dokumen review tidak ditemukan');
-                  
-                  const reply = reviewDoc.data().reply || { likes: [], dislikes: [] };
+              return transaction.get(reviewRef).then(doc => {
+                  if (!doc.exists) throw new Error('Dokumen tidak ditemukan');
+                  const reply = doc.data().reply || { likes: [], dislikes: [] };
                   const likes = new Set(reply.likes || []);
                   const dislikes = new Set(reply.dislikes || []);
                   const userId = user.uid;
                   
-                  return transaction.get(reactionDocRef).then(reactionDoc => {
-                      const currentReaction = reactionDoc.exists ? reactionDoc.data().type : null;
-                      let newReaction = null;
-
-                      // Logic untuk array likes/dislikes di dokumen review
-                      if (type === 'like') {
-                          if (likes.has(userId)) { 
-                              likes.delete(userId); // Un-like
-                              newReaction = null;
-                          } else { 
-                              likes.add(userId); // Like
-                              dislikes.delete(userId); // Pastikan tidak ada dislike
-                              newReaction = 'like';
-                          }
-                      } else { // type === 'dislike'
-                          if (dislikes.has(userId)) { 
-                              dislikes.delete(userId); // Un-dislike
-                              newReaction = null;
-                          } else { 
-                              dislikes.add(userId); // Dislike
-                              likes.delete(userId); // Pastikan tidak ada like
-                              newReaction = 'dislike';
-                          }
-                      }
-                      
-                      // Update reply object di dokumen review
-                      const newReply = Object.assign({}, reply, { likes: Array.from(likes), dislikes: Array.from(dislikes) });
-                      transaction.update(reviewRef, { reply: newReply });
-
-                      // Update/Delete dokumen reaction
-                      if (newReaction) {
-                          transaction.set(reactionDocRef, { userId, reviewId, type: newReaction, timestamp: firebase.firestore.FieldValue.serverTimestamp() });
-                      } else if (currentReaction) {
-                          transaction.delete(reactionDocRef);
-                      }
-                      
-                      return { likes: newReply.likes.length, dislikes: newReply.dislikes.length };
-                  });
+                  if (type === 'like'){
+                      if (likes.has(userId)) { likes.delete(userId); } else { likes.add(userId); dislikes.delete(userId); }
+                  } else {
+                      if (dislikes.has(userId)) { dislikes.delete(userId); } else { dislikes.add(userId); likes.delete(userId); }
+                  }
+                  
+                  const newReply = Object.assign({}, reply, { likes: Array.from(likes), dislikes: Array.from(dislikes) });
+                  transaction.update(reviewRef, { reply: newReply });
+                  return { likes: newReply.likes.length, dislikes: newReply.dislikes.length };
               });
           }).then(() => {
               // Sukses, reload data untuk update tampilan button reaksi
               loadReviews(); 
           }).catch(err => { 
               console.error("Transaction failed: ", err); 
-              showNotification('Gagal merekam reaksi: ' + err.message, true); // <-- Ganti Alert
+              alert('Gagal merekam reaksi: ' + err.message); 
           });
       }
       
@@ -1102,9 +1016,6 @@
                       } else {
                            document.getElementById('reviewerName').textContent = user.displayName || user.email.split('@')[0];
                       }
-                  }).catch(e => {
-                      console.error("Failed to fetch user name:", e);
-                       document.getElementById('reviewerName').textContent = user.displayName || user.email.split('@')[0];
                   });
               } else {
                   formContainer.style.display = 'none';
@@ -1114,7 +1025,7 @@
               loadReviews(); // Load ulasan setelah status admin diketahui
           });
 
-          // Star Picker Logic
+          // Star Picker Logic (unchanged)
           document.getElementById('starPicker').addEventListener('mouseover', function(e) {
               const stars = this.querySelectorAll('i');
               if (e.target.classList.contains('fa-star')) {

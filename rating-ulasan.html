@@ -26,6 +26,8 @@
         --gray: #718096;
         --white: #ffffff;
         --coin: #ffd700;
+        --success: #4caf50;
+        --danger: #f44336;
       }
       * {
         box-sizing: border-box;
@@ -52,6 +54,11 @@
         margin: 0;
         font-size: 2.5rem;
         font-weight: 700;
+      }
+      header p {
+        font-size: 1.1rem;
+        margin-top: 0.5rem;
+        opacity: 0.9;
       }
       nav {
         background-color: var(--white);
@@ -236,7 +243,7 @@
         color: #ffc107;
       }
 
-      /* --- Review List & Filters --- */
+      /* --- Review List & Cards --- */
       .filter-buttons {
         text-align: center;
         margin-bottom: 1rem;
@@ -265,6 +272,11 @@
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
         margin-bottom: 1rem;
         width: 100%;
+        position: relative;
+      }
+      .review-card.pinned {
+        border: 2px solid var(--secondary);
+        box-shadow: 0 4px 15px rgba(255, 122, 0, 0.3);
       }
       .review-header {
         display: flex;
@@ -316,21 +328,122 @@
         color: var(--gray);
       }
 
-      .reply-block {
-        background: #fbfdff;
-        border-left: 3px solid var(--primary);
-        padding: 0.75rem;
-        border-radius: 8px;
-        margin-top: 0.75rem;
+      /* Admin & Reply Styles */
+      .admin-actions {
+        margin-top: 10px;
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end; /* Align to the right for desktop */
       }
-      .reply-text { white-space: pre-wrap; }
-      .reply-actions { display:flex; gap:8px; align-items:center; margin-top:6px; }
-      .small-btn { background: transparent; border: none; cursor:pointer; font-weight:600; }
+      .admin-actions button {
+        background: var(--primary);
+        color: var(--white);
+        padding: 5px 10px;
+        border-radius: 5px;
+        border: none;
+        font-size: 0.85rem;
+        cursor: pointer;
+      }
+      .admin-actions button:hover {
+        opacity: 0.9;
+      }
+      .admin-actions .pin-btn.pinned {
+        background-color: var(--secondary);
+      }
 
-      .admin-controls { display:flex; gap:8px; align-items:center; }
-      .pin { color: #ffb300; }
+      /* Balasan */
+      .reply-container {
+        margin-top: 15px;
+        padding: 10px;
+        background-color: var(--light);
+        border-left: 3px solid var(--primary);
+        border-radius: 4px;
+        /* Default: Tersembunyi untuk non-admin */
+        display: none; 
+      }
+      .reply-header {
+        font-weight: 600;
+        color: var(--primary);
+        margin-bottom: 5px;
+      }
+      .reply-body {
+        font-size: 0.95rem;
+        color: var(--dark);
+        white-space: pre-wrap;
+      }
 
-      /* MOBILE OPTIMIZATIONS */
+      /* Reactions */
+      .reaction-buttons {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-top: 10px;
+        font-size: 0.9rem;
+      }
+      .reaction-buttons button {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+        color: var(--gray);
+        transition: color 0.2s;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+      .reaction-buttons button:hover {
+        color: var(--primary);
+      }
+      .reaction-buttons button.reacted {
+        color: var(--success);
+        font-weight: 600;
+      }
+      .reaction-buttons .dislike-btn.reacted {
+        color: var(--danger);
+      }
+      /* Icon only reactions */
+      .reaction-buttons i { margin-right: 3px; }
+
+      /* Reply Modal Styles (Custom Admin Pop-up) */
+      .reply-modal-content {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: #fefefe;
+        padding: 20px;
+        border-radius: 10px;
+        max-width: 500px;
+        width: 90%;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+        z-index: 1002;
+        animation: modalSlideUp 0.3s ease-out;
+      }
+      .reply-modal-content h4 {
+        color: var(--primary);
+        margin-bottom: 10px;
+      }
+      .reply-modal-content textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        margin-bottom: 10px;
+        font-family: 'Poppins', sans-serif;
+      }
+      .modal-backdrop {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        z-index: 1001;
+      }
+
+      /* Media Queries for Mobile Optimization */
       @media (max-width: 768px) {
         .rating-summary { flex-direction: column; align-items: flex-start; }
         .rating-breakdown { width: 100%; }
@@ -338,17 +451,46 @@
         .nav-container { gap: 10px; }
         .section-title h2 { font-size: 1.25rem; }
         .review-body { font-size: 0.95rem; }
+        .filter-buttons { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 0 1rem; }
+        .review-header { flex-direction: column; align-items: flex-start; gap: 5px; }
+        .review-stars { margin-left: 30px; }
+        .review-footer { flex-direction: column; align-items: flex-start; gap: 10px; }
+        .admin-actions { flex-direction: column; gap: 5px; width: 100%; }
+        .admin-actions button { width: 100%; }
+        .reply-modal-content { width: 95%; }
       }
     </style>
   </head>
   <body>
+    <!-- Modal Backdrop -->
+    <div id="modalBackdrop" class="modal-backdrop"></div>
+
+    <!-- Reply Modal (Custom Admin Pop-up) -->
+    <div id="replyModal" style="display: none;">
+        <div class="reply-modal-content">
+            <h4 id="replyModalTitle">Boss, Mau Balasin Apa untuk <span id="replyReviewerName" style="color: var(--secondary);"></span>?</h4>
+            <textarea id="replyTextarea" placeholder="Tulis balasan Anda di sini... (tekan enter untuk baris baru)" rows="6"></textarea>
+            <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                <button class="btn" style="background-color: #f44336;" onclick="closeReplyModal()">Batal</button>
+                <button class="btn" id="sendReplyBtn">Kirim Balasan</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Simplified Navigation for rating page consistency -->
     <nav>
       <div class="nav-container">
         <a href="index.html" class="logo">Sejuk Teknik</a>
         <div class="nav-links">
           <a href="index.html"><i class="fas fa-home"></i> Beranda</a>
           <a href="layanan.html"><i class="fas fa-tools"></i> Layanan</a>
+          <a href="AC-Placement-Planner.html"><i class="fas fa-cube"></i> 3D AC Planner</a>
+          <a href="tentang.html"><i class="fas fa-info-circle"></i> Tentang</a>
+          <a href="https://wa.me/6285817818216"><i class="fas fa-envelope"></i> Kontak</a>
+          <a href="faq.html"><i class="fas fa-question-circle"></i> FAQ</a>
           <a href="rating-ulasan.html" class="active"><i class="fas fa-star"></i> Rating & Ulasan</a>
+          <a href="https://maps.app.goo.gl/uTFSMLiKuWcCRUMa6" target="_blank"><i class="fas fa-map-marker-alt"></i> Lokasi</a>
         </div>
         <div class="auth-buttons">
           <!-- Auth buttons will be populated by JS -->
@@ -362,6 +504,7 @@
         <p>Lihat pengalaman mereka sebelum Anda memesan layanan terbaik kami.</p>
       </div>
 
+      <!-- Rating Summary Section -->
       <div class="rating-summary">
         <div class="average-rating">
           <div class="star-rating-display" id="summaryStars">
@@ -370,7 +513,9 @@
           <h3 id="averageScore">0.0</h3>
           <p class="total-reviews" id="totalReviewsText">0 Ulasan Total</p>
         </div>
-        <div class="rating-breakdown" id="ratingBreakdown"></div>
+        <div class="rating-breakdown" id="ratingBreakdown">
+          <!-- Breakdown bars will be generated here by JS -->
+        </div>
       </div>
 
       <!-- Review Form (Hidden by default, shown when logged in) -->
@@ -397,12 +542,14 @@
         </form>
       </div>
 
+      <!-- Login Warning (Shown when not logged in) -->
       <div class="review-form-container" id="loginWarning" style="text-align: center;">
         <h3>Ingin Memberi Ulasan?</h3>
         <p>Silakan <strong>Login</strong> atau <strong>Sign Up</strong> terlebih dahulu untuk berbagi pengalaman Anda.</p>
-        <button class="btn login-btn" onclick="alert('Buka modal Login/Signup')">Login / Daftar</button>
+        <button class="btn login-btn" onclick="window.location.href='index.html'">Login / Daftar</button>
       </div>
 
+      <!-- Review Filter Buttons -->
       <div class="filter-buttons">
         <button class="filter-btn active" data-filter="all">Semua Ulasan (<span id="countAll">0</span>)</button>
         <button class="filter-btn" data-filter="positif">Positif (<span id="countPositif">0</span>)</button>
@@ -410,11 +557,14 @@
         <button class="filter-btn" data-filter="negatif">Negatif (<span id="countNegatif">0</span>)</button>
       </div>
 
+      <!-- Review List -->
       <div id="reviewsList">
         <p style="text-align: center; color: var(--gray);">Memuat ulasan...</p>
+        <!-- Reviews will be loaded here -->
       </div>
     </section>
 
+    <!-- Footer (Simplified, adjust as needed) -->
     <footer class="footer" style="background-color: var(--dark); color: white; padding: 2rem; text-align: center; margin-top: 2rem;">
         <p>© 2025 Sejuk Teknik AC. All Rights Reserved.</p>
     </footer>
@@ -422,7 +572,7 @@
     <script>
       // === CONFIG & INIT ===
       const firebaseConfig = {
-        apiKey: "AIzaSyDtLHSz7-KU97ALJTQvLRQTG5yj7brcsvc",
+        apiKey: "AIzaSyDtLHSz7-KU97ALJTQvLRQTG5yj7brcsvc", 
         authDomain: "sejuk-teknik.firebaseapp.com",
         projectId: "sejuk-teknik",
         storageBucket: "sejuk-teknik.appspot.com",
@@ -430,6 +580,7 @@
         appId: "1:733860478343:web:172838a08e702d129ae722",
         measurementId: "G-EDJ6Y6J7GC"
       };
+      
       firebase.initializeApp(firebaseConfig);
       const auth = firebase.auth();
       const db = firebase.firestore();
@@ -437,12 +588,17 @@
       // Admin UIDs allowed to reply/pin (from user request)
       const ADMIN_UIDS = [
         'f3M49osGvtcGbEWf9UTdJe1AG013',
+        '7aIizseExGVPkqNJouqt3nMdWtE3',
         'JTVwtBsdt3PaaYeyICd8PJm3lJu2'
       ];
 
       let currentFilter = 'all';
       let allReviews = [];
       let reviewCounts = { all: 0, positif: 0, netral: 0, negatif: 0 };
+      let currentUserId = null;
+      let isAdmin = false;
+
+      // --- Utility Functions ---
 
       function timeSince(date) {
           const seconds = Math.floor((new Date() - date) / 1000);
@@ -472,6 +628,78 @@
           }
           return `<div class="review-stars">${starsHtml}</div>`;
       }
+      
+      // Escape HTML helper to avoid injection when rendering text
+      function escapeHtml(text) {
+          if (!text) return '';
+          return text
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/\"/g, '&quot;')
+            .replace(/\'/g, '&#039;');
+      }
+
+      // --- Custom Reply Modal Functions ---
+      let currentReplyReviewId = null;
+
+      function openReplyModal(reviewId, reviewerName, currentReplyText) {
+          if (!isAdmin) {
+              alert('Akses ditolak!'); // Tetap pakai alert untuk admin check simple
+              return;
+          }
+          currentReplyReviewId = reviewId;
+          document.getElementById('replyReviewerName').textContent = reviewerName;
+          document.getElementById('replyTextarea').value = currentReplyText || '';
+          
+          document.getElementById('replyModal').style.display = 'block';
+          document.getElementById('modalBackdrop').style.display = 'block';
+          document.body.style.overflow = 'hidden';
+      }
+      
+      function closeReplyModal() {
+          document.getElementById('replyModal').style.display = 'none';
+          document.getElementById('modalBackdrop').style.display = 'none';
+          document.body.style.overflow = 'auto';
+          currentReplyReviewId = null;
+      }
+      
+      document.getElementById('sendReplyBtn').addEventListener('click', sendReply);
+
+      function sendReply() {
+          const replyText = document.getElementById('replyTextarea').value.trim();
+          if (replyText.length < 5) {
+              alert('Balasan minimal 5 karakter.');
+              return;
+          }
+
+          db.collection('users').doc(currentUserId).get().then(doc => {
+              const adminName = doc.exists && doc.data().name ? doc.data().name : (auth.currentUser.displayName || 'Admin Sejuk Teknik');
+              
+              const updateData = {
+                  reply: {
+                      text: replyText,
+                      adminName: adminName,
+                      adminUid: currentUserId,
+                      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                      likes: [],
+                      dislikes: []
+                  }
+              };
+
+              return db.collection('reviews').doc(currentReplyReviewId).update(updateData);
+          })
+          .then(() => {
+              alert('Balasan admin berhasil dikirim/diubah!');
+              closeReplyModal();
+              loadReviews(); // Reload untuk update tampilan
+          })
+          .catch(error => {
+              console.error('Error sending reply:', error);
+              alert('Gagal mengirim balasan: ' + error.message);
+          });
+      }
+
 
       // RENDER REVIEWS (pinned first)
       function renderReviews(filter) {
@@ -488,124 +716,80 @@
               return;
           }
 
-          // pinned first
+          // Sort: pinned first, then by latest timestamp
           filteredReviews.sort((a,b) => {
-              if ((a.pinned?true:false) === (b.pinned?true:false)) {
-                  return b.timestamp?.toDate?.() - a.timestamp?.toDate?.();
+              if (a.pinned !== b.pinned) {
+                  return (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0);
               }
-              return (b.pinned?1:0) - (a.pinned?1:0);
+              const timestampA = a.timestamp?.seconds || 0;
+              const timestampB = b.timestamp?.seconds || 0;
+              return timestampB - timestampA; 
           });
 
           filteredReviews.forEach(review => {
               const reviewCard = document.createElement('div');
               reviewCard.classList.add('review-card');
+              if (review.pinned) reviewCard.classList.add('pinned');
 
               const reviewDate = review.timestamp ? review.timestamp.toDate() : new Date();
               const timeString = timeSince(reviewDate);
               const sentiment = review.sentiment;
-
-              // Prepare reply area
-              let replyHtml = '';
-              if (review.reply && review.reply.text) {
-                  // display reply
-                  const adminName = review.reply.adminName || review.reply.adminUid || 'Admin';
-                  const likes = (review.reply.likes || []).length || 0;
-                  const dislikes = (review.reply.dislikes || []).length || 0;
-                  replyHtml = `
-                    <div class="reply-block">
-                      <div style="font-weight:700;">${adminName}</div>
-                      <div class="reply-text">${escapeHtml(review.reply.text)}</div>
-                      <div class="reply-actions">
-                        <button class="small-btn" onclick="voteOnReply('${review.id}','like')">👍🏻 <span id="like-count-${review.id}">${likes}</span></button>
-                        <button class="small-btn" onclick="voteOnReply('${review.id}','dislike')">👎🏻 <span id="dislike-count-${review.id}">${dislikes}</span></button>
-                        <button class="small-btn" onclick="openReplyModal('${review.id}')">Tutup</button>
-                      </div>
+              
+              const hasReply = review.reply && review.reply.text;
+              const adminControls = isAdmin ? `
+                <div class="admin-actions">
+                    <button class="reply-btn" onclick="openReplyModal('${review.id}', '${escapeHtml(review.reviewerName || 'Anonim')}', '${escapeHtml(review.reply?.text || '')}')">
+                        ${hasReply ? '<i class="fas fa-edit"></i> Edit Balasan' : '<i class="fas fa-reply"></i> Balas'}
+                    </button>
+                    <button class="pin-btn ${review.pinned ? 'pinned' : ''}" onclick="togglePin('${review.id}', ${!review.pinned})">
+                        <i class="fas fa-thumbtack"></i> ${review.pinned ? 'Pinned' : 'Pin Ulasan'}
+                    </button>
+                </div>
+              ` : '';
+              
+              // Reply Section for ALL users
+              const replySection = hasReply ? `
+                <div id="reply-block-${review.id}" class="reply-block" style="display:none;">
+                    <div class="reply-header">Balasan dari ${review.reply.adminName || 'Admin Sejuk Teknik'}</div>
+                    <div class="reply-text">${escapeHtml(review.reply.text)}</div>
+                    <div class="reaction-buttons">
+                        <button onclick="voteOnReply('${review.id}','like')" class="${review.userReaction === 'like' ? 'reacted' : ''}">
+                            <i class="far fa-thumbs-up"></i> <span id="like-count-${review.id}">${review.reply.likes.length}</span>
+                        </button>
+                        <button onclick="voteOnReply('${review.id}','dislike')" class="dislike-btn ${review.userReaction === 'dislike' ? 'reacted' : ''}">
+                            <i class="far fa-thumbs-down"></i> <span id="dislike-count-${review.id}">${review.reply.dislikes.length}</span>
+                        </button>
                     </div>
-                  `;
-              }
-
-              // Admin controls visible only to admin UIDs (handled later when auth state known)
-              const pinnedBadge = review.pinned ? '<span title="Pinned" class="pin">📌 Pinned</span>' : '';
+                </div>
+              ` : '';
 
               reviewCard.innerHTML = `
                   <div class="review-header">
                       <div class="reviewer-info">
                           <i class="fas fa-user-circle"></i>
-                          ${escapeHtml(review.reviewerName || 'Anonim')} ${pinnedBadge}
+                          ${escapeHtml(review.reviewerName || 'Anonim')} 
+                          ${review.pinned ? '<span title="Ulasan Pilihan" class="pin" style="color:var(--secondary); font-size:0.8rem;"><i class="fas fa-thumbtack"></i> Pinned</span>' : ''}
                       </div>
                       ${renderStars(review.rating)}
                   </div>
                   <div class="review-body">${escapeHtml(review.reviewText)}</div>
+                  
+                  ${adminControls} 
+                  
                   <div class="review-footer">
                       <span class="sentiment-tag tag-${sentiment}">${sentiment.toUpperCase()}</span>
                       <span class="time-ago">${timeString}</span>
-                      <div id="admin-area-${review.id}" class="admin-controls"></div>
+                      ${hasReply ? `<button class="small-btn view-reply-btn" onclick="toggleReplyView(this, '${review.id}')">Lihat Balasan</button>` : ''}
                   </div>
-                  ${replyHtml}
+                  ${replySection}
               `;
-
-              // Append and then render admin area (so DOM exists)
+              
               list.appendChild(reviewCard);
-
-              // add 'Balas' or 'Lihat Balasan' buttons depending on state and auth
-              renderAdminAreaForReview(review.id, review.reply);
           });
       }
 
-      // Create admin area buttons (reply/pin) depending on current user
-      function renderAdminAreaForReview(reviewId, reply) {
-          const container = document.getElementById(`admin-area-${reviewId}`);
-          if (!container) return;
 
-          // Clear
-          container.innerHTML = '';
-
-          // If user is admin, show buttons
-          const user = auth.currentUser;
-          const isAdmin = user && ADMIN_UIDS.includes(user.uid);
-
-          if (isAdmin) {
-              // Reply button (shows inline textarea)
-              const replyBtn = document.createElement('button');
-              replyBtn.className = 'small-btn';
-              replyBtn.textContent = reply && reply.text ? 'Edit Balasan' : 'Balas';
-              replyBtn.onclick = () => openReplyEditor(reviewId, reply);
-              container.appendChild(replyBtn);
-
-              // Pin toggle
-              const pinBtn = document.createElement('button');
-              pinBtn.className = 'small-btn pin';
-              pinBtn.textContent = '📌 Pin';
-              pinBtn.onclick = () => togglePin(reviewId);
-              container.appendChild(pinBtn);
-          } else {
-              // If not admin but there is no reply: show nothing; if reply exists show 'Lihat Balasan' (scroll to it)
-              if (reply && reply.text) {
-                  const showBtn = document.createElement('button');
-                  showBtn.className = 'small-btn';
-                  showBtn.textContent = 'Lihat Balasan';
-                  showBtn.onclick = () => {
-                      // scroll to the reply block
-                      const el = document.querySelector(`#reviewsList .reply-block`);
-                      if (el) el.scrollIntoView({ behavior: 'smooth' });
-                  };
-                  container.appendChild(showBtn);
-              }
-          }
-      }
-
-      // Escape HTML helper to avoid injection when rendering text
-      function escapeHtml(text) {
-          if (!text) return '';
-          return text
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/\"/g, '&quot;')
-            .replace(/\'/g, '&#039;');
-      }
-
-      // Update summary counts and breakdown
+      // Update summary counts and breakdown (unchanged)
       function updateSummary() {
           const totalCount = allReviews.length;
           let totalRatingSum = 0;
@@ -630,7 +814,6 @@
           document.getElementById('countNetral').textContent = reviewCounts.netral;
           document.getElementById('countNegatif').textContent = reviewCounts.negatif;
 
-          // breakdown bars
           const breakdownContainer = document.getElementById('ratingBreakdown');
           breakdownContainer.innerHTML = '';
           for (let i = 5; i >= 1; i--) {
@@ -649,22 +832,55 @@
           }
       }
 
-      // LOAD REVIEWS from firestore
+      // LOAD REVIEWS from firestore (with Transaction for Reactions)
       function loadReviews() {
-          db.collection('reviews')
-            .orderBy('timestamp', 'desc')
-            .get()
-            .then(snapshot => {
-                allReviews = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data(), sentiment: getSentiment(doc.data().rating) }));
-                // ensure pinned boolean exists
-                allReviews.forEach(r => { if (r.pinned === undefined) r.pinned = false; });
-                updateSummary();
-                renderReviews(currentFilter);
-            })
-            .catch(error => {
-                console.error('Error loading reviews:', error);
-                document.getElementById('reviewsList').innerHTML = '<p style="text-align: center; color: red;">Gagal memuat ulasan. Silakan cek koneksi atau rules Firebase Anda.</p>';
-            });
+          const reviewsListElement = document.getElementById('reviewsList');
+          reviewsListElement.innerHTML = '<p style="text-align: center; color: var(--gray);">Memuat ulasan...</p>';
+
+          let reviewsRef = db.collection('reviews');
+
+          db.runTransaction(async (transaction) => {
+              const reviewsSnapshot = await transaction.get(reviewsRef.orderBy('timestamp', 'desc'));
+              const reviews = [];
+              
+              for (const doc of reviewsSnapshot.docs) {
+                  const reviewData = doc.data();
+                  let userReaction = null;
+                  
+                  if (currentUserId) {
+                      // Ambil reaksi user jika sudah login
+                      const reactionDocRef = db.collection('reactions').doc(`${currentUserId}_${doc.id}`);
+                      const reactionDoc = await transaction.get(reactionDocRef);
+                      userReaction = reactionDoc.exists ? reactionDoc.data().type : null;
+                  }
+                  
+                  // Pastikan field reply ada dan memiliki likes/dislikes (fallback ke array kosong)
+                  const replyLikes = reviewData.reply?.likes || [];
+                  const replyDislikes = reviewData.reply?.dislikes || [];
+                  
+                  reviews.push({
+                      id: doc.id,
+                      ...reviewData,
+                      sentiment: getSentiment(reviewData.rating),
+                      userReaction: userReaction,
+                      // Normalize reply structure for rendering
+                      reply: reviewData.reply ? {
+                          ...reviewData.reply,
+                          likes: replyLikes,
+                          dislikes: replyDislikes
+                      } : null,
+                      pinned: reviewData.pinned || false
+                  });
+              }
+              return reviews;
+          }).then(reviews => {
+              allReviews = reviews;
+              updateSummary();
+              renderReviews(currentFilter);
+          }).catch(error => {
+              console.error("Error loading reviews:", error);
+              reviewsListElement.innerHTML = '<p style="text-align: center; color: red;">Gagal memuat ulasan. Silakan cek koneksi atau rules Firebase Anda.</p>';
+          });
       }
 
       // SUBMIT REVIEW (unchanged flow)
@@ -708,40 +924,24 @@
           });
       });
 
-      // OPEN inline reply editor for admins
-      function openReplyEditor(reviewId, existingReply) {
-          // find review card and append editor
-          const card = document.querySelector(`#reviewsList .review-card:nth-child(${Array.from(document.querySelectorAll('#reviewsList .review-card')).findIndex(c=>c.querySelector('#admin-area-'+reviewId)) + 1})`);
-          // simpler: show a prompt (keeps UI simple)
-          const currentText = existingReply && existingReply.text ? existingReply.text : '';
-          const text = prompt('Tulis balasan untuk ulasan ini (HTML tidak diizinkan):', currentText);
-          if (text === null) return; // cancelled
-          const user = auth.currentUser;
-          if (!user) { alert('Harus login sebagai admin untuk membalas.'); return; }
-          if (!ADMIN_UIDS.includes(user.uid)) { alert('Anda bukan admin.'); return; }
+      // Toggle pin (admins only)
+      function togglePin(reviewId, isPinned) {
+          if (!isAdmin) {
+              alert('Hanya admin yang dapat mem-pin ulasan.'); 
+              return;
+          }
 
-          // get admin name from users collection if possible
-          db.collection('users').doc(user.uid).get().then(doc => {
-              const adminName = (doc.exists && doc.data().name) ? doc.data().name : (user.displayName || 'Admin');
-              const replyObj = {
-                  adminUid: user.uid,
-                  adminName: adminName,
-                  text: text,
-                  timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                  likes: [],
-                  dislikes: []
-              };
-              return db.collection('reviews').doc(reviewId).update({ reply: replyObj });
-          }).then(()=>{
-              alert('Balasan tersimpan.');
-              loadReviews();
-          }).catch(err=>{ console.error(err); alert('Gagal menyimpan balasan: '+err.message); });
-      }
-
-      // open reply modal -> since we used prompt for editing, this will just scroll to reply
-      function openReplyModal(reviewId){
-          const el = document.getElementById(`like-count-${reviewId}`);
-          if (el) el.scrollIntoView({ behavior: 'smooth' });
+          db.collection('reviews').doc(reviewId).update({
+              pinned: isPinned
+          })
+          .then(() => {
+              alert(`Ulasan berhasil di-${isPinned ? 'pin' : 'unpin'}!`);
+              loadReviews(); // Reload untuk update urutan
+          })
+          .catch(error => {
+              console.error('Error toggling pin:', error);
+              alert('Gagal mengubah status pin: ' + error.message);
+          });
       }
 
       // Voting on reply (like/dislike) — must be logged in
@@ -752,41 +952,80 @@
           const reviewRef = db.collection('reviews').doc(reviewId);
           return db.runTransaction(transaction => {
               return transaction.get(reviewRef).then(doc => {
-                  if (!doc.exists) throw 'Dokumen tidak ditemukan';
+                  if (!doc.exists) throw new Error('Dokumen tidak ditemukan');
                   const reply = doc.data().reply || { likes: [], dislikes: [] };
                   const likes = new Set(reply.likes || []);
                   const dislikes = new Set(reply.dislikes || []);
+                  const userId = user.uid;
+                  
                   if (type === 'like'){
-                      if (likes.has(user.uid)) { likes.delete(user.uid); } else { likes.add(user.uid); dislikes.delete(user.uid); }
+                      if (likes.has(userId)) { likes.delete(userId); } else { likes.add(userId); dislikes.delete(userId); }
                   } else {
-                      if (dislikes.has(user.uid)) { dislikes.delete(user.uid); } else { dislikes.add(user.uid); likes.delete(user.uid); }
+                      if (dislikes.has(userId)) { dislikes.delete(userId); } else { dislikes.add(userId); likes.delete(userId); }
                   }
+                  
                   const newReply = Object.assign({}, reply, { likes: Array.from(likes), dislikes: Array.from(dislikes) });
                   transaction.update(reviewRef, { reply: newReply });
                   return { likes: newReply.likes.length, dislikes: newReply.dislikes.length };
               });
-          }).then(({likes, dislikes}) => {
-              document.getElementById(`like-count-${reviewId}`).textContent = likes;
-              document.getElementById(`dislike-count-${reviewId}`).textContent = dislikes;
-          }).catch(err => { console.error(err); alert('Gagal merekam reaksi: '+err); });
+          }).then(() => {
+              // Sukses, reload data untuk update tampilan button reaksi
+              loadReviews(); 
+          }).catch(err => { 
+              console.error("Transaction failed: ", err); 
+              alert('Gagal merekam reaksi: ' + err.message); 
+          });
+      }
+      
+      // Mengubah Tampilan Balasan (Toggle)
+      function toggleReplyView(button, reviewId) {
+          const reviewCard = button.closest('.review-card');
+          const replyContainer = reviewCard.querySelector('.reply-block');
+          
+          if (!replyContainer) return; 
+
+          if (replyContainer.style.display === 'none' || replyContainer.style.display === '') {
+              replyContainer.style.display = 'block';
+              button.textContent = 'Tutup Balasan';
+          } else {
+              replyContainer.style.display = 'none';
+              button.textContent = 'Lihat Balasan';
+          }
       }
 
-      // Toggle pin (admins only)
-      function togglePin(reviewId) {
-          const user = auth.currentUser;
-          if (!user || !ADMIN_UIDS.includes(user.uid)) { alert('Hanya admin yang dapat mem-pin ulasan.'); return; }
-          const ref = db.collection('reviews').doc(reviewId);
-          ref.get().then(doc =>{
-              if (!doc.exists) throw 'Not found';
-              const currently = !!doc.data().pinned;
-              return ref.update({ pinned: !currently });
-          }).then(()=>{ loadReviews(); }).catch(err=>{ console.error(err); alert('Gagal toggle pin: '+err); });
-      }
+      // --- Initialization ---
 
-      // Star picker logic (unchanged)
       document.addEventListener('DOMContentLoaded', function() {
-          loadReviews();
+          // Check Auth State
+          auth.onAuthStateChanged((user) => {
+              const formContainer = document.getElementById('reviewFormContainer');
+              const loginWarning = document.getElementById('loginWarning');
 
+              isAdmin = user && ADMIN_UIDS.includes(user.uid);
+              currentUserId = user ? user.uid : null;
+
+              if (user) {
+                  formContainer.style.display = 'block';
+                  loginWarning.style.display = 'none';
+                  
+                  document.getElementById('reviewerName').textContent = user.displayName || user.email;
+                  
+                  db.collection('users').doc(user.uid).get().then(doc => {
+                     if (doc.exists && doc.data().name) {
+                          document.getElementById('reviewerName').textContent = doc.data().name;
+                      } else {
+                           document.getElementById('reviewerName').textContent = user.displayName || user.email.split('@')[0];
+                      }
+                  });
+              } else {
+                  formContainer.style.display = 'none';
+                  loginWarning.style.display = 'block';
+              }
+              
+              loadReviews(); // Load ulasan setelah status admin diketahui
+          });
+
+          // Star Picker Logic (unchanged)
           document.getElementById('starPicker').addEventListener('mouseover', function(e) {
               const stars = this.querySelectorAll('i');
               if (e.target.classList.contains('fa-star')) {
@@ -803,7 +1042,6 @@
                   const rating = parseInt(e.target.getAttribute('data-rating'));
                   document.getElementById('selectedRating').value = rating;
                   this.querySelectorAll('i').forEach(star => star.classList.remove('selected'));
-                  if (parseInt(e.target.getAttribute('data-rating')) <= rating) {}
                   this.querySelectorAll('i').forEach(star => {
                       star.classList.remove('fas', 'far');
                       star.classList.add(parseInt(star.getAttribute('data-rating')) <= rating ? 'fas' : 'far');
@@ -819,7 +1057,8 @@
                   star.classList.add(parseInt(star.getAttribute('data-rating')) <= selectedRating ? 'fas' : 'far');
               });
           });
-
+          
+          // Filter Button Logic
           document.querySelectorAll('.filter-btn').forEach(button => {
               button.addEventListener('click', function() {
                   document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
@@ -828,37 +1067,9 @@
                   renderReviews(currentFilter);
               });
           });
-
-          // Auth state handling
-          auth.onAuthStateChanged((user) => {
-              const formContainer = document.getElementById('reviewFormContainer');
-              const loginWarning = document.getElementById('loginWarning');
-
-              // populate auth buttons area
-              const authArea = document.querySelector('.auth-buttons');
-              authArea.innerHTML = '';
-              if (user) {
-                  const btn = document.createElement('button'); btn.className='auth-btn signup-btn'; btn.textContent='Logout'; btn.onclick = ()=> auth.signOut();
-                  authArea.appendChild(btn);
-              } else {
-                  const lbtn = document.createElement('button'); lbtn.className='auth-btn login-btn'; lbtn.textContent='Login'; lbtn.onclick = ()=> alert('Buka modal login');
-                  authArea.appendChild(lbtn);
-              }
-
-              if (user) {
-                  formContainer.style.display = 'block';
-                  loginWarning.style.display = 'none';
-                  document.getElementById('reviewerName').textContent = user.displayName || user.email;
-                  db.collection('users').doc(user.uid).get().then(doc => { if (doc.exists && doc.data().name) document.getElementById('reviewerName').textContent = doc.data().name; });
-              } else {
-                  formContainer.style.display = 'none';
-                  loginWarning.style.display = 'block';
-              }
-
-              // re-render admin areas (so admin buttons appear/disappear correctly)
-              // small delay to ensure reviews are loaded
-              setTimeout(()=>{ renderReviews(currentFilter); }, 200);
-          });
+          
+          // Close modal on outside click
+          document.getElementById('modalBackdrop').addEventListener('click', closeReplyModal);
       });
     </script>
   </body>

@@ -16,6 +16,7 @@
       :root {
         --primary: #0066cc;
         --primary-light: #e6f2ff;
+        --secondary: #ff7a00; /* Tambahkan secondary untuk tombol admin */
         --dark: #2d3748;
         --white: #ffffff;
         --coin: #ffd700;
@@ -76,6 +77,12 @@
         justify-content: center;
         gap: 5px;
       }
+      .admin-panel-btn {
+        background-color: var(--secondary);
+        color: white;
+        margin-top: 15px;
+        display: none; /* Default: Sembunyikan */
+      }
       .logout-btn {
         background-color: #f44336;
         color: white;
@@ -128,6 +135,11 @@
           <span id="profileCoin" class="loading-text">Memuat...</span>
         </div>
       </div>
+      
+      <!-- Tombol Admin Panel (Hanya muncul untuk Admin) -->
+      <a href="admin-panel.html" class="btn admin-panel-btn" id="adminPanelLink">
+          <i class="fas fa-user-shield"></i> Admin Panel!
+      </a>
 
       <button
         class="btn edit-btn"
@@ -144,6 +156,9 @@
     </div>
 
     <script>
+      // Daftar UID Admin yang berhak melihat tombol Admin Panel (HARUS SAMA DENGAN RULES)
+      const ADMIN_PANEL_UIDS = ['qE0yd2XNRSa0nWojtLvYoxLrsz22', 'JTVwtBsdt3PaaYeyICd8PJm3lJu2'];
+      
       // Konfigurasi Firebase (HARUS SAMA PERSIS dengan index.html)
       const firebaseConfig = {
         apiKey: "AIzaSyDtLHSz7-KU97ALJTQvLRQTG5yj7brcsvc",
@@ -172,7 +187,16 @@
       });
 
       function loadProfile(uid, user) {
-        // Tampilkan UID dan Email segera (dari Auth object)
+        const adminPanelLink = document.getElementById("adminPanelLink");
+
+        // 1. Cek dan tampilkan tombol Admin Panel
+        if (ADMIN_PANEL_UIDS.includes(uid)) {
+            adminPanelLink.style.display = 'inline-flex';
+        } else {
+            adminPanelLink.style.display = 'none';
+        }
+
+        // 2. Tampilkan UID dan Email segera (dari Auth object)
         document.getElementById("profileUid").textContent = uid;
         document.getElementById("profileEmail").textContent =
           user.email || "N/A";
@@ -183,7 +207,7 @@
           .getElementById("profileEmail")
           .classList.remove("loading-text");
 
-        // Ambil data detail dari Firestore
+        // 3. Ambil data detail dari Firestore
         db.collection("users")
           .doc(uid)
           .get()

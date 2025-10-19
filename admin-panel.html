@@ -566,7 +566,7 @@
                 <label for="newReviewTimestamp">Waktu Ulasan (Untuk Tampilan 'X tahun lalu')</label>
                 <!-- Menggunakan datetime-local untuk input waktu spesifik -->
                 <input type="datetime-local" id="newReviewTimestamp" required>
-                <p style="font-size: 0.8em; color: var(--gray); margin-top: 5px;">Pilih waktu masa lampau untuk mendapatkan tampilan 'X tahun lalu'.</p>
+                <p style="font-size: 0.8em; color: var(--gray); margin-top: 5px;">Pilih waktu masa lampau untuk mendapatkan tampilan 'X tahun lalu'. Waktu masa depan akan menampilkan 'X tahun dari sekarang'.</p>
             </div>
             <div class="modal-footer">
                 <button class="btn" type="button" style="background-color: var(--gray);" onclick="closeAddReviewModal()">Batal</button>
@@ -990,46 +990,40 @@
           return `${y}-${m}-${d}T${h}:${min}`;
       }
       
-      // NEW: Time Ago Utility Function
+      // UPDATED: Time Ago Utility Function (Improved for past & future relative time)
       function timeAgo(date) {
           if (!date) return 'Waktu tidak tersedia';
           
-          const seconds = Math.floor((new Date() - date) / 1000);
+          const seconds = Math.floor((new Date() - date) / 1000); // Positive for past, negative for future
+          const isFuture = seconds < 0;
+          const absSeconds = Math.abs(seconds);
           
-          // Future date (e.g., 2026 if current year is 2025)
-          if (seconds < 0) {
-              const futureSeconds = Math.abs(seconds);
-              let futureInterval = futureSeconds / 31536000;
-              if (futureInterval > 1) {
-                  return Math.ceil(futureInterval) + " tahun dari sekarang";
-              }
-              return "Baru saja (Waktu masa depan)";
-          }
+          // Penyesuaian kata agar sesuai dengan konteks Bahasa Indonesia yang lebih baik
+          const suffix = isFuture ? ' dari sekarang' : ' lalu';
 
-          let interval = seconds / 31536000; // 365 * 24 * 60 * 60
-          if (interval > 1) {
-              const years = Math.floor(interval);
-              return years + " tahun lalu";
+          let interval = absSeconds / 31536000; // Years
+          if (interval >= 1) { // Menggunakan >= 1 agar 1 tahun terhitung
+              return Math.floor(interval) + " tahun" + suffix;
           }
           
-          interval = seconds / 2592000; // 30 * 24 * 60 * 60
-          if (interval > 1) {
-              return Math.floor(interval) + " bulan lalu";
+          interval = absSeconds / 2592000; // Months (approx 30 days)
+          if (interval >= 1) {
+              return Math.floor(interval) + " bulan" + suffix;
           }
           
-          interval = seconds / 86400; // 24 * 60 * 60
-          if (interval > 1) {
-              return Math.floor(interval) + " hari lalu";
+          interval = absSeconds / 86400; // Days
+          if (interval >= 1) {
+              return Math.floor(interval) + " hari" + suffix;
           }
           
-          interval = seconds / 3600; // 60 * 60
-          if (interval > 1) {
-              return Math.floor(interval) + " jam lalu";
+          interval = absSeconds / 3600; // Hours
+          if (interval >= 1) {
+              return Math.floor(interval) + " jam" + suffix;
           }
           
-          interval = seconds / 60;
-          if (interval > 1) {
-              return Math.floor(interval) + " menit lalu";
+          interval = absSeconds / 60; // Minutes
+          if (interval >= 1) {
+              return Math.floor(interval) + " menit" + suffix;
           }
           
           return "Baru saja";
@@ -1377,7 +1371,7 @@
               const isPinned = review.pinned;
               const hasReply = review.reply && review.reply.text;
               const reviewDate = review.timestamp ? (review.timestamp.toDate ? review.timestamp.toDate() : new Date(review.timestamp.seconds * 1000)) : new Date(); // Convert Timestamp
-              const timeDisplay = timeAgo(reviewDate); // NEW: Relative Time
+              const timeDisplay = timeAgo(reviewDate); // UPDATED: Relative Time
               const sourceDisplay = review.source ? `<span style="font-size: 0.8em; color: var(--primary); margin-left: 10px;"><i class="fas fa-map-marked-alt"></i> ${review.source}</span>` : '';
               
               const sentimentClass = review.sentiment === 'positif' ? 'tag-positif' : (review.sentiment === 'netral' ? 'tag-netral' : 'tag-danger');
@@ -1446,12 +1440,13 @@
           
           // Reset form
           form.reset();
+          document.getElementById('newReviewerName').value = 'Anonim';
           document.getElementById('newReviewRating').value = '5'; // Default to 5
           
-          // Set default timestamp to a past date (e.g., 1 year ago) for easier input
-          const oneYearAgo = new Date();
-          oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
-          document.getElementById('newReviewTimestamp').value = formatDateTimeLocal(oneYearAgo);
+          // Set default timestamp to a past date (e.g., 1 day ago) for easier input
+          const oneDayAgo = new Date();
+          oneDayAgo.setDate(oneDayAgo.getDate() - 1);
+          document.getElementById('newReviewTimestamp').value = formatDateTimeLocal(oneDayAgo);
 
           modal.style.display = 'flex';
           document.body.style.overflow = 'hidden';

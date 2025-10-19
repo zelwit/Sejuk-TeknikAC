@@ -538,6 +538,44 @@
       </div>
     </div>
 
+    <!-- NEW: Modal for Add New Review -->
+    <div class="modal-overlay" id="addReviewModal">
+      <div class="modal-content" style="max-width: 550px;">
+        <button class="close-btn" onclick="closeAddReviewModal()">×</button>
+        <h3><i class="fas fa-map-marked-alt"></i> Tambah Ulasan Google Maps</h3>
+        <form id="addReviewForm">
+            <div class="form-group">
+                <label for="newReviewerName">Nama Pemberi Ulasan</label>
+                <input type="text" id="newReviewerName" required placeholder="Contoh: Asep Kipas">
+            </div>
+            <div class="form-group">
+                <label for="newReviewRating">Rating (1-5 Bintang)</label>
+                <select id="newReviewRating" required>
+                    <option value="5">5 Bintang</option>
+                    <option value="4">4 Bintang</option>
+                    <option value="3">3 Bintang</option>
+                    <option value="2">2 Bintang</option>
+                    <option value="1">1 Bintang</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="newReviewText">Isi Pesan Ulasan</label>
+                <textarea id="newReviewText" rows="4" required placeholder="Tulis ulasan pelanggan..."></textarea>
+            </div>
+            <div class="form-group">
+                <label for="newReviewTimestamp">Waktu Ulasan (Untuk Tampilan 'X tahun lalu')</label>
+                <!-- Menggunakan datetime-local untuk input waktu spesifik -->
+                <input type="datetime-local" id="newReviewTimestamp" required>
+                <p style="font-size: 0.8em; color: var(--gray); margin-top: 5px;">Pilih waktu masa lampau untuk mendapatkan tampilan 'X tahun lalu'.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" type="button" style="background-color: var(--gray);" onclick="closeAddReviewModal()">Batal</button>
+                <button class="btn" type="submit" id="saveNewReviewBtn">Simpan Ulasan Baru</button>
+            </div>
+        </form>
+      </div>
+    </div>
+
     <div class="dashboard-container">
       <!-- Sidebar -->
       <div class="sidebar" id="sidebar">
@@ -688,6 +726,11 @@
             <div class="card">
               <div class="card-header">
                 <h3 class="card-title">Daftar Ulasan Pelanggan</h3>
+                <!-- NEW BUTTON HERE -->
+                <button class="btn" onclick="openAddReviewModal()">
+                  <i class="fas fa-plus"></i> Tambahkan Ulasan
+                </button>
+                <!-- END NEW BUTTON -->
               </div>
               <div id="reviewsList">
                 <p style="text-align:center;">Memuat ulasan...</p>
@@ -937,6 +980,61 @@
           }
           return `<div class="review-stars">${starsHtml}</div>`;
       }
+
+      function formatDateTimeLocal(date) {
+          const y = date.getFullYear();
+          const m = (date.getMonth() + 1).toString().padStart(2, '0');
+          const d = date.getDate().toString().padStart(2, '0');
+          const h = date.getHours().toString().padStart(2, '0');
+          const min = date.getMinutes().toString().padStart(2, '0');
+          return `${y}-${m}-${d}T${h}:${min}`;
+      }
+      
+      // NEW: Time Ago Utility Function
+      function timeAgo(date) {
+          if (!date) return 'Waktu tidak tersedia';
+          
+          const seconds = Math.floor((new Date() - date) / 1000);
+          
+          // Future date (e.g., 2026 if current year is 2025)
+          if (seconds < 0) {
+              const futureSeconds = Math.abs(seconds);
+              let futureInterval = futureSeconds / 31536000;
+              if (futureInterval > 1) {
+                  return Math.ceil(futureInterval) + " tahun dari sekarang";
+              }
+              return "Baru saja (Waktu masa depan)";
+          }
+
+          let interval = seconds / 31536000; // 365 * 24 * 60 * 60
+          if (interval > 1) {
+              const years = Math.floor(interval);
+              return years + " tahun lalu";
+          }
+          
+          interval = seconds / 2592000; // 30 * 24 * 60 * 60
+          if (interval > 1) {
+              return Math.floor(interval) + " bulan lalu";
+          }
+          
+          interval = seconds / 86400; // 24 * 60 * 60
+          if (interval > 1) {
+              return Math.floor(interval) + " hari lalu";
+          }
+          
+          interval = seconds / 3600; // 60 * 60
+          if (interval > 1) {
+              return Math.floor(interval) + " jam lalu";
+          }
+          
+          interval = seconds / 60;
+          if (interval > 1) {
+              return Math.floor(interval) + " menit lalu";
+          }
+          
+          return "Baru saja";
+      }
+
       
       // --- PAGE NAVIGATION ---
       document.querySelectorAll('.menu-item').forEach(item => {
@@ -1257,7 +1355,7 @@
       
       // --- REVIEW MANAGEMENT FUNCTIONS (Review Tab) ---
       
-      function loadReviews() { /* ... (Kode loadReviews tidak berubah) ... */
+      function loadReviews() { 
         const list = document.getElementById('reviewsList');
         list.innerHTML = '<p style="text-align:center;">Memuat ulasan...</p>';
         
@@ -1269,7 +1367,7 @@
         });
       }
 
-      function renderReviewsList(){ /* ... (Kode renderReviewsList tidak berubah) ... */
+      function renderReviewsList(){ 
           const list = document.getElementById('reviewsList'); 
           list.innerHTML='';
           if(allReviews.length===0){ list.innerHTML='<p style="text-align:center;">Belum ada ulasan.</p>'; return; }
@@ -1278,26 +1376,35 @@
               const card = document.createElement('div'); card.classList.add('review-card');
               const isPinned = review.pinned;
               const hasReply = review.reply && review.reply.text;
+              const reviewDate = review.timestamp ? (review.timestamp.toDate ? review.timestamp.toDate() : new Date(review.timestamp.seconds * 1000)) : new Date(); // Convert Timestamp
+              const timeDisplay = timeAgo(reviewDate); // NEW: Relative Time
+              const sourceDisplay = review.source ? `<span style="font-size: 0.8em; color: var(--primary); margin-left: 10px;"><i class="fas fa-map-marked-alt"></i> ${review.source}</span>` : '';
               
               const sentimentClass = review.sentiment === 'positif' ? 'tag-positif' : (review.sentiment === 'netral' ? 'tag-netral' : 'tag-danger');
 
               card.innerHTML=`
-                <div class="review-header">
-                  <span>${escapeHtml(review.reviewerName||'Anonim')}</span>
-                  ${renderStars(review.rating)}
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div class="review-header">
+                        <span style="font-weight: 600;">${escapeHtml(review.reviewerName||'Anonim')}</span>
+                        ${renderStars(review.rating)}
+                    </div>
+                    <p style="font-size: 0.85em; color: var(--gray);">${timeDisplay}</p>
                 </div>
-                <div class="review-body">${escapeHtml(review.reviewText)}</div>
-                ${hasReply ? `<div style="margin-top: 5px; font-style: italic;">Balasan: ${escapeHtml(review.reply.text).substring(0, 50)}...</div>` : ''}
-                <div class="review-footer">
-                    <span class="sentiment-tag ${sentimentClass}">${review.sentiment.toUpperCase()}</span>
+                <div class="review-body" style="margin-top: 5px; margin-bottom: 10px;">${escapeHtml(review.reviewText)}</div>
+                ${hasReply ? `<div style="margin-top: 5px; font-style: italic; font-size: 0.9em; padding: 5px; border-left: 3px solid var(--secondary); background: var(--light);">Balasan Admin: ${escapeHtml(review.reply.text).substring(0, 80)}...</div>` : ''}
+                <div class="review-footer" style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+                    <div>
+                        <span class="sentiment-tag ${sentimentClass}" style="background-color: var(--primary); color: white; padding: 3px 8px; border-radius: 4px; font-size: 0.75em;">${review.sentiment.toUpperCase()}</span>
+                        ${sourceDisplay}
+                    </div>
                     <div class="admin-controls">
-                        <button class="edit-reply-btn" onclick="openReplyModal('${review.id}', '${escapeHtml(review.reviewerName||'Anonim')}', '${escapeHtml(review.reply?.text || '')}')">
+                        <button class="btn btn-sm" style="margin-right: 5px;" onclick="openReplyModal('${review.id}', '${escapeHtml(review.reviewerName||'Anonim')}', '${escapeHtml(review.reply?.text || '')}')">
                             ${hasReply ? 'Edit Balasan' : 'Balas'}
                         </button>
-                        <button class="${isPinned ? 'unpin-btn' : 'pin-btn'}" style="background-color: ${isPinned ? 'var(--gray)' : 'var(--secondary)'};" onclick="togglePin('${review.id}', ${!isPinned})">
+                        <button class="btn btn-sm" style="background-color: ${isPinned ? 'var(--gray)' : 'var(--secondary)'}; border-color: ${isPinned ? 'var(--gray)' : 'var(--secondary)'};" onclick="togglePin('${review.id}', ${!isPinned})">
                             ${isPinned ? 'Unpin' : '📌 Pin'}
                         </button>
-                        <button class="btn-danger" style="margin-left: 10px;" onclick="deleteReview('${review.id}')">Hapus</button>
+                        <button class="btn btn-danger btn-sm" style="margin-left: 5px;" onclick="deleteReview('${review.id}')">Hapus</button>
                     </div>
                 </div>
               `;
@@ -1305,7 +1412,7 @@
           });
       }
 
-      function togglePin(reviewId, isPinned) { /* ... (Kode togglePin tidak berubah) ... */
+      function togglePin(reviewId, isPinned) { 
           db.collection('reviews').doc(reviewId).update({
               pinned: isPinned
           })
@@ -1318,7 +1425,7 @@
           });
       }
 
-      function deleteReview(reviewId) { /* ... (Kode deleteReview tidak berubah) ... */
+      function deleteReview(reviewId) { 
           if (!confirm("Apakah Anda yakin ingin menghapus ulasan ini secara permanen?")) return; // Ganti dengan modal konfirmasi jika mau
           
           db.collection('reviews').doc(reviewId).delete()
@@ -1331,9 +1438,86 @@
           });
       }
 
+      // --- NEW: ADMIN ADD REVIEW MODAL FUNCTIONS ---
+      
+      function openAddReviewModal() {
+          const modal = document.getElementById('addReviewModal');
+          const form = document.getElementById('addReviewForm');
+          
+          // Reset form
+          form.reset();
+          document.getElementById('newReviewRating').value = '5'; // Default to 5
+          
+          // Set default timestamp to a past date (e.g., 1 year ago) for easier input
+          const oneYearAgo = new Date();
+          oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+          document.getElementById('newReviewTimestamp').value = formatDateTimeLocal(oneYearAgo);
+
+          modal.style.display = 'flex';
+          document.body.style.overflow = 'hidden';
+      }
+
+      function closeAddReviewModal() {
+          document.getElementById('addReviewModal').style.display = 'none';
+          document.body.style.overflow = 'auto';
+      }
+      
+      document.getElementById('addReviewForm').addEventListener('submit', addNewReview);
+
+      function addNewReview(e) {
+          e.preventDefault();
+          
+          const saveBtn = document.getElementById('saveNewReviewBtn');
+          saveBtn.disabled = true;
+          saveBtn.textContent = 'Menyimpan...';
+
+          const reviewerName = document.getElementById('newReviewerName').value.trim();
+          const rating = parseInt(document.getElementById('newReviewRating').value);
+          const reviewText = document.getElementById('newReviewText').value.trim();
+          const timestampInput = document.getElementById('newReviewTimestamp').value;
+          
+          if (reviewText.length < 5) {
+              window.alert('Isi ulasan minimal 5 karakter.', true);
+              saveBtn.disabled = false;
+              saveBtn.textContent = 'Simpan Ulasan Baru';
+              return;
+          }
+
+          const reviewTimestamp = new Date(timestampInput);
+          
+          const newReviewData = {
+              reviewerName: reviewerName,
+              reviewText: reviewText,
+              rating: rating,
+              timestamp: firebase.firestore.Timestamp.fromDate(reviewTimestamp),
+              source: 'Google Maps (Admin Added)', 
+              userId: 'admin_added_' + Date.now(), 
+              reply: null,
+              pinned: false,
+              likes: [],
+              dislikes: []
+          };
+
+          db.collection('reviews').add(newReviewData)
+              .then(() => {
+                  window.alert('Ulasan baru dari Google Maps berhasil ditambahkan!');
+                  closeAddReviewModal();
+                  loadReviews(); // Reload the list
+                  saveBtn.disabled = false;
+                  saveBtn.textContent = 'Simpan Ulasan Baru';
+              })
+              .catch(error => {
+                  console.error('Error adding new review:', error);
+                  window.alert('Gagal menambahkan ulasan baru: ' + error.message, true);
+                  saveBtn.disabled = false;
+                  saveBtn.textContent = 'Simpan Ulasan Baru';
+              });
+      }
+
+
       // --- ADMIN REPLY MODAL FUNCTIONS ---
       
-      function openReplyModal(reviewId, reviewerName, existingText) { /* ... (Kode openReplyModal tidak berubah) ... */
+      function openReplyModal(reviewId, reviewerName, existingText) { 
           currentReplyReviewId = reviewId;
           document.getElementById('replyReviewerName').textContent = reviewerName;
           document.getElementById('replyTextarea').value = existingText || '';
@@ -1341,7 +1525,7 @@
           document.body.style.overflow = 'hidden';
       }
       
-      function closeReplyModal() { /* ... (Kode closeReplyModal tidak berubah) ... */
+      function closeReplyModal() { 
           document.getElementById('replyModal').style.display = 'none';
           document.body.style.overflow = 'auto';
           currentReplyReviewId = null;
@@ -1349,7 +1533,7 @@
       
       document.getElementById('sendReplyBtn').addEventListener('click', sendReply);
 
-      function sendReply() { /* ... (Kode sendReply tidak berubah) ... */
+      function sendReply() { 
           const replyText = document.getElementById('replyTextarea').value.trim();
           if (replyText.length < 5) {
               window.alert('Balasan minimal 5 karakter.');
@@ -1701,16 +1885,7 @@
                                      <p><strong>Pesan:</strong> ${escapeHtml(data.message.substring(0, 80))}...</p>`;
       }
       
-      function formatDateTimeLocal(date) {
-          const y = date.getFullYear();
-          const m = (date.getMonth() + 1).toString().padStart(2, '0');
-          const d = date.getDate().toString().padStart(2, '0');
-          const h = date.getHours().toString().padStart(2, '0');
-          const min = date.getMinutes().toString().padStart(2, '0');
-          return `${y}-${m}-${d}T${h}:${min}`;
-      }
-
-
+      
       // --- SYSTEM MANAGEMENT (Sistem Tab) ---
 
       let currentSystemSettings = {};
@@ -1833,7 +2008,7 @@
 
       // --- ORDER MANAGEMENT (Orders Tab) ---
       
-      function loadOrders() { /* ... (Kode loadOrders tidak berubah) ... */
+      function loadOrders() { 
           const list = document.getElementById('ordersList');
           list.innerHTML = '<p>Memuat daftar pesanan...</p>';
           
@@ -1887,11 +2062,11 @@
           });
       }
       
-      function viewOrder(orderId) { /* ... (Kode viewOrder tidak berubah) ... */
+      function viewOrder(orderId) { 
           window.alert(`Menampilkan detail untuk Order ID: ${orderId}. Implementasi detail penuh belum tersedia.`);
       }
       
-      function deleteOrder(orderId) { /* ... (Kode deleteOrder tidak berubah) ... */
+      function deleteOrder(orderId) { 
           if (!confirm("Yakin ingin menghapus pesanan ini?")) return;
           
           db.collection('orders').doc(orderId).delete()
@@ -1906,7 +2081,7 @@
 
       // --- USER LIST MANAGEMENT (Users Tab) ---
 
-      function loadUsers() { /* ... (Kode loadUsers tidak berubah) ... */
+      function loadUsers() { 
         const list = document.getElementById('usersList');
         list.innerHTML = '<p>Memuat daftar pengguna...</p>';
 
@@ -1957,7 +2132,7 @@
         });
       }
 
-      function viewUserDetail(userId) { /* ... (Kode viewUserDetail tidak berubah) ... */
+      function viewUserDetail(userId) { 
           db.collection('users').doc(userId).get()
           .then(doc => {
               if (!doc.exists) {
@@ -1986,17 +2161,17 @@
           });
       }
       
-      function openUserDetailModal() { /* ... (Kode openUserDetailModal tidak berubah) ... */
+      function openUserDetailModal() { 
           document.getElementById('userDetailModal').style.display = 'flex';
           document.body.style.overflow = 'hidden';
       }
 
-      function closeUserDetailModal() { /* ... (Kode closeUserDetailModal tidak berubah) ... */
+      function closeUserDetailModal() { 
           document.getElementById('userDetailModal').style.display = 'none';
           document.body.style.overflow = 'auto';
       }
 
-      function deleteUser() { /* ... (Kode deleteUser tidak berubah) ... */
+      function deleteUser() { 
           const userId = document.getElementById('userDetailModal').getAttribute('data-target-uid');
           if (!userId) return;
           

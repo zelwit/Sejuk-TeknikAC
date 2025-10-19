@@ -633,23 +633,23 @@
           const user = auth.currentUser;
           if (!user) { showNotification('Anda harus login untuk membalas.', 'error'); return; }
 
-          db.collection('users').doc(user.uid).get().then(doc => {
-              const adminName = doc.exists && doc.data().name ? doc.data().name : (user.displayName || 'Admin Sejuk Teknik');
+          // --- PERUBAHAN DI SINI: Hardcode nama Admin ---
+          const adminName = 'Admin Sejuk Teknik'; 
+          // --- AKHIR PERUBAHAN ---
               
-              const updateData = {
-                  reply: {
-                      text: replyText,
-                      adminName: adminName,
-                      adminUid: user.uid,
-                      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                      // Mempertahankan likes/dislikes yang sudah ada
-                      likes: (allReviews.find(r => r.id === currentReplyReviewId)?.reply?.likes || []),
-                      dislikes: (allReviews.find(r => r.id === currentReplyReviewId)?.reply?.dislikes || [])
-                  }
-              };
+          const updateData = {
+              reply: {
+                  text: replyText,
+                  adminName: adminName, // Menggunakan nama Admin yang sudah di-hardcode
+                  adminUid: user.uid,
+                  timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                  // Mempertahankan likes/dislikes yang sudah ada
+                  likes: (allReviews.find(r => r.id === currentReplyReviewId)?.reply?.likes || []),
+                  dislikes: (allReviews.find(r => r.id === currentReplyReviewId)?.reply?.dislikes || [])
+              }
+          };
 
-              return db.collection('reviews').doc(currentReplyReviewId).update(updateData);
-          })
+          db.collection('reviews').doc(currentReplyReviewId).update(updateData)
           .then(() => {
               closeReplyModal();
               showNotification('Balasan admin berhasil dikirim/diubah!', 'success');
@@ -752,9 +752,6 @@
               let replyHtml = '';
               if (review.reply && review.reply.text) {
                   const adminName = review.reply.adminName || review.reply.adminUid || 'Admin';
-                  // Vote counts on reply are removed as per user request to focus on review votes
-                  // const likes = (review.reply.likes || []).length || 0;
-                  // const dislikes = (review.reply.dislikes || []).length || 0;
                   replyHtml = `
                     <div class="reply-block">
                       <div style="font-weight:700;">${escapeHtml(adminName)}</div>

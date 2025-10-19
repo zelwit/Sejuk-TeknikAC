@@ -438,7 +438,7 @@
         filter: grayscale(100%);
       }
       .card.disabled::after {
-        content: "Login untuk Memesan";
+        content: attr(data-disabled-msg); /* Gunakan atribut data */
         position: absolute;
         top: 0;
         left: 0;
@@ -484,6 +484,7 @@
         transition: all 0.3s ease;
         box-shadow: 0 4px 10px rgba(0, 102, 204, 0.3);
         border: 2px solid var(--primary);
+        cursor: pointer;
       }
       .btn:hover {
         background-color: transparent;
@@ -646,17 +647,28 @@
         display: none;
       }
       .testimonials {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 2rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
         margin: 3rem 0;
+        min-height: 200px; /* Minimal tinggi agar tidak 'jump' */
+        position: relative;
       }
       .testimonial {
         background: var(--white);
         padding: 1.5rem;
         border-radius: 12px;
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-        position: relative;
+        position: absolute;
+        width: 100%;
+        max-width: 600px;
+        opacity: 0;
+        transition: opacity 1s ease-in-out; /* Durasi transisi fade */
+        /* display: none; */ /* Diatur via JS */
+      }
+      .testimonial.active {
+        opacity: 1;
+        z-index: 2;
       }
       .testimonial::before {
         content: '"';
@@ -690,6 +702,7 @@
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
         text-align: center;
         transition: transform 0.3s ease;
+        position: relative;
       }
       .service-card:hover {
         transform: translateY(-10px);
@@ -1679,11 +1692,11 @@
     </section>
     <section class="content">
       <div class="service-highlights">
-        <div class="service-card" data-service-type="cuci-ac">
+        <div class="service-card" data-service-type="service-ac">
           <div class="service-icon">
             <i class="fas fa-air-conditioner"></i>
           </div>
-          <div class="service-content">
+          <div class="card-content">
             <h3>Service AC</h3>
             <p>perbaiki AC anda dengan profesional</p>
             <a
@@ -1697,7 +1710,7 @@
           <div class="service-icon">
             <i class="fas fa-broom"></i>
           </div>
-          <div class="service-content">
+          <div class="card-content">
             <h3>Cuci AC</h3>
             <p>Perawatan rutin untuk performa AC optimal</p>
             <a
@@ -1711,7 +1724,7 @@
           <div class="service-icon">
             <i class="fas fa-snowflake"></i>
           </div>
-          <div class="service-content">
+          <div class="card-content">
             <h3>Sewa AC</h3>
             <p>Sewa AC berkualitas untuk acara Anda</p>
             <a
@@ -1784,8 +1797,9 @@
         <p>Kami melayani berbagai area di Jakarta Utara dan sekitarnya</p>
       </div>
       <div class="map-container">
+        <!-- ALAMAT BARU DARI PERMINTAAN USER -->
         <iframe
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.521260322283!2d106.8195613506864!3d-6.194741395493371!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNsKwMTAnNDEuMSJTIDEwNsKwNDknMTAuMyJF!5e0!3m2!1sen!2sid!4v1621234567890!5m2!1sen!2sid"
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3967.140801869803!2d106.9080775751915!3d-6.046399193952763!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e698ab64603b5b1%3A0x6b8d2d1420d91244!2sJl.%20Perjuangan%20Jl.%20Gereja%2C%20Tugu%20Sel.%2C%20Kec.%20Koja%2C%20Jkt%20Utara%2C%20Daerah%20Khusus%20Ibukota%20Jakarta%2014260!5e0!3m2!1sid!2sen!4v1700445690000!5m2!1sid!2sen"
           width="100%"
           height="100%"
           style="border: 0"
@@ -2101,9 +2115,9 @@
             jayatehnikmandiri234@gmail.com
           </p>
           <p><i class="fas fa-clock"></i> Buka: 09:00 - 07:00 WIB</p>
+          <!-- ALAMAT BARU DI FOOTER -->
           <p>
-            <i class="fas fa-map-marker-alt"></i> Jl. Raya Perjuangan No.25
-            RT.16 RW.07, Tugu Selatan Koja
+            <i class="fas fa-map-marker-alt"></i> Jl. Perjuangan Jl. Gereja, Tugu Sel., Kec. Koja, Jkt Utara, Daerah Khusus Ibukota Jakarta 14260
           </p>
         </div>
       </div>
@@ -2303,6 +2317,12 @@
       // Variable Global untuk melacak status operasional (NEW)
       let isServiceOpenGlobal = false;
       let isUserLoggedInGlobal = false;
+      
+      // Global array untuk menyimpan ulasan
+      let allPositiveTestimonials = [];
+      let testimonialInterval;
+      let currentTestimonialIndex = 0;
+
 
       // ===============================================
       // FUNGSI BARU: GENERIC ALERT MODAL (Menggantikan alert())
@@ -2671,47 +2691,64 @@
         document.getElementById('confirmModal').style.display = 'none';
       }
       
-      // Load Testimoni Positif ke Section
-      function loadTestimonials() {
+      // Load Dynamic Testimonial (UPDATED FOR ROTATION)
+      function loadDynamicTestimonials() {
         const container = document.getElementById("dynamicTestimonials");
         container.innerHTML =
           '<p style="text-align: center; color: var(--gray);">Memuat testimoni terbaru...</p>';
 
-        // Ambil ulasan terbaru
-        db.collection("reviews") // Mengambil dari koleksi 'reviews'
+        // Hentikan interval lama jika ada
+        if (testimonialInterval) {
+            clearInterval(testimonialInterval);
+        }
+        currentTestimonialIndex = 0;
+        allPositiveTestimonials = [];
+
+        db.collection("reviews")
           .orderBy("timestamp", "desc")
           .limit(50)
           .get()
           .then((snapshot) => {
-            container.innerHTML = "";
-            let count = 0;
-            const maxTestimonials = 6; // Hanya tampilkan 6
-
             snapshot.forEach((doc) => {
               const review = doc.data();
-              const rating = review.rating || 0;
-
-              // FILTER: Hanya ambil yang ratingnya 4 atau 5 (positif)
-              if (rating >= 4 && count < maxTestimonials) {
-                const testimonial = document.createElement("div");
-                testimonial.classList.add("testimonial");
-
-                // Tampilkan nama dan rating
-                testimonial.innerHTML = `
-                              <p>${review.reviewText}</p>
-                              <div class="author">— ${
-                                review.reviewerName || "Anonim"
-                              }, ${rating} Bintang</div>
-                          `;
-                container.appendChild(testimonial);
-                count++;
+              if ((review.rating || 0) >= 4) {
+                allPositiveTestimonials.push({
+                    text: review.reviewText,
+                    author: review.reviewerName || "Anonim",
+                    rating: review.rating || 4
+                });
               }
             });
 
-            if (count === 0) {
+            container.innerHTML = ""; // Kosongkan container
+            
+            if (allPositiveTestimonials.length === 0) {
               container.innerHTML =
-                '<p style="text-align: center; color: var(--gray);">Belum ada testimoni positif (Rating 4 atau 5) yang tersedia.</p>';
+                '<p style="text-align: center; color: var(--gray);">Belum ada testimoni positif yang tersedia.</p>';
+              return;
             }
+            
+            // Render semua testimoni (semuanya absolute/hidden)
+            allPositiveTestimonials.forEach((testimonial, index) => {
+                const el = document.createElement('div');
+                el.classList.add('testimonial');
+                el.setAttribute('data-index', index);
+                
+                el.innerHTML = `
+                    <p>${testimonial.text}</p>
+                    <div class="author">— ${testimonial.author}, ${testimonial.rating} Bintang</div>
+                `;
+                container.appendChild(el);
+            });
+
+            // Mulai rotasi jika lebih dari 1
+            if (allPositiveTestimonials.length > 1) {
+                startTestimonialRotation();
+            } else {
+                // Tampilkan yang satu-satunya
+                document.querySelector('.testimonial[data-index="0"]').classList.add('active');
+            }
+
           })
           .catch((error) => {
             console.error("Error loading testimonials:", error);
@@ -2719,47 +2756,32 @@
               '<p style="text-align: center; color: red;">Gagal memuat testimoni.</p>';
           });
       }
-
-      // Update Rating Header (Menggunakan 'reviews')
-      function updateRatingDisplay() {
-        db.collection("reviews")
-          .get()
-          .then((snapshot) => {
-            if (snapshot.empty) {
-              document.querySelector(".rating-percentage").textContent =
-                "0.0/5";
-              return;
-            }
-
-            let totalRating = 0;
-            let ratingCount = 0;
-
-            snapshot.forEach((doc) => {
-              totalRating += doc.data().rating || 0;
-              ratingCount++;
-            });
-
-            const averageRating = totalRating / ratingCount;
-            const formattedScore = averageRating.toFixed(1).replace(".", ",");
-
-            document.querySelector(".rating-percentage").textContent =
-              formattedScore + "/5";
-
-            const stars = document.querySelectorAll(".star");
-            const roundedRating = Math.round(averageRating);
-
-            stars.forEach((star, index) => {
-              star.classList.remove("filled");
-              if (index < roundedRating) {
-                star.classList.add("filled");
-              }
-            });
-          })
-          .catch((error) => {
-            console.error("Error getting ratings:", error);
-          });
-      }
       
+      // Fungsi Rotasi Testimoni
+      function startTestimonialRotation() {
+          const testimonials = document.querySelectorAll('.testimonial');
+          const intervalTime = 30000; // 30 detik
+          
+          // Tampilkan testimonial pertama
+          testimonials[currentTestimonialIndex].classList.add('active');
+
+          testimonialInterval = setInterval(() => {
+              // 1. Fade Out (Hapus kelas active dari yang lama)
+              const prevIndex = currentTestimonialIndex;
+              testimonials[prevIndex].classList.remove('active');
+
+              // 2. Hitung index berikutnya
+              currentTestimonialIndex = (currentTestimonialIndex + 1) % allPositiveTestimonials.length;
+
+              // 3. Fade In (Tambahkan kelas active ke yang baru setelah delay singkat)
+              // Delay kecil untuk memastikan CSS transisi bekerja (fade out selesai)
+              setTimeout(() => {
+                   testimonials[currentTestimonialIndex].classList.add('active');
+              }, 1000); // 1 detik (sesuai durasi transisi CSS)
+
+          }, intervalTime);
+      }
+
       // Konfirmasi Akun (Pasca Login/Sign Up)
       function showConfirmationModal(userData, isNewUser) {
         pendingUserData = userData; // Simpan data sementara
@@ -2923,29 +2945,28 @@
       // Modifikasi: Disable/Enable Service Cards - Sekarang tergantung pada isServiceOpen juga
       function toggleServiceCards(isLoggedIn, isServiceOpen) {
           const serviceCards = document.querySelectorAll(".service-card");
-          const sensitiveServices = ["cuci-ac", "sewa-ac"]; 
-          
+          const sensitiveServices = ["service-ac", "cuci-ac", "sewa-ac"]; // Ditambahkan "service-ac"
+
           serviceCards.forEach((card) => {
               const serviceType = card.getAttribute("data-service-type");
               
               if (sensitiveServices.includes(serviceType)) {
-                  if (isLoggedIn && isServiceOpen) {
+                  // Cek status akhir
+                  const shouldBeEnabled = isLoggedIn && isServiceOpen;
+                  
+                  const disabledMsg = !isLoggedIn ? 'Login untuk Memesan' : 'Layanan Sedang Tutup';
+                  
+                  card.setAttribute('data-disabled-msg', disabledMsg); // Update data attribute for CSS ::after
+
+                  if (shouldBeEnabled) {
                       card.classList.remove("disabled");
-                      // Reset event listener agar tombol kembali berfungsi normal
+                      // Reset event listener agar tombol kembali berfungsi normal (asumsi href sudah diatur di HTML)
                       card.querySelectorAll(".btn").forEach((btn) => {
                           btn.onclick = null;
                       });
-                      card.classList.add("enabled"); // Tambahkan kelas untuk visual
                   } else {
                       card.classList.add("disabled");
-                      card.classList.remove("enabled");
 
-                      // Perbarui teks overlay sesuai status
-                      const overlayContent = card.querySelector(".card.disabled::after");
-                      if(overlayContent) { // Jika ada after content
-                         overlayContent.content = !isLoggedIn ? 'Login untuk Memesan' : 'Layanan Sedang Tutup';
-                      }
-                      
                       // Tambahkan event listener pencegah
                       card.querySelectorAll(".btn").forEach((btn) => {
                           btn.onclick = (e) => {
@@ -2953,7 +2974,7 @@
                               if (!isLoggedIn) {
                                   showCustomAlert(
                                       "Eh, Belum Login! 😅", 
-                                      "Kamu harus *Login* dulu nih kalau mau pesan layanan *Service/Sewa AC*. Yuk, *Sign Up* dulu!",
+                                      "Kamu harus *Login* dulu nih kalau mau pesan layanan *Service/Cuci/Sewa AC*. Yuk, *Sign Up* dulu!",
                                       true
                                   );
                               } else if (!isServiceOpen) {
@@ -2980,7 +3001,7 @@
 
         // Panggil fungsi sinkronisasi utama
         loadEventPopup();
-        loadTestimonials();
+        loadDynamicTestimonials(); // Panggil fungsi rotasi
         updateRatingDisplay();
         animateCounters();
 

@@ -318,6 +318,38 @@
         color: var(--gray);
       }
 
+      /* NEW: Review Vote Controls */
+      .review-votes {
+          display: flex;
+          gap: 10px;
+          align-items: center;
+      }
+      .vote-btn {
+          background: transparent;
+          border: 1px solid var(--gray);
+          color: var(--dark);
+          padding: 4px 10px;
+          border-radius: 20px;
+          cursor: pointer;
+          transition: all 0.2s;
+          font-size: 0.8rem;
+          font-weight: 600;
+      }
+      .vote-btn:hover {
+          border-color: var(--primary);
+          color: var(--primary);
+      }
+      .vote-btn.liked {
+          background-color: var(--success);
+          color: var(--white);
+          border-color: var(--success);
+      }
+      .vote-btn.disliked {
+          background-color: var(--danger);
+          color: var(--white);
+          border-color: var(--danger);
+      }
+
       .reply-block {
         background: #fbfdff;
         border-left: 3px solid var(--primary);
@@ -610,8 +642,9 @@
                       adminName: adminName,
                       adminUid: user.uid,
                       timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                      likes: [],
-                      dislikes: []
+                      // Mempertahankan likes/dislikes yang sudah ada
+                      likes: (allReviews.find(r => r.id === currentReplyReviewId)?.reply?.likes || []),
+                      dislikes: (allReviews.find(r => r.id === currentReplyReviewId)?.reply?.dislikes || [])
                   }
               };
 
@@ -692,6 +725,9 @@
               return (b.pinned?1:0) - (a.pinned?1:0);
           });
 
+          const user = auth.currentUser;
+          const currentUserId = user ? user.uid : null;
+
           filteredReviews.forEach(review => {
               const reviewCard = document.createElement('div');
               reviewCard.classList.add('review-card');
@@ -699,20 +735,32 @@
               const reviewDate = review.timestamp ? (review.timestamp.toDate ? review.timestamp.toDate() : new Date(review.timestamp.seconds * 1000)) : new Date();
               const timeString = timeSince(reviewDate);
               const sentiment = review.sentiment;
+              
+              // NEW: Get current user's vote status
+              const isLiked = review.likes && review.likes.includes(currentUserId);
+              const isDisliked = review.dislikes && review.dislikes.includes(currentUserId);
+              const likeCount = (review.likes || []).length;
+              const dislikeCount = (review.dislikes || []).length;
+              
+              // NEW: Google Maps label logic
+              const sourceLabel = review.source && review.source.includes('Google Maps') 
+                  ? `<span style="font-size: 0.75em; color: var(--success); margin-left: 10px;"><i class="fas fa-map-marker-alt"></i> Google Maps</span>` 
+                  : '';
+
 
               // Prepare reply area
               let replyHtml = '';
               if (review.reply && review.reply.text) {
                   const adminName = review.reply.adminName || review.reply.adminUid || 'Admin';
-                  const likes = (review.reply.likes || []).length || 0;
-                  const dislikes = (review.reply.dislikes || []).length || 0;
+                  // Vote counts on reply are removed as per user request to focus on review votes
+                  // const likes = (review.reply.likes || []).length || 0;
+                  // const dislikes = (review.reply.dislikes || []).length || 0;
                   replyHtml = `
                     <div class="reply-block">
                       <div style="font-weight:700;">${escapeHtml(adminName)}</div>
                       <div class="reply-text">${escapeHtml(review.reply.text)}</div>
                       <div class="reply-actions">
-                        <button class="small-btn" onclick="voteOnReply('${review.id}','like')">👍🏻 <span id="like-count-${review.id}">${likes}</span></button>
-                        <button class="small-btn" onclick="voteOnReply('${review.id}','dislike')">👎🏻 <span id="dislike-count-${review.id}">${dislikes}</span></button>
+                        <!-- Removed reply voting as per request -->
                       </div>
                     </div>
                   `;
@@ -725,6 +773,7 @@
                       <div class="reviewer-info">
                           <i class="fas fa-user-circle"></i>
                           ${escapeHtml(review.reviewerName || 'Anonim')} ${pinnedBadge}
+                          ${sourceLabel} <!-- Added source label here -->
                       </div>
                       ${renderStars(review.rating)}
                   </div>
@@ -732,6 +781,17 @@
                   <div class="review-footer">
                       <span class="sentiment-tag tag-${sentiment}">${sentiment.toUpperCase()}</span>
                       <span class="time-ago">${timeString}</span>
+                      
+                      <!-- NEW: Review Vote Controls -->
+                      <div class="review-votes">
+                          <button class="vote-btn ${isLiked ? 'liked' : ''}" onclick="toggleVoteOnReview('${review.id}', 'like')">
+                              👍 ${likeCount}
+                          </button>
+                          <button class="vote-btn ${isDisliked ? 'disliked' : ''}" onclick="toggleVoteOnReview('${review.id}', 'dislike')">
+                              👎 ${dislikeCount}
+                          </button>
+                      </div>
+
                       <div id="admin-area-${review.id}" class="admin-controls"></div>
                   </div>
                   ${replyHtml}
@@ -743,12 +803,15 @@
       }
 
       function renderAdminAreaForReview(reviewId, reply, reviewerName) {
+          // ... (logika renderAdminAreaForReview tidak berubah, hanya untuk admin)
           const container = document.getElementById(`admin-area-${reviewId}`);
           if (!container) return;
 
           container.innerHTML = '';
           const user = auth.currentUser;
           const isAdmin = user && ADMIN_UIDS.includes(user.uid);
+          const review = allReviews.find(r => r.id === reviewId);
+          const isOwner = user && review && user.uid === review.userId;
 
           if (isAdmin) {
               const replyBtn = document.createElement('button');
@@ -759,9 +822,12 @@
 
               const pinBtn = document.createElement('button');
               pinBtn.className = 'small-btn pin';
-              pinBtn.textContent = reviewId.pinned ? 'Unpin' : '📌 Pin';
+              pinBtn.textContent = review.pinned ? 'Unpin' : '📌 Pin';
               pinBtn.onclick = () => togglePin(reviewId);
               container.appendChild(pinBtn);
+          } else if (isOwner) {
+              // Jika bukan admin tapi pemilik, beri opsi edit (jika ingin diizinkan)
+              // Saat ini, biarkan kosong agar kontrol tetap di admin-panel
           } else {
               if (reply && reply.text) {
                   const showBtn = document.createElement('button');
@@ -818,6 +884,80 @@
           }
       }
 
+      // --- NEW: VOTING LOGIC ---
+
+      function toggleVoteOnReview(reviewId, voteType) {
+          const user = auth.currentUser;
+          if (!user) { 
+              showNotification('Silakan login untuk memberikan reaksi pada ulasan.', 'error'); 
+              return; 
+          }
+
+          const reviewRef = db.collection('reviews').doc(reviewId);
+          return db.runTransaction(transaction => {
+              return transaction.get(reviewRef).then(doc => {
+                  if (!doc.exists) throw 'Dokumen tidak ditemukan';
+                  
+                  // Get current votes
+                  const currentLikes = new Set(doc.data().likes || []);
+                  const currentDislikes = new Set(doc.data().dislikes || []);
+                  
+                  const userId = user.uid;
+                  let hasChanged = false;
+
+                  if (voteType === 'like') {
+                      if (currentLikes.has(userId)) {
+                          // Already liked, so UNLIKE
+                          currentLikes.delete(userId);
+                          hasChanged = true;
+                      } else {
+                          // LIKE
+                          currentLikes.add(userId);
+                          if (currentDislikes.has(userId)) {
+                              currentDislikes.delete(userId); // Remove dislike if present
+                              hasChanged = true;
+                          }
+                          hasChanged = true;
+                      }
+                  } else if (voteType === 'dislike') {
+                      if (currentDislikes.has(userId)) {
+                          // Already disliked, so UNDISLIKE
+                          currentDislikes.delete(userId);
+                          hasChanged = true;
+                      } else {
+                          // DISLIKE
+                          currentDislikes.add(userId);
+                          if (currentLikes.has(userId)) {
+                              currentLikes.delete(userId); // Remove like if present
+                              hasChanged = true;
+                          }
+                          hasChanged = true;
+                      }
+                  }
+
+                  if (hasChanged) {
+                      transaction.update(reviewRef, { 
+                          likes: Array.from(currentLikes), 
+                          dislikes: Array.from(currentDislikes) 
+                      });
+                  }
+                  
+                  return { likes: currentLikes.size, dislikes: currentDislikes.size, hasChanged };
+              });
+          }).then(({likes, dislikes, hasChanged}) => {
+              if (hasChanged) {
+                  // Quick update on the current view for better UX
+                  // We need to reload reviews to update the button styles correctly
+                  // For simplicity, let's just reload all reviews data
+                  loadReviews(); 
+              }
+          }).catch(err => { 
+              console.error('Gagal merekam reaksi:', err); 
+              showNotification('Gagal merekam reaksi: ' + (err.message || 'Cek Firebase Rules.'), 'error'); 
+          });
+      }
+
+
       // --- FIREBASE OPERATIONS ---
 
       function loadReviews() {
@@ -825,7 +965,14 @@
             .orderBy('timestamp', 'desc')
             .get()
             .then(snapshot => {
-                allReviews = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data(), sentiment: getSentiment(doc.data().rating), pinned: doc.data().pinned || false }));
+                allReviews = snapshot.docs.map(doc => ({ 
+                    id: doc.id, 
+                    ...doc.data(), 
+                    sentiment: getSentiment(doc.data().rating), 
+                    pinned: doc.data().pinned || false,
+                    likes: doc.data().likes || [],     // Include likes
+                    dislikes: doc.data().dislikes || [] // Include dislikes
+                }));
                 updateSummary();
                 renderReviews(currentFilter);
             })
@@ -857,10 +1004,12 @@
                   rating: rating,
                   reviewText: reviewText,
                   timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                  pinned: false
+                  pinned: false,
+                  likes: [], // Initialize likes
+                  dislikes: [] // Initialize dislikes
               });
           }).then(() => {
-              showNotification('Makasih atas ulasannya!', 'success'); // <-- Ganti Alert
+              showNotification('Makasih atas ulasannya!', 'success'); 
               document.getElementById('reviewForm').reset();
               document.getElementById('selectedRating').value = '0';
               document.getElementById('starPicker').querySelectorAll('i').forEach(star => star.classList.remove('selected', 'fas'));
@@ -869,43 +1018,12 @@
               loadReviews();
           }).catch(error => {
               console.error('Error writing document: ', error);
-              showNotification('Gagal mengirim ulasan: ' + error.message, 'error'); // <-- Ganti Alert
+              showNotification('Gagal mengirim ulasan: ' + error.message, 'error'); 
               document.getElementById('submitReviewBtn').disabled = false;
               document.getElementById('submitReviewBtn').textContent = 'Kirim Ulasan';
           });
       });
 
-      function voteOnReply(reviewId, type) {
-          const user = auth.currentUser;
-          if (!user) { showNotification('Silakan login untuk memberikan reaksi.', 'error'); return; }
-
-          const reviewRef = db.collection('reviews').doc(reviewId);
-          return db.runTransaction(transaction => {
-              return transaction.get(reviewRef).then(doc => {
-                  if (!doc.exists) throw 'Dokumen tidak ditemukan';
-                  const reply = doc.data().reply || { likes: [], dislikes: [] };
-                  const likes = new Set(reply.likes || []);
-                  const dislikes = new Set(reply.dislikes || []);
-                  
-                  if (type === 'like'){
-                      if (likes.has(user.uid)) { likes.delete(user.uid); } else { likes.add(user.uid); dislikes.delete(user.uid); }
-                  } else {
-                      if (dislikes.has(user.uid)) { dislikes.delete(user.uid); } else { dislikes.add(user.uid); likes.delete(user.uid); }
-                  }
-                  
-                  const newReply = Object.assign({}, reply, { likes: Array.from(likes), dislikes: Array.from(dislikes) });
-                  transaction.update(reviewRef, { reply: newReply });
-                  return { likes: newReply.likes.length, dislikes: newReply.dislikes.length };
-              });
-          }).then(({likes, dislikes}) => {
-              // Quick update on the current view for better UX
-              document.getElementById(`like-count-${reviewId}`).textContent = likes;
-              document.getElementById(`dislike-count-${reviewId}`).textContent = dislikes;
-          }).catch(err => { 
-              console.error(err); 
-              showNotification('Gagal merekam reaksi: ' + (err.message || err), 'error'); 
-          });
-      }
 
       function togglePin(reviewId) {
           const user = auth.currentUser;

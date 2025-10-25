@@ -19,6 +19,7 @@
     <!-- Tambahkan Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
     <!-- End Firebase SDK -->
     <style>
       :root {
@@ -48,7 +49,7 @@
         overflow-x: hidden;
       }
 
-      /* --- NEW: Pop-up Modal Login/Anonim --- */
+      /* --- NEW: Info/Anonim Modal (Menangani Anonim & Service Closed) --- */
       .anonim-modal {
         display: none; /* Disembunyikan secara default */
         position: fixed;
@@ -61,6 +62,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
+        backdrop-filter: blur(5px);
       }
 
       .anonim-content {
@@ -89,6 +91,7 @@
         font-size: 1.5rem;
         color: var(--primary);
         margin-bottom: 0.5rem;
+        font-weight: 700;
       }
       
       .anonim-message {
@@ -100,12 +103,13 @@
         display: flex;
         justify-content: space-around;
         gap: 10px;
+        margin-top: 20px;
       }
       
       .anonim-btn {
         padding: 10px 20px;
         border-radius: 50px;
-        font-weight: 500;
+        font-weight: 600;
         cursor: pointer;
         transition: all 0.3s ease;
         border: none;
@@ -122,7 +126,6 @@
         color: var(--dark);
         border: 1px solid var(--gray);
       }
-      
       /* Tambahkan Overlay Disabled pada Card */
       .card.disabled::after {
         content: "";
@@ -631,37 +634,96 @@
         color: var(--white);
       }
 
-      footer {
+      /* Footer Styles (Gaya dari Index.html) */
+      .footer {
         background-color: var(--dark);
         color: var(--white);
-        padding: 3rem 1rem;
-        text-align: center;
+        padding: 3rem 0 0;
       }
-
-      .footer-content {
+      .footer-container {
         max-width: 1200px;
         margin: 0 auto;
+        padding: 0 1rem;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
       }
-
-      footer h3 {
+      .footer-about {
+        margin-bottom: 2rem;
+      }
+      .footer-logo {
+        display: flex;
+        align-items: center;
         font-size: 1.5rem;
+        font-weight: 700;
         margin-bottom: 1rem;
+        color: var(--white);
       }
-
-      footer p {
+      .footer-logo i {
+        margin-right: 0.5rem;
+        font-size: 1.8rem;
+      }
+      .footer-about p {
         opacity: 0.8;
-        margin-bottom: 1.5rem;
-        max-width: 600px;
-        margin-left: auto;
-        margin-right: auto;
-      }
-
-      .copyright {
-        margin-top: 2rem;
-        padding-top: 1.5rem;
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
         font-size: 0.9rem;
-        opacity: 0.7;
+      }
+      .footer-links h3 {
+        font-size: 1.2rem;
+        margin-bottom: 1.5rem;
+        position: relative;
+        padding-bottom: 0.5rem;
+      }
+      .footer-links h3::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 50px;
+        height: 2px;
+        background: var(--primary);
+      }
+      .footer-links ul {
+        list-style: none;
+      }
+      .footer-links li {
+        margin-bottom: 0.8rem;
+      }
+      .footer-links a {
+        color: var(--white);
+        opacity: 0.8;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+      }
+      .footer-links a:hover {
+        opacity: 1;
+        padding-left: 5px;
+      }
+      .footer-links a i {
+        margin-right: 0.5rem;
+        width: 20px;
+        text-align: center;
+      }
+      .footer-contact p {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1rem;
+        opacity: 0.8;
+        font-size: 0.9rem;
+      }
+      .footer-contact i {
+        margin-right: 0.8rem;
+        width: 20px;
+        text-align: center;
+      }
+      .footer-bottom {
+        text-align: center;
+        padding: 1.5rem;
+        background-color: rgba(0, 0, 0, 0.2);
+        margin-top: 2rem;
+        font-size: 0.9rem;
+        opacity: 0.8;
       }
 
       @media (max-width: 768px) {
@@ -756,7 +818,7 @@
     </style>
   </head>
   <body>
-    <!-- NEW: Anonim Warning/Login Modal -->
+    <!-- NEW: Info/Anonim Modal (Menangani Anonim & Service Closed) -->
     <div id="anonimModal" class="anonim-modal" style="display: none;">
         <div class="anonim-content">
             <h3 class="anonim-title" id="anonimTitle"></h3>
@@ -989,24 +1051,90 @@
       </div>
     </section>
 
-    <footer id="kontak">
-      <div class="footer-content">
-        <h3>Kontak Kami</h3>
-        <p>
-          Klik tombol di bawah ini untuk langsung menghubungi kami via WhatsApp.
-        </p>
-        <a
-          href="https://wa.me/6285817818216"
-          class="btn btn-whatsapp"
-          target="_blank"
-        >
-          <i class="fab fa-whatsapp"></i> Hubungi via WhatsApp
-        </a>
-        <div class="copyright">
-          <p>&copy; 2025 Sejuk Teknik AC. Semua hak dilindungi.</p>
+    <!-- PENGGANTIAN FOOTER SESUAI PERMINTAAN -->
+    <footer class="footer">
+      <div class="footer-container">
+        <div class="footer-about">
+          <div class="footer-logo">
+            <i class="fas fa-snowflake"></i>
+            Sejuk Teknik AC
+          </div>
+          <p>
+            Solusi AC dan kelistrikan profesional sejak 2020. Memberikan
+            pelayanan terbaik dengan teknisi berpengalaman dan harga terjangkau.
+          </p>
+        </div>
+        <div class="footer-links">
+          <h3>Menu</h3>
+          <ul>
+            <li>
+              <a href="index.html"><i class="fas fa-home"></i> Beranda</a>
+            </li>
+            <li>
+              <a href="layanan.html"><i class="fas fa-tools"></i> Layanan</a>
+            </li>
+            <li>
+              <a href="AC-Placement-Planner.html"
+                ><i class="fas fa-cube"></i> 3D AC Planner</a
+              >
+            </li>
+            <li>
+              <a href="tentang.html"
+                ><i class="fas fa-info-circle"></i> Tentang</a
+              >
+            </li>
+            <li>
+              <a href="https://wa.me/6285817818216"
+                ><i class="fas fa-envelope"></i> Kontak</a
+              >
+            </li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h3>Layanan</h3>
+          <ul>
+            <li>
+              <a href="#"
+                ><i class="fas fa-air-conditioner"></i> Instalasi AC</a
+              >
+            </li>
+            <li>
+              <a href="cuci-ac.html"><i class="fas fa-broom"></i> Cuci AC</a>
+            </li>
+            <li>
+              <a href="cuci-ac.html"><i class="fas fa-tools"></i> Service AC</a>
+            </li>
+            <li>
+              <a href="panel-distribusi.html"
+                ><i class="fas fa-bolt"></i> Instalasi Listrik</a
+              >
+            </li>
+            <li>
+              <a href="sewa-ac.html"
+                ><i class="fas fa-snowflake"></i> Sewa AC</a
+              >
+            </li>
+          </ul>
+        </div>
+        <div class="footer-contact">
+          <h3>Kontak Kami</h3>
+          <p><i class="fab fa-whatsapp"></i> WhatsApp: 085817818216</p>
+          <p>
+            <i class="fas fa-envelope"></i> Email:
+            jayatehnikmandiri234@gmail.com
+          </p>
+          <p><i class="fas fa-clock"></i> Buka: 09:00 - 07:00 WIB</p>
+          <p>
+            <i class="fas fa-map-marker-alt"></i> Jl. Raya Perjuangan No.25
+            RT.16 RW.07, Tugu Selatan Koja
+          </p>
         </div>
       </div>
+      <div class="footer-bottom">
+        <p>© 2020-2025 Sejuk Teknik AC. All Rights Reserved.</p>
+      </div>
     </footer>
+
 
     <script>
       // --- Firebase Configuration (HARUS SAMA DENGAN INDEX.HTML) ---
@@ -1025,9 +1153,12 @@
         firebase.initializeApp(firebaseConfig);
       }
       const auth = firebase.auth();
+      const db = firebase.firestore(); // Tambahkan firestore
       
       // --- Status & Elemen ---
       let isLoggedIn = false;
+      let isServiceOpenGlobal = true; // Default to open
+      let openTimeGlobal = '09:00 WIB'; // Default open time
       const anonimModal = document.getElementById('anonimModal');
       const anonimTitle = document.getElementById('anonimTitle');
       const anonimMessage = document.getElementById('anonimMessage');
@@ -1036,9 +1167,8 @@
       const allCards = document.querySelectorAll('.card');
       const allActionButtons = document.querySelectorAll('.btn-action');
       
-      // --- Data Services ---
+      // --- Data Services (Dibiarkan sama) ---
       const services = {
-        // (Data services Anda di sini)
         "cuci-ac": {
           title: "Service / Cuci AC",
           description: "Layanan cuci AC profesional...",
@@ -1103,112 +1233,179 @@
           whatsapp: "https://wa.me/6285817818216?text=Saya%20butuh%20servis%20gulung%20dinamo",
         },
       };
-
-      // --- Fungsi Modal Anonim ---
       
-      /**
-       * Menampilkan modal anonim dengan pesan kustom
-       * @param {string} type - 'initial' atau 'action'
-       */
-      function showAnonimModal(type) {
-        if (type === 'initial') {
-          // Pesan saat pertama kali masuk (anonim)
-          anonimTitle.textContent = "Kamu Terdaftar Anonim Nih!👋";
-          anonimMessage.innerHTML = "Kita gak tau identitas mu😅 **Login/Sign Up** dulu yah! Sampai jumpa lagi anonim!👋";
-          anonimAction.textContent = "Oke, Balik ke Index";
-          anonimDismiss.style.display = 'inline-block';
-          
-          // Action akan mengarahkan ke index
-          anonimAction.onclick = () => { window.location.href = 'index.html'; };
-          
-          // Dismiss akan menutup modal dan membiarkan di halaman ini (tapi layanan tetap disable)
-          anonimDismiss.onclick = hideAnonimModal;
-          
-          // Setelah pesan awal, disable semua kartu
-          allCards.forEach(card => card.classList.add('disabled'));
-          
-        } else if (type === 'action') {
-          // Pesan saat mencoba klik tombol Aksi/WhatsApp
-          anonimTitle.textContent = "Duh, Aku Gak Tau Identitas Mu!🙁";
-          anonimMessage.innerHTML = "Daftar/Login dulu gih untuk melakukan transaksi✨";
-          anonimAction.textContent = "Login/Sign Up";
-          anonimDismiss.style.display = 'none'; // Sembunyikan dismiss
-          
-          // Action akan mengarahkan ke index (di mana modal login ada)
-          anonimAction.onclick = () => { window.location.href = 'index.html'; }; 
-        }
-        
-        anonimModal.style.display = 'flex';
-        document.body.style.overflow = 'hidden';
-      }
+      // --- Utility Functions ---
       
       function hideAnonimModal() {
           anonimModal.style.display = 'none';
           document.body.style.overflow = 'auto';
       }
 
-      // --- Fungsi Utama UI Control ---
-      function updateServiceUI(user) {
-        if (user) {
-          // User sudah login
-          isLoggedIn = true;
-          allCards.forEach(card => card.classList.remove('disabled')); // Enable semua kartu
-          // Pasang kembali event listener klik langsung ke tombol aksi
-          setupActionListener();
-        } else {
-          // User belum login
-          isLoggedIn = false;
-          // Nonaktifkan semua kartu
-          allCards.forEach(card => card.classList.add('disabled'));
-          // Tambahkan event listener untuk memunculkan modal peringatan
-          setupAnonimClickListener();
+      /**
+       * Menampilkan modal info generic (digunakan untuk Anonim dan Service Closed)
+       */
+      function showInfoModal(title, message, primaryText, primaryAction, secondaryText, secondaryAction) {
+          anonimTitle.textContent = title;
+          anonimMessage.innerHTML = message;
+          anonimAction.textContent = primaryText;
+          anonimAction.onclick = primaryAction;
 
-          // Tampilkan modal peringatan awal HANYA JIKA ini kali pertama masuk (atau belum didismiss)
-          if (!sessionStorage.getItem('anonimDismissed')) {
-              showAnonimModal('initial');
-              // Set session storage agar tidak muncul lagi kecuali session browser ditutup
-              sessionStorage.setItem('anonimDismissed', 'true');
+          if (secondaryText && secondaryAction) {
+              anonimDismiss.style.display = 'inline-block';
+              anonimDismiss.textContent = secondaryText;
+              anonimDismiss.onclick = secondaryAction;
+          } else {
+              anonimDismiss.style.display = 'none';
           }
-        }
+
+          anonimModal.style.display = 'flex';
+          document.body.style.overflow = 'hidden';
       }
       
-      // --- Setup Event Listeners ---
+      // --- Modal Logic: Service Closed ---
       
-      // Setup listener untuk tombol aksi di card (hanya dipasang saat login)
-      function setupActionListener() {
-        allActionButtons.forEach(button => {
-            button.onclick = null; // Hapus listener lama (jika ada)
-            // Biarkan tombol menjalankan href aslinya (link ke halaman detail/transaksi)
-        });
+      function showServiceClosedModal(type, openTime) {
+          const defaultOpenTime = openTime || '09:00 WIB';
+          
+          if (type === 'initial') {
+              showInfoModal(
+                  "Duh! Layanan Tutup! 😴",
+                  `Kita lagi tutup, mohon kembali **${defaultOpenTime}** yah! untuk mencari layanan yang kamu mau!`,
+                  "Oke (Ke Beranda)",
+                  () => { window.location.href = 'index.html'; },
+                  "Dismiss (Tetap Disini)",
+                  hideAnonimModal
+              );
+          } else if (type === 'action') {
+              showInfoModal(
+                  "Layanan Sedang Istirahat! 🕑",
+                  `Layanan kami sedang tutup, mohon kembali pada pukul **${defaultOpenTime}** yah. Terima kasih!`,
+                  "Oke, Mengerti",
+                  hideAnonimModal,
+                  null, null 
+              );
+          }
+      }
+      
+      // --- Modal Logic: Anonim ---
+      
+      function showAnonimModalAction() {
+           showInfoModal(
+              "Duh, Aku Gak Tau Identitas Mu!🙁",
+              "Daftar/Login dulu gih untuk melakukan transaksi✨",
+              "Login/Sign Up",
+              () => { window.location.href = 'index.html'; }, // Redirect ke index untuk login
+              null, null
+          );
+      }
+      
+
+      // --- Firebase Operational Status Check ---
+
+      function checkServiceStatus(settings) {
+          if (settings.forceStatus === 'open') return true;
+          if (settings.forceStatus === 'close') return false;
+          
+          const now = new Date();
+          const localTime = now.getHours() * 60 + now.getMinutes();
+
+          const [openH, openM] = (settings.openTime || '09:00').split(':').map(Number);
+          const openMinutes = openH * 60 + openM;
+
+          const [closeH, closeM] = (settings.closeTime || '19:00').split(':').map(Number);
+          const closeMinutes = closeH * 60 + closeM;
+
+          return localTime >= openMinutes && localTime < closeMinutes;
+      }
+      
+      function loadOperationalStatus(isLoggedIn) {
+          db.collection('settings').doc('operational').get().then(doc => {
+              const settings = doc.data() || {};
+              const isOpen = checkServiceStatus(settings);
+              
+              isServiceOpenGlobal = isOpen; 
+              openTimeGlobal = settings.openTime || '09:00 WIB'; 
+
+              // 1. Cek Service Closed (Initial Warning - Hanya jika service tutup)
+              if (!isOpen && !sessionStorage.getItem('serviceClosedDismissed')) {
+                  showServiceClosedModal('initial', openTimeGlobal);
+                  sessionStorage.setItem('serviceClosedDismissed', 'true');
+              }
+              
+              // 2. Update UI berdasarkan gabungan status
+              toggleServiceCards(isLoggedIn, isOpen);
+
+          }).catch(error => {
+              console.error("Error loading operational settings:", error);
+              isServiceOpenGlobal = false;
+              openTimeGlobal = '09:00 WIB';
+              toggleServiceCards(isLoggedIn, false);
+          });
       }
 
-      // Setup listener untuk card yang disabled (dipasang saat anonim)
-      function setupAnonimClickListener() {
-        allCards.forEach(card => {
-            // Hapus semua event listener yang mungkin ada di tombol detail atau action di dalam card
-            card.querySelectorAll('.btn-action, .btn-detail').forEach(button => {
-                button.onclick = (e) => {
-                    e.preventDefault();
-                    showAnonimModal('action'); // Tampilkan modal peringatan
-                };
-            });
-            
-            // Tambahkan listener langsung ke card untuk memunculkan modal action (jika card di-klik)
-            card.onclick = () => {
-                 showAnonimModal('action');
-            };
-        });
+      // --- UI Control & Event Setup ---
+
+      function toggleServiceCards(isLoggedIn, isServiceOpen) {
+          const disableCondition = !isLoggedIn || !isServiceOpen;
+
+          allCards.forEach(card => {
+              // Priority: Service Closed always disables if !isServiceOpen
+              if (!isServiceOpen) {
+                  card.classList.add('disabled');
+              } else if (!isLoggedIn) { 
+                  card.classList.add('disabled');
+              } else {
+                  card.classList.remove('disabled');
+              }
+          });
+
+          // Setup click listeners (overriding default behavior for disabled cards)
+          setupCardClickListeners(isLoggedIn, isServiceOpen, openTimeGlobal);
+      }
+
+      function setupCardClickListeners(isLoggedIn, isServiceOpen, openTime) {
+          const disabledElements = document.querySelectorAll('.card.disabled .btn-action, .card.disabled');
+          
+          // Reset action buttons first
+          allActionButtons.forEach(button => {
+              button.onclick = null;
+              if (isLoggedIn && isServiceOpen) {
+                  // Jika enabled, biarkan href berjalan normal
+                  button.onclick = null; 
+              }
+          });
+
+          disabledElements.forEach(element => {
+              // Jika service tutup, show Service Closed Modal
+              if (!isServiceOpen) {
+                  element.onclick = (e) => {
+                      e.preventDefault();
+                      showServiceClosedModal('action', openTime);
+                  };
+              } 
+              // Jika service buka tapi belum login, show Anonim Modal
+              else if (!isLoggedIn) {
+                  element.onclick = (e) => {
+                      e.preventDefault();
+                      showAnonimModalAction();
+                  };
+              }
+          });
       }
 
 
+      function updateServiceUI(user) {
+        isLoggedIn = !!user;
+        // Panggil pengecekan status operasional setelah status login diketahui
+        loadOperationalStatus(isLoggedIn);
+      }
+      
       // --- Inisialisasi ---
       document.addEventListener("DOMContentLoaded", function() {
         // Cek status autentikasi saat halaman dimuat
         auth.onAuthStateChanged(updateServiceUI);
         
-        // --- Kode lama lainnya ---
-        
-        // Snow animation
+        // Snow animation (dibiarkan sama)
         function createSnow() {
           const snowContainer = document.getElementById("snow");
           const snowflakeCount = 50;
@@ -1217,19 +1414,12 @@
             const snowflake = document.createElement("div");
             snowflake.classList.add("snowflake");
 
-            // Random size between 2px and 6px
             const size = Math.random() * 4 + 2;
             snowflake.style.width = `${size}px`;
             snowflake.style.height = `${size}px`;
-
-            // Random position
             snowflake.style.left = `${Math.random() * 100}%`;
-
-            // Random animation duration between 5s and 15s
             const duration = Math.random() * 10 + 5;
             snowflake.style.animationDuration = `${duration}s`;
-
-            // Random delay
             snowflake.style.animationDelay = `${Math.random() * 5}s`;
 
             snowContainer.appendChild(snowflake);
@@ -1237,7 +1427,7 @@
         }
         window.addEventListener("load", createSnow);
 
-        // Card animation
+        // Card animation (dibiarkan sama)
         const cards = document.querySelectorAll(".card");
         const observer = new IntersectionObserver(
           (entries) => {
@@ -1251,7 +1441,7 @@
         );
         cards.forEach((card) => observer.observe(card));
 
-        // Shake effect for popular cards
+        // Shake effect for popular cards (dibiarkan sama)
         const popularCards = document.querySelectorAll(".popular-card");
         popularCards.forEach((card) => {
           card.addEventListener("mouseenter", () => {
@@ -1262,7 +1452,7 @@
           });
         });
 
-        // Modal functionality
+        // Modal functionality (Detail button - tetap berfungsi saat disabled)
         const modal = document.getElementById("serviceModal");
         const modalTitle = document.getElementById("modalTitle");
         const modalDescription = document.getElementById("modalDescription");
@@ -1271,7 +1461,6 @@
         const modalWhatsApp = document.getElementById("modalWhatsApp");
         const closeButtons = document.querySelectorAll(".close-modal");
 
-        // Add click event to all detail buttons (tetap berfungsi saat login/anonim)
         document.querySelectorAll(".btn-detail").forEach((button) => {
             button.addEventListener("click", function (e) {
                 e.preventDefault();
@@ -1312,7 +1501,7 @@
           }
         });
         
-        // Pastikan modal anonim ditutup saat klik di luar area modal
+        // Pastikan info modal ditutup saat klik di luar area modal
         window.addEventListener('click', (e) => {
             if (e.target === anonimModal) {
                 hideAnonimModal();

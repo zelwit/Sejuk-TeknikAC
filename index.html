@@ -1546,6 +1546,24 @@
           display: flex !important; /* Force display for desktop-only links on desktop */
         }
       }
+      
+      /* --- KOREKSI STATUS BAR POSITION --- */
+      .fixed-status-bar {
+          position: absolute; 
+          top: 60px; /* Di bawah SJCoin (20px + perkiraan tinggi SJCoin 30px + margin 10px) */
+          left: 20px;
+          z-index: 49; 
+          padding: 5px 10px;
+          border-radius: 8px;
+          font-size: 0.9rem;
+          font-weight: 600;
+          box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+          transition: all 0.3s ease;
+          white-space: nowrap;
+          display: flex; 
+          align-items: center;
+          gap: 10px;
+      }
     </style>
   </head>
   <body>

@@ -1564,6 +1564,12 @@
           align-items: center;
           gap: 10px;
       }
+      /* Mengubah tampilan employee-status-fixed agar tidak memiliki garis pemisah */
+      .employee-status-fixed {
+        font-size: 0.9em;
+        padding-left: 0; /* Hapus padding kiri */
+        border-left: none; /* Hapus garis pemisah */
+      }
     </style>
   </head>
   <body>
@@ -2181,7 +2187,7 @@
             </li>
             <li>
               <a href="https://wa.me/6285817818216"
-                ><i class="fas fa-phone-alt"></i> Kontak</a
+                ><i class="fas fa-envelope"></i> Kontak</a
               >
             </li>
           </ul>
@@ -2964,8 +2970,15 @@
                   statusText.textContent = isOpen ? 'LAYANAN DIBUKA' : 'LAYANAN DITUTUP';
                   icon.className = isOpen ? 'fas fa-check-circle' : 'fas fa-times-circle';
 
-                  // Perbarui teks status karyawan sesuai permintaan
-                  employeeText.textContent = settings.employeeStatus ? `${settings.employeeStatus}` : 'Siaga';
+                  // LOGIKA BARU UNTUK STATUS KARYAWAN/WAKTU
+                  if (isOpen) {
+                      // Jika buka: tampilkan status karyawan (sesuai data atau default 'Siaga')
+                      employeeText.textContent = settings.employeeStatus ? `${settings.employeeStatus}` : 'Siaga';
+                  } else {
+                      // Jika tutup: tampilkan waktu buka kembali
+                      const openTime = settings.openTime || '09:00';
+                      employeeText.textContent = `Kembali datang pada ${openTime} WIB`;
+                  }
                   
                   // Perbarui status card setelah mendapatkan status operasional
                   toggleServiceCards(isLoggedIn, isOpen);

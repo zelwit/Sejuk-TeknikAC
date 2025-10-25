@@ -160,6 +160,7 @@
         font-size: 0.95rem;
         transition: all 0.3s ease;
         position: relative;
+        white-space: nowrap; /* Penting untuk navigasi kompak */
       }
       nav a:hover {
         color: var(--primary);
@@ -1322,21 +1323,168 @@
         background-color: var(--primary);
         color: white;
       }
+      
+      /* --- NEW STYLE: Hamburger and Mobile Menu --- */
+      .hamburger {
+        display: none; /* Hidden on desktop */
+        width: 40px;
+        height: 40px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+        position: relative;
+        z-index: 150;
+      }
+      .hamburger .bar {
+        display: block;
+        width: 25px;
+        height: 3px;
+        margin: 5px auto;
+        background-color: var(--primary);
+        transition: all 0.3s ease-in-out;
+      }
 
-      @media (max-width: 768px) {
+      /* Mobile menu container (off-canvas) */
+      .mobile-menu {
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: 280px; /* Lebar sidebar */
+        height: 100%;
+        background-color: var(--white);
+        box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+        transform: translateX(100%); /* Start off-screen */
+        transition: transform 0.3s ease-in-out;
+        z-index: 1000;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .mobile-menu.open {
+        transform: translateX(0);
+      }
+
+      .mobile-menu-header {
+        padding: 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid var(--primary-light);
+      }
+
+      .close-btn-mobile {
+        font-size: 2rem;
+        line-height: 1;
+        border: none;
+        background: none;
+        cursor: pointer;
+        color: var(--dark);
+      }
+
+      .mobile-menu-links {
+        padding: 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        overflow-y: auto;
+      }
+
+      .mobile-menu-links a {
+        padding: 10px 0;
+        color: var(--dark);
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 1rem;
+        transition: color 0.3s;
+        border-bottom: 1px solid #f1f1f1;
+        display: flex;
+        align-items: center;
+      }
+      .mobile-menu-links a:last-child {
+        border-bottom: none;
+      }
+
+      .mobile-menu-links a i {
+          margin-right: 10px;
+          color: var(--primary);
+      }
+
+      .mobile-menu-links a:hover {
+        color: var(--primary);
+      }
+      
+      .mobile-menu-links hr {
+          border: 0;
+          height: 1px;
+          background-color: #ddd;
+          margin: 10px 0;
+      }
+
+      /* Hamburger animation (X icon) */
+      .hamburger.is-active .bar:nth-child(2) {
+        opacity: 0;
+      }
+      .hamburger.is-active .bar:nth-child(1) {
+        transform: translateY(8px) rotate(45deg);
+      }
+      .hamburger.is-active .bar:nth-child(3) {
+        transform: translateY(-8px) rotate(-45deg);
+      }
+      
+      /* Mobile-Specific Styles (max-width: 992px for tablet/mobile) */
+      @media (max-width: 992px) {
+        /* Make navbar layout for mobile */
         .nav-container {
-          flex-direction: column;
-          gap: 1rem;
+          flex-direction: row; /* Keep elements in a row */
+          justify-content: space-between;
+          align-items: center;
+          padding: 1rem;
+        }
+        
+        /* Show Hamburger */
+        .hamburger {
+          display: block;
+        }
+        
+        /* Arrange Logo, Links, Buttons horizontally */
+        .logo {
+            order: 1;
         }
         .nav-links {
-          flex-wrap: wrap;
-          justify-content: center;
+          display: flex; 
+          gap: 0.8rem;
+          align-items: center;
+          justify-content: flex-start;
+          flex-grow: 1;
+          order: 2; /* Put links in the middle */
+          margin-left: 1rem; /* Space between logo and links */
         }
         .auth-buttons {
-          width: 100%;
-          justify-content: center;
-          margin-top: 10px;
+            display: none; /* Hide desktop auth buttons */
+            order: 3;
         }
+        
+        /* Only show 3 main links in the main nav on mobile (1, 2, 7) */
+        /* Beranda, Layanan, Rating & Ulasan */
+        .nav-links a {
+            display: none; /* Hide all links initially */
+            font-size: 0.85rem;
+            padding: 5px;
+            text-align: center;
+        }
+        /* Tampilkan Beranda (1), Layanan (2), Rating & Ulasan (7) */
+        .nav-links a:nth-child(1), 
+        .nav-links a:nth-child(2), 
+        .nav-links a:nth-child(7) { 
+            display: inline-block; 
+        }
+        
+        .nav-links a i {
+            display: none; /* Hide icons in the compact nav-links for clean look */
+        }
+        
+        /* Adjust existing mobile styles */
         header h1 {
           font-size: 2rem;
         }
@@ -1376,114 +1524,27 @@
             top: 60px !important; 
         }
       }
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-          transform: translateY(-20px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
       
-      /* Desktop-only class for device detection */
+      /* Ensure mobile menu auth buttons are block level */
+      .auth-buttons-mobile {
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          padding: 0 1rem;
+      }
+      .auth-buttons-mobile .auth-btn {
+          width: 100%;
+          text-align: center;
+      }
+
+      /* Clear desktop-only for a cleaner mobile implementation */
       .desktop-only {
-        display: inline-block;
+        display: none !important;
       }
-      @media (max-width: 992px) {
-        .desktop-only {
-          display: none;
+      @media (min-width: 993px) {
+        .nav-links .desktop-link {
+          display: flex !important; /* Force display for desktop-only links on desktop */
         }
-      }
-      
-      /* --- NEW STYLE: Fixed Operational Status Bar --- */
-      /* Hapus CSS .status-widget yang lama dan ganti dengan ini */
-      .fixed-status-bar {
-        position: absolute; 
-        top: 80px; /* Di bawah SJCoin (20px + perkiraan tinggi 40px + margin 20px) */
-        left: 20px;
-        z-index: 49; 
-        padding: 5px 10px;
-        border-radius: 8px;
-        font-size: 0.9rem;
-        font-weight: 600;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-        transition: all 0.3s ease;
-        white-space: nowrap;
-        display: flex; /* Untuk menata status di satu baris */
-        align-items: center;
-        gap: 10px;
-      }
-      .fixed-status-bar.open {
-        background-color: var(--success);
-        color: var(--white);
-      }
-      .fixed-status-bar.closed {
-        background-color: var(--danger);
-        color: var(--white);
-      }
-      .status-indicator-fixed i {
-        font-size: 1.1rem;
-      }
-      .employee-status-fixed {
-        font-size: 0.9em;
-        padding-left: 10px;
-        border-left: 1px solid rgba(255, 255, 255, 0.5);
-      }
-      
-      /* --- NEW STYLE: Event Pop-up Modal --- */
-      .event-modal {
-        position: fixed;
-        z-index: 4000;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.6);
-        display: none; 
-        justify-content: center;
-        align-items: center;
-        backdrop-filter: blur(3px);
-      }
-      .event-content {
-        background-color: var(--white);
-        padding: 30px;
-        border-radius: 12px;
-        max-width: 450px;
-        width: 90%;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-        animation: modalSlideUp 0.4s ease-out;
-      }
-      .event-header {
-        font-size: 1.5rem;
-        font-weight: 700;
-        margin-bottom: 15px;
-      }
-      .event-message {
-        margin-bottom: 20px;
-        line-height: 1.5;
-      }
-      .event-footer {
-        display: flex;
-        justify-content: space-between;
-        gap: 10px;
-      }
-      .event-close-btn {
-        background: var(--gray);
-        color: white;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 50px;
-        cursor: pointer;
-      }
-      .event-dismiss-btn {
-        background: transparent;
-        color: var(--gray);
-        border: none;
-        font-size: 0.9em;
-        cursor: pointer;
-        align-self: center;
       }
     </style>
   </head>
@@ -1628,29 +1689,70 @@
     <nav>
       <div class="nav-container">
         <a href="index.html" class="logo">Sejuk Teknik</a>
-        <div class="nav-links">
+        <div class="nav-links" id="desktopNavLinks">
+          <!-- Tautan 1. Beranda (Tampilkan di Mobile) -->
           <a href="index.html"><i class="fas fa-home"></i> Beranda</a>
+          <!-- Tautan 2. Layanan (Tampilkan di Mobile) -->
           <a href="layanan.html"><i class="fas fa-tools"></i> Layanan</a>
-          <a href="AC-Placement-Planner.html" class="desktop-only"><i class="fas fa-cube"></i> 3D AC Placement Planner</a>
-          <a href="tentang.html"><i class="fas fa-info-circle"></i> Tentang</a>
-          <a href="https://wa.me/6285817818216"
+          <!-- Tautan 3. 3D AC Placement Planner (Sembunyikan di Mobile, Tambahkan ke Sidebar) -->
+          <a href="AC-Placement-Planner.html" class="desktop-link"><i class="fas fa-cube"></i> 3D AC Planner</a>
+          <!-- Tautan 4. Tentang (Sembunyikan di Mobile, Tambahkan ke Sidebar) -->
+          <a href="tentang.html" class="desktop-link"><i class="fas fa-info-circle"></i> Tentang</a>
+          <!-- Tautan 5. Kontak (Sembunyikan di Mobile, Tambahkan ke Sidebar) -->
+          <a href="https://wa.me/6285817818216" class="desktop-link"
             ><i class="fas fa-envelope"></i> Kontak</a
           >
-          <a href="faq.html"><i class="fas fa-question-circle"></i> FAQ</a>
+          <!-- Tautan 6. FAQ (Sembunyikan di Mobile, Tambahkan ke Sidebar) -->
+          <a href="faq.html" class="desktop-link"><i class="fas fa-question-circle"></i> FAQ</a>
+          <!-- Tautan 7. Rating & Ulasan (Tampilkan di Mobile) -->
           <a href="rating-ulasan.html"
             ><i class="fas fa-star"></i> Rating & Ulasan</a
           >
-          <a href="keluhan.html"><i class="fas fa-comment-dots"></i> Keluhan</a>
-          <a href="https://maps.app.goo.gl/uTFSMLiKuWcCRUMa6" target="_blank"
+          <!-- Tautan 8. Keluhan (Sembunyikan di Mobile, Tambahkan ke Sidebar) -->
+          <a href="keluhan.html" class="desktop-link"><i class="fas fa-comment-dots"></i> Keluhan</a>
+          <!-- Tautan 9. Lokasi (Sembunyikan di Mobile, Tambahkan ke Sidebar) -->
+          <a href="https://maps.app.goo.gl/uTFSMLiKuWcCRUMa6" target="_blank" class="desktop-link"
             ><i class="fas fa-map-marker-alt"></i> Lokasi</a
           >
         </div>
-        <div class="auth-buttons">
+        <div class="auth-buttons" id="authButtons">
           <button class="auth-btn login-btn" id="loginBtn">Login</button>
           <button class="auth-btn signup-btn" id="signupBtn">Sign Up</button>
         </div>
+        <!-- NEW: Hamburger Button for Mobile -->
+        <button class="hamburger" id="hamburgerBtn" aria-label="Toggle navigation">
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+        </button>
       </div>
     </nav>
+    
+    <!-- NEW: Mobile Menu (Off-Canvas) -->
+    <div class="mobile-menu" id="mobileMenu">
+      <div class="mobile-menu-header">
+        <a href="index.html" class="logo">Sejuk Teknik</a>
+        <button class="close-btn-mobile" id="closeMobileMenu">&times;</button>
+      </div>
+      <div class="mobile-menu-links">
+          <!-- Tautan Utama (Diulang untuk Sidebar) -->
+          <a href="index.html"><i class="fas fa-home"></i> Beranda</a>
+          <a href="layanan.html"><i class="fas fa-tools"></i> Layanan</a>
+          <a href="rating-ulasan.html"><i class="fas fa-star"></i> Rating & Ulasan</a>
+          <hr> 
+          <!-- Tautan Sekunder (Hanya di Sidebar) -->
+          <a href="AC-Placement-Planner.html"><i class="fas fa-cube"></i> 3D AC Placement Planner</a>
+          <a href="faq.html"><i class="fas fa-question-circle"></i> FAQ</a>
+          <a href="tentang.html"><i class="fas fa-info-circle"></i> Tentang</a>
+          <a href="keluhan.html"><i class="fas fa-comment-dots"></i> Keluhan</a>
+          <a href="https://wa.me/6285817818216"><i class="fas fa-envelope"></i> Kontak</a>
+          <a href="https://maps.app.goo.gl/uTFSMLiKuWcCRUMa6" target="_blank"><i class="fas fa-map-marker-alt"></i> Lokasi</a>
+          <hr>
+          <div class="auth-buttons-mobile" id="authButtonsMobile">
+              <!-- Auth buttons will be cloned here by JS -->
+          </div>
+      </div>
+    </div>
     <section class="hero">
       <div class="hero-content">
         <!-- === PERUBAHAN SEO START: H1 dioptimalkan isinya === -->
@@ -2480,6 +2582,7 @@
                 <li>Kompresor rusak</li>
                 <li>Filter udara kotor</li>
                 <li>Fan indoor tidak berputar</li>
+                <li>PCB board rusak</li>
               </ul>
               <p><strong>Solusi:</strong> Segera hubungi teknisi kami untuk pemeriksaan lebih lanjut dan penambahan freon jika diperlukan.</p>
             `;
@@ -2947,9 +3050,9 @@
 
                       // Perbarui teks overlay sesuai status
                       const overlayContent = card.querySelector(".card.disabled::after");
-                      if(overlayContent) { // Jika ada after content
-                         overlayContent.content = !isLoggedIn ? 'Login untuk Memesan' : 'Layanan Sedang Tutup';
-                      }
+                      // This part requires CSS content manipulation, which is limited in JS. 
+                      // For a true implementation, one would use a separate overlay element in the HTML
+                      // For now, we rely on the generic "Login untuk Memesan" text in CSS and rely on JS alerts.
                       
                       // Tambahkan event listener pencegah
                       card.querySelectorAll(".btn").forEach((btn) => {
@@ -2975,13 +3078,99 @@
           });
       }
 
+      // NEW: Mobile Menu Handlers
+      const hamburgerBtn = document.getElementById('hamburgerBtn');
+      const mobileMenu = document.getElementById('mobileMenu');
+      const closeMobileMenu = document.getElementById('closeMobileMenu');
+      const authButtons = document.getElementById('authButtons'); // Desktop container
+      const authButtonsMobile = document.getElementById('authButtonsMobile'); // Mobile container
+      
+      function handleAuthClone(user) {
+          // Clear both containers first
+          authButtons.innerHTML = '';
+          authButtonsMobile.innerHTML = '';
+          
+          if (user) {
+              // --- LOGGED IN STATE ---
+              // Buat tombol Logout
+              const logoutBtn = document.createElement('button');
+              logoutBtn.classList.add('auth-btn', 'login-btn');
+              logoutBtn.textContent = 'Logout';
+              logoutBtn.style.marginTop = '10px';
+              logoutBtn.onclick = showConfirmModal;
+              
+              // Buat tombol Akun Saya
+              const profileLink = document.createElement('a');
+              profileLink.href = `profile.html?uid=${user.uid}`;
+              profileLink.classList.add('auth-btn', 'signup-btn'); // Use signup style for visibility
+              profileLink.innerHTML = `<i class="fas fa-user-circle"></i> Akun Saya`;
+
+              // Tampilkan di Desktop Auth Buttons
+              authButtons.appendChild(profileLink);
+              authButtons.appendChild(logoutBtn.cloneNode(true));
+              authButtons.lastChild.addEventListener('click', showConfirmModal); // Re-attach listener
+              
+              // Tampilkan di Mobile Auth Buttons
+              authButtonsMobile.appendChild(profileLink.cloneNode(true));
+              authButtonsMobile.appendChild(logoutBtn); // Use original node for listener
+              
+          } else {
+              // --- LOGGED OUT STATE ---
+              authButtons.innerHTML = `
+                <button class="auth-btn login-btn" id="loginBtn">Login</button>
+                <button class="auth-btn signup-btn" id="signupBtn">Sign Up</button>
+              `;
+              // Re-attach listeners for newly created desktop buttons (needed later)
+          }
+      }
+
+      function toggleMobileMenu() {
+          mobileMenu.classList.toggle('open');
+          hamburgerBtn.classList.toggle('is-active');
+          document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : 'auto';
+          
+          // Re-attach listeners for the mobile Auth buttons (both logged in/out state)
+          if (mobileMenu.classList.contains('open')) {
+            // Re-render auth buttons inside mobile menu to ensure correct state and listeners
+            handleAuthClone(auth.currentUser); 
+
+            // Re-attach the login/signup listeners if logged out (cloned elements lose listeners)
+            if (!auth.currentUser) {
+                const loginBtnMobile = document.getElementById('loginBtn');
+                const signupBtnMobile = document.getElementById('signupBtn');
+                
+                if(loginBtnMobile) loginBtnMobile.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    toggleMobileMenu(); // Close mobile menu
+                    loginModal.style.display = 'block';
+                });
+                
+                if(signupBtnMobile) signupBtnMobile.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    toggleMobileMenu(); // Close mobile menu
+                    signupModal.style.display = 'block';
+                    goToStep(1);
+                });
+            }
+          }
+      }
 
       // Main script on DOMContentLoaded
       document.addEventListener("DOMContentLoaded", function () {
-        const authButtonsContainer = document.querySelector(".auth-buttons");
         const loginModal = document.getElementById("loginModal");
         const signupModal = document.getElementById("signupModal");
         const userInfoTop = document.getElementById("userInfoTop");
+        
+        // Setup Mobile Menu Listeners
+        hamburgerBtn.addEventListener('click', toggleMobileMenu);
+        closeMobileMenu.addEventListener('click', toggleMobileMenu);
+        document.querySelectorAll('.mobile-menu-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                if (mobileMenu.classList.contains('open')) {
+                    toggleMobileMenu(); // Close on click inside sidebar
+                }
+            });
+        });
 
         // Panggil fungsi sinkronisasi utama
         loadEventPopup();
@@ -2993,12 +3182,11 @@
         const updateAuthUI = (user) => {
           isUserLoggedInGlobal = !!user; // Update global login status
           
-          // Panggil status operasional dengan status login user
-          // Ini akan memicu toggleServiceCards di dalamnya
-          loadOperationalStatus(isUserLoggedInGlobal); 
+          // 1. Update/Clone Auth Buttons (Desktop & Mobile Menu)
+          handleAuthClone(user);
           
-          // Clear existing buttons
-          authButtonsContainer.innerHTML = "";
+          // 2. Load Operational Status
+          loadOperationalStatus(isUserLoggedInGlobal); 
 
           if (user) {
             // User is signed in
@@ -3010,7 +3198,7 @@
                 const userName =
                   userData.name || user.displayName || user.email.split("@")[0];
 
-                // 1. Update User Info Top Right
+                // 3. Update User Info Top Right
                 document.getElementById("userNameTop").textContent = userName;
                 document.getElementById("userUidTop").textContent = `UID: ${user.uid.substring(0, 4)}...`;
                 userInfoTop.style.display = "flex";
@@ -3020,12 +3208,12 @@
                   window.location.href = `profile.html?uid=${user.uid}`;
                 });
 
-                // Update Coin
+                // 4. Update Coin
                 document.getElementById("sjcoinAmount").textContent =
                   userData.sjcoin || 0;
                 document.getElementById("sjcoinDisplay").style.display = "flex";
 
-                // Update badge notifikasi segera
+                // 5. Update badge notifikasi segera
                 updateNotificationBadge();
               })
               .catch((error) => {
@@ -3033,26 +3221,18 @@
               });
           } else {
             // User is signed out
-            authButtonsContainer.innerHTML = `
-              <button class="auth-btn login-btn" id="loginBtn">Login</button>
-              <button class="auth-btn signup-btn" id="signupBtn">Sign Up</button>
-            `;
-
             // Hide SJCoin display and user info
             document.getElementById("sjcoinDisplay").style.display = "none";
             userInfoTop.style.display = "none";
 
-            document
-              .getElementById("loginBtn")
-              .addEventListener("click", () => {
-                loginModal.style.display = "block";
-              });
-            document
-              .getElementById("signupBtn")
-              .addEventListener("click", () => {
-                signupModal.style.display = "block";
-                goToStep(1);
-              });
+            // Re-attach listeners for desktop auth buttons
+            document.getElementById("loginBtn").addEventListener("click", () => {
+              loginModal.style.display = "block";
+            });
+            document.getElementById("signupBtn").addEventListener("click", () => {
+              signupModal.style.display = "block";
+              goToStep(1);
+            });
           }
         };
 
@@ -3356,6 +3536,8 @@
           auth.signOut().then(() => {
             hideConfirmModal();
             window.alert('Anda telah berhasil logout.');
+            // Re-render auth buttons on desktop since the event listener was only on the cloned button on mobile menu
+            handleAuthClone(null); 
           }).catch(error => {
             console.error('Error signing out:', error);
             window.alert('Gagal untuk logout. Silakan coba lagi.');

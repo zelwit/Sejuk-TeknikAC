@@ -63,13 +63,13 @@
         background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path fill="rgba(255,255,255,0.05)" d="M0,0 L100,0 L100,100 L0,100 Z"></path></svg>');
         opacity: 0.1;
       }
-      header h1 {
+      header h2 { /* Ganti dari h1 ke h2 */
         margin: 0;
         font-size: 2.5rem;
         font-weight: 700;
         position: relative;
         display: inline-block;
-        animation: freezeEffect 6s infinite;
+        animation: freezeEffect 6s infinite; /* Animasi untuk H2 */
       }
       @keyframes freezeEffect {
         0%,
@@ -591,22 +591,10 @@
         opacity: 0.8;
       }
       /* New Styles for Added Features */
-      .promo-banner {
-        background-color: rgba(255, 122, 0, 0.8);
-        color: white;
-        padding: 0.8rem;
-        text-align: center;
-        font-weight: 500;
-      }
-      .promo-banner a {
-        color: white;
-        text-decoration: none;
-        margin: 0 20px;
-        transition: all 0.3s ease;
-      }
-      .promo-banner a:hover {
-        text-shadow: 0 0 5px rgba(255, 255, 255, 0.7);
-      }
+      /* HAPUS: Promo Banner Styles */
+      /* .promo-banner {
+        ...
+      } */
       .calculator {
         background: var(--white);
         border-radius: 12px;
@@ -651,6 +639,7 @@
         grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
         gap: 2rem;
         margin: 3rem 0;
+        transition: opacity 0.5s ease-in-out; /* Animasi untuk pergantian testimonial */
       }
       .testimonial {
         background: var(--white);
@@ -658,8 +647,7 @@
         border-radius: 12px;
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
         position: relative;
-        /* Tambahkan properti untuk transisi yang lebih halus */
-        transition: opacity 0.5s ease-in-out;
+        transition: opacity 0.5s ease-in-out; 
       }
       .testimonial::before {
         content: '"';
@@ -1091,6 +1079,75 @@
         background-color: #f44336;
         color: white;
       }
+      
+      /* --- NEW STYLE: Event Modal Position Fix --- */
+      .event-modal {
+        display: none;
+        position: fixed;
+        z-index: 5000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.6);
+        justify-content: center;
+        align-items: center;
+      }
+
+      .event-content {
+        background-color: #fefefe;
+        margin: 15% auto;
+        padding: 20px;
+        border-radius: 10px;
+        max-width: 400px;
+        width: 90%;
+        position: relative;
+        animation: modalSlideUp 0.4s ease-out;
+        text-align: center;
+        color: var(--dark) !important; /* Pastikan teks modal event terlihat */
+      }
+      
+      .event-header {
+          font-size: 1.5rem;
+          font-weight: 600;
+          margin-bottom: 15px;
+          color: var(--dark);
+      }
+      
+      .event-message {
+          margin-bottom: 20px;
+      }
+
+      .event-close-btn { /* Tombol "Oke, Mengerti" yang dipindah */
+        background-color: var(--primary);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 50px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        width: 100%;
+        margin-bottom: 10px; /* Space before dismiss button */
+      }
+      
+      .event-dismiss-btn {
+        background: none;
+        border: none;
+        color: var(--gray);
+        font-size: 0.85rem;
+        cursor: pointer;
+      }
+      
+      .event-footer {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding-top: 10px;
+        border-top: 1px solid #eee;
+      }
+
 
       /* Loading Screen Styles */
       .loading-screen {
@@ -1631,11 +1688,14 @@
     <!-- Event Pop-up Modal (NEW: Sinkronisasi Admin Panel) -->
     <div class="event-modal" id="eventModal">
       <div class="event-content" id="eventModalContent">
-        <!-- Judul dan pesan event akan diisi oleh JS/Firebase -->
+        <!-- TOMBOL CLOSE PINDAH KE ATAS -->
+        <button class="event-close-btn" id="eventCloseBtn">Oke, Mengerti</button> 
+        
         <div class="event-header" id="eventTitleModal"></div>
         <p class="event-message" id="eventMessageModal"></p>
+        
         <div class="event-footer">
-          <button class="event-close-btn" id="eventCloseBtn">Oke, Mengerti</button>
+          <!-- Tombol close lama dihilangkan dari footer -->
           <button class="event-dismiss-btn" id="eventDismissBtn" style="display: none;">
             <i class="fas fa-eye-slash"></i> Jangan tampilkan lagi
           </button>
@@ -1736,8 +1796,8 @@
         <button class="language-btn">🇮🇩</button>
         <button class="language-btn">🇬🇧</button>
       </div>
-      <!-- === PERUBAHAN SEO START: H1 diubah menjadi H2 === -->
-      <h2>Sejuk Teknik AC</h2> 
+      <!-- === PERUBAHAN SEO START: H1 diubah menjadi H2 dan diberi animasi freezeEffect === -->
+      <h2 class="animate-text">Sejuk Teknik AC</h2> 
       <p>Solusi AC dan Kelistrikan Profesional</p>
       <!-- === PERUBAHAN SEO END === -->
       <div class="rating-display">
@@ -1752,20 +1812,7 @@
         <div class="rating-percentage">0.0/5</div>
       </div>
     </header>
-    <div class="promo-banner">
-      <marquee>
-        <a href="https://zelwit.github.io/Sejuk-TeknikAC/cuci-ac.html"
-          >🔥 Diskon 10% untuk Instalasi AC Baru sampai 31 Agustus! 🔥</a
-        >
-        <a href="https://zelwit.github.io/Sejuk-TeknikAC/cuci-ac.html"
-          >💧 Cuci AC Hemat - Mulai dari Rp 150.000! 💧</a
-        >
-        <a href="https://zelwit.github.io/Sejuk-TeknikAC/sewa-ac.html"
-          >❄️ Sewa AC Murah - Mulai Rp 500.000/bulan ❄️</a
-        >
-      </marquee>
-    </div>
-    <!-- Widget Status Lama Dihapus dari sini -->
+    <!-- HAPUS: Promo Banner dihapus -->
     <nav>
       <div class="nav-container">
         <a href="index.html" class="logo">Sejuk Teknik</a>
@@ -1933,6 +1980,7 @@
         <p>Apa kata mereka tentang layanan kami</p>
       </div>
       <!-- Tempat Testimoni Dinamis dari Firestore -->
+      <!-- Konten testimonial akan diisi dan dirotasi oleh JS -->
       <div class="testimonials" id="dynamicTestimonials">
         <p style="text-align: center; color: var(--gray)">
           Memuat testimoni terbaru...
@@ -2858,7 +2906,7 @@
       }
       
       // ===============================================
-      // FUNGSI BARU UNTUK ROTASI TESTIMONIALS
+      // FUNGSI UNTUK ROTASI TESTIMONIALS (DENGAN ANIMASI)
       // ===============================================
 
       // 1. Mengambil semua Testimoni Positif dan menyimpannya
@@ -2901,10 +2949,10 @@
           });
       }
 
-      // 2. Menampilkan subset acak dari testimonials yang sudah tersimpan
+      // 2. Menampilkan subset acak dari testimonials yang sudah tersimpan (dengan Fade Animation)
       function displayRandomTestimonials() {
           const container = document.getElementById("dynamicTestimonials");
-          const maxDisplay = 3; // Jumlah testimonial yang ingin ditampilkan (diubah dari 6 ke 3 agar lebih mudah diatur)
+          const maxDisplay = 3; // Jumlah testimonial yang ingin ditampilkan
           
           if (allPositiveTestimonials.length === 0) {
               return;
@@ -2914,15 +2962,17 @@
           const shuffled = allPositiveTestimonials.sort(() => 0.5 - Math.random());
           let selected = shuffled.slice(0, maxDisplay);
 
-          // Clear container with fade out effect
+          // Langkah 1: Fade Out
           container.style.opacity = 0;
           
           setTimeout(() => {
+              // Langkah 2: Ganti Konten
               container.innerHTML = ""; // Hapus konten setelah fade out
 
               selected.forEach((review) => {
                 const testimonial = document.createElement("div");
                 testimonial.classList.add("testimonial");
+                testimonial.style.opacity = 0; // Mulai tersembunyi
 
                 // Tampilkan nama dan rating
                 testimonial.innerHTML = `
@@ -2932,20 +2982,24 @@
                       }, ${review.rating} Bintang</div>
                   `;
                 container.appendChild(testimonial);
+                
+                // Animasikan masuk satu per satu (opsional: lebih baik biarkan CSS grid menangani)
+                setTimeout(() => {
+                    testimonial.style.opacity = 1;
+                }, 50); // Delay kecil untuk efek bertahap jika perlu
               });
 
-              // Fade in new content
-              container.style.opacity = 1;
-              
-              // Jika testimonial yang tersedia kurang dari 3, ubah layout grid
+              // Sesuaikan layout grid
               if (selected.length < 3) {
                   container.style.gridTemplateColumns = `repeat(${selected.length}, minmax(300px, 1fr))`;
               } else {
                   container.style.gridTemplateColumns = `repeat(auto-fit, minmax(300px, 1fr))`;
               }
+              
+              // Langkah 3: Fade In container (menggantikan opasitas per elemen)
+              container.style.opacity = 1;
 
           }, 500); // Tunggu 500ms agar transisi opacity terlihat
-
       }
 
 
@@ -3128,11 +3182,11 @@
           const modal = document.getElementById('eventModal');
           const titleEl = document.getElementById('eventTitleModal');
           const messageEl = document.getElementById('eventMessageModal');
-          const contentEl = document.getElementById('eventModalContent');
           const dismissBtn = document.getElementById('eventDismissBtn');
           const closeBtn = document.getElementById('eventCloseBtn');
           
           // Cek apakah user sudah pernah dismiss event ini
+          // PERHATIAN: Di produksi, ID event harus dimasukkan ke dalam local storage
           if (localStorage.getItem('st_event_dismissed') === 'true') {
               return; 
           }
@@ -3148,11 +3202,8 @@
                   if (start && end && now >= start && now <= end) {
                       titleEl.textContent = data.title;
                       messageEl.textContent = data.message;
-                      contentEl.style.backgroundColor = data.color || 'var(--primary)';
                       
-                      // Sesuaikan warna teks jika background gelap
-                      const isDarkColor = data.color && (data.color.includes('--primary') || data.color.includes('--secondary') || data.color.includes('--danger'));
-                      contentEl.style.color = isDarkColor ? 'white' : 'var(--dark)';
+                      // NOTE: Background color dihandle di CSS/Inline style di HTML (dibiarkan default jika tidak diset)
                       
                       // Tampilkan tombol dismiss jika diizinkan
                       dismissBtn.style.display = data.dismissible !== false ? 'block' : 'none';

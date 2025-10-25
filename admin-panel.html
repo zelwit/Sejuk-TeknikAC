@@ -518,6 +518,38 @@
       </div>
     </div>
     
+    <!-- NEW: Modal for Admin Reply to Complaint -->
+    <div class="modal-overlay" id="complaintReplyModal">
+      <div class="modal-content" style="max-width: 600px;">
+        <button class="close-btn" onclick="closeComplaintReplyModal()">×</button>
+        <h3 id="complaintReplyModalTitle">Balas Keluhan dari <span id="complaintReviewerName"></span></h3>
+        <div id="complaintDetailArea" style="margin-bottom: 1rem; padding: 10px; background-color: var(--light); border-radius: 5px;">
+            <p><strong>Kategori:</strong> <span id="complaintCategoryDisplay"></span></p>
+            <p><strong>Judul:</strong> <span id="complaintTitleDisplay"></span></p>
+            <p><strong>Detail:</strong> <span id="complaintDetailDisplay"></span></p>
+        </div>
+        
+        <div class="form-group">
+            <label for="complaintReplyStatus">Ubah Status</label>
+            <select id="complaintReplyStatus">
+                <option value="Baru">Baru</option>
+                <option value="Diproses">Diproses</option>
+                <option value="Selesai">Selesai</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="complaintReplyTextarea">Balasan Admin</label>
+            <textarea id="complaintReplyTextarea" rows="5" placeholder="Tulis balasan untuk pengguna..."></textarea>
+        </div>
+        
+        <div class="modal-footer">
+            <button class="btn" style="background-color: var(--gray);" onclick="closeComplaintReplyModal()">Batal</button>
+            <button class="btn" id="sendComplaintReplyBtn">Kirim Balasan & Update Status</button>
+        </div>
+      </div>
+    </div>
+    
     <!-- Modal for User Details -->
     <div class="modal-overlay" id="userDetailModal">
       <div class="modal-content" style="max-width: 550px;">
@@ -588,6 +620,10 @@
           </a>
           <a href="#" class="menu-item" data-page="reviews">
             <i class="fas fa-star"></i> Kelola Ulasan
+          </a>
+          <!-- NEW MENU ITEM: Kelola Keluhan -->
+          <a href="#" class="menu-item" data-page="complaints">
+              <i class="fas fa-comment-alt"></i> Kelola Keluhan
           </a>
           <a href="#" class="menu-item" data-page="notif">
             <i class="fas fa-bullhorn"></i> Kirim Notifikasi
@@ -738,6 +774,18 @@
             </div>
           </div>
           
+          <!-- NEW: Tab Konten: Kelola Keluhan -->
+          <div id="complaintsPage" class="page-content" style="display: none;">
+              <div class="card">
+                  <div class="card-header">
+                      <h3 class="card-title">Daftar Keluhan Terbaru</h3>
+                  </div>
+                  <div id="complaintsList">
+                      <p style="text-align:center;">Memuat keluhan...</p>
+                  </div>
+              </div>
+          </div>
+
           <!-- Tab Konten: Kirim Notifikasi -->
           <div id="notifPage" class="page-content" style="display: none;">
             <div class="card">
@@ -937,6 +985,7 @@
       let isAdmin = false;
       let allReviews = [];
       let currentReplyReviewId = null;
+      let currentComplaintId = null; // NEW: Global ID untuk keluhan
       let targetUser = { uid: null, name: null, isAll: false }; // Untuk Kirim Notifikasi
 
       // --- UTILITY MODAL & ALERT FUNCTIONS ---
@@ -1057,6 +1106,7 @@
           // Load page specific data
           if (page === 'dashboard') loadDashboard();
           if (page === 'reviews') loadReviews();
+          if (page === 'complaints') loadComplaints(); // NEW
           if (page === 'orders') loadOrders();
           if (page === 'users') loadUsers();
           if (page === 'events') loadEventSettings();
@@ -1568,6 +1618,169 @@
               window.alert('Gagal mengirim balasan: ' + error.message, true);
           });
       }
+      
+      // --- COMPLAINT MANAGEMENT FUNCTIONS (Complaints Tab) ---
+      
+      function loadComplaints() {
+          const list = document.getElementById('complaintsList');
+          list.innerHTML = '<p style="text-align:center;">Memuat keluhan...</p>';
+          
+          db.collection('complaints').orderBy('timestamp', 'desc').get()
+          .then(snapshot => {
+              list.innerHTML = '';
+              if (snapshot.empty) {
+                  list.innerHTML = '<p style="text-align:center; color: var(--gray);">Tidak ada keluhan yang masuk.</p>';
+                  return;
+              }
+
+              let complaintHtml = `
+                  <table class="data-table">
+                  <thead>
+                      <tr>
+                          <th>ID</th>
+                          <th>Pengaju</th>
+                          <th>Kategori</th>
+                          <th>Judul</th>
+                          <th>Status</th>
+                          <th>Waktu</th>
+                          <th>Aksi</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+              `;
+              
+              snapshot.forEach(doc => {
+                  const complaint = doc.data();
+                  const complaintId = doc.id;
+                  const date = complaint.timestamp ? (complaint.timestamp.toDate ? complaint.timestamp.toDate() : new Date(complaint.timestamp.seconds * 1000)) : new Date();
+                  const timeDisplay = date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+                  
+                  let statusColor;
+                  switch(complaint.status) {
+                      case 'Diproses': statusColor = 'var(--primary)'; break;
+                      case 'Selesai': statusColor = 'var(--success)'; break;
+                      case 'Baru':
+                      default: statusColor = 'var(--danger)'; break; // Keluhan Baru harus segera ditangani
+                  }
+
+                  const statusStyle = `color: ${statusColor}; font-weight: 600;`;
+                  
+                  complaintHtml += `
+                      <tr>
+                          <td>${complaintId.substring(0, 6)}...</td>
+                          <td>${escapeHtml(complaint.userName || complaint.userId.substring(0, 6) + '...')}</td>
+                          <td>${escapeHtml(complaint.category)}</td>
+                          <td>${escapeHtml(complaint.title).substring(0, 30)}...</td>
+                          <td><span style="${statusStyle}">${complaint.status}</span></td>
+                          <td>${timeDisplay}</td>
+                          <td>
+                              <button class="btn btn-sm" onclick="openComplaintReplyModal('${complaintId}')">
+                                  ${complaint.adminReply ? 'Lihat/Balas' : 'Balas'}
+                              </button>
+                          </td>
+                      </tr>
+                  `;
+              });
+
+              list.innerHTML = complaintHtml + '</tbody></table>';
+
+          })
+          .catch(e => {
+              list.innerHTML = `<p style="text-align:center; color: var(--danger);">Gagal memuat keluhan: ${e.message}</p>`;
+          });
+      }
+
+      // --- MODAL & REPLY COMPLAINT FUNCTIONS ---
+
+      function openComplaintReplyModal(complaintId) {
+          currentComplaintId = complaintId;
+          const modal = document.getElementById('complaintReplyModal');
+          
+          modal.style.display = 'flex';
+          document.body.style.overflow = 'hidden';
+          
+          // Muat data keluhan
+          db.collection('complaints').doc(complaintId).get()
+          .then(doc => {
+              if (!doc.exists) {
+                  window.alert('Keluhan tidak ditemukan.', true);
+                  closeComplaintReplyModal();
+                  return;
+              }
+              const complaint = doc.data();
+              
+              document.getElementById('complaintReviewerName').textContent = escapeHtml(complaint.userName || complaint.userId.substring(0, 6) + '...');
+              document.getElementById('complaintCategoryDisplay').textContent = escapeHtml(complaint.category);
+              document.getElementById('complaintTitleDisplay').textContent = escapeHtml(complaint.title);
+              document.getElementById('complaintDetailDisplay').textContent = escapeHtml(complaint.detail);
+              
+              // Isi balasan dan status yang sudah ada
+              document.getElementById('complaintReplyTextarea').value = complaint.adminReply ? complaint.adminReply.text : '';
+              document.getElementById('complaintReplyStatus').value = complaint.status || 'Baru';
+              
+          })
+          .catch(e => {
+              window.alert('Gagal memuat detail keluhan: ' + e.message, true);
+              closeComplaintReplyModal();
+          });
+      }
+
+      function closeComplaintReplyModal() {
+          document.getElementById('complaintReplyModal').style.display = 'none';
+          document.body.style.overflow = 'auto';
+          currentComplaintId = null;
+      }
+
+      document.getElementById('sendComplaintReplyBtn').addEventListener('click', sendComplaintReply);
+
+      function sendComplaintReply() {
+          if (!currentComplaintId) return;
+
+          const replyText = document.getElementById('complaintReplyTextarea').value.trim();
+          const newStatus = document.getElementById('complaintReplyStatus').value;
+          const sendBtn = document.getElementById('sendComplaintReplyBtn');
+
+          if (replyText.length < 5) {
+              window.alert('Balasan minimal 5 karakter.');
+              return;
+          }
+          
+          sendBtn.disabled = true;
+          sendBtn.textContent = 'Mengirim...';
+
+          const user = auth.currentUser;
+
+          db.collection('users').doc(user.uid).get().then(doc => {
+              const adminName = doc.exists && doc.data().name ? doc.data().name : (user.displayName || 'Admin Sejuk Teknik');
+              
+              const updateData = {
+                  status: newStatus,
+                  adminReply: {
+                      text: replyText,
+                      adminName: adminName,
+                      adminUid: user.uid,
+                      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                  },
+                  updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+              };
+
+              return db.collection('complaints').doc(currentComplaintId).update(updateData);
+          })
+          .then(() => {
+              closeComplaintReplyModal();
+              window.alert(`Balasan dan status keluhan berhasil diupdate menjadi: ${newStatus}`);
+              loadComplaints(); 
+              sendBtn.disabled = false;
+              sendBtn.textContent = 'Kirim Balasan & Update Status';
+          })
+          .catch(error => {
+              console.error('Error sending complaint reply:', error);
+              window.alert('Gagal mengirim balasan keluhan: ' + error.message, true);
+              sendBtn.disabled = false;
+              sendBtn.textContent = 'Kirim Balasan & Update Status';
+          });
+      }
+
 
       // --- NOTIFICATION MANAGEMENT (Notif Tab) ---
 
@@ -1862,14 +2075,11 @@
           const statusDisplay = document.getElementById('currentEventStatus');
           const now = new Date();
           const start = data.start ? data.start.toDate() : null;
-          const end = data.end ? data.start.toDate() : null; // Bugfix: use data.end.toDate()
+          const actualEnd = data.end ? data.end.toDate() : null; // Bugfix: ensure end is correctly extracted
 
           let statusText = '';
           let statusColor = '';
           
-          // Bugfix: ensure end is correctly extracted
-          const actualEnd = data.end ? data.end.toDate() : null;
-
           if (!start || !actualEnd) {
               statusText = 'TIDAK AKTIF: Event belum diatur.';
               statusColor = 'var(--gray)';

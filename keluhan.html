@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Keluhan & Saran | Sejuk Teknik AC Jakarta & Depok</title>
+    <!-- Tambahan Meta Description untuk SEO -->
+    <meta name="description" content="Sampaikan keluhan dan saran Anda mengenai layanan Servis AC, Cuci AC, dan Perbaikan AC Sejuk Teknik. Kami berkomitmen untuk merespon dan menyelesaikan setiap masalah.">
+    <!-- Firebase & Font Imports (diasumsikan sama dengan index.html) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    <style>
+      /* --- START INHERITED CSS (Minimalisir salinan untuk fokus pada Keluhan) --- */
+      :root {
+        --primary: #0066cc;
+        --primary-light: #e6f2ff;
+        --secondary: #ff7a00;
+        --dark: #2d3748;
+        --light: #f8fafc;
+        --gray: #718096;
+        --white: #ffffff;
+        --coin: #ffd700;
+        --success: #4caf50;
+        --danger: #f44336;
+      }
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      body {
+        font-family: "Poppins", sans-serif;
+        color: var(--dark);
+        line-height: 1.6;
+        background-color: var(--light);
+      }
+      header {
+        background: linear-gradient(135deg, var(--primary), #004c99);
+        color: var(--white);
+        padding: 2rem 1rem;
+        text-align: center;
+      }
+      header h2 {
+        margin: 0;
+        font-size: 2.5rem;
+      }
+      nav {
+        background-color: var(--white);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+      .nav-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+      }
+      .logo {
+        font-weight: 700;
+        color: var(--primary);
+        font-size: 1.2rem;
+        text-decoration: none;
+      }
+      .nav-links {
+        display: flex;
+        gap: 1.5rem;
+      }
+      nav a {
+        color: var(--dark);
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+      }
+      nav a:hover {
+        color: var(--primary);
+      }
+      .auth-buttons { display: flex; gap: 10px; }
+      .auth-btn { padding: 8px 16px; border-radius: 50px; font-weight: 500; cursor: pointer; border: none; }
+      .login-btn { background-color: transparent; color: var(--primary); border: 2px solid var(--primary); }
+      .signup-btn { background-color: var(--primary); color: white; }
+
+      .content {
+        padding: 4rem 1rem;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+      .card {
+        background: var(--white);
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        margin-bottom: 2rem;
+      }
+      .card h3 { color: var(--primary); margin-bottom: 1rem; }
+      .form-group { margin-bottom: 1.5rem; }
+      .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 500; }
+      .form-group input,
+      .form-group textarea,
+      .form-group select {
+        width: 100%;
+        padding: 0.8rem;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-family: "Poppins", sans-serif;
+      }
+      .btn {
+        display: inline-block;
+        background-color: var(--primary);
+        color: var(--white);
+        padding: 0.8rem 1.8rem;
+        border-radius: 50px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 10px rgba(0, 102, 204, 0.3);
+        border: 2px solid var(--primary);
+        cursor: pointer;
+      }
+      .btn:hover { background-color: transparent; color: var(--primary); box-shadow: none; }
+      .footer { background-color: var(--dark); color: var(--white); padding: 3rem 1rem 0; }
+      .footer-bottom { text-align: center; padding: 1.5rem; background-color: rgba(0, 0, 0, 0.2); margin-top: 2rem; }
+
+      /* Modals (Minimalis) */
+      .auth-modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0, 0, 0, 0.4); }
+      .auth-modal-content { background-color: #fefefe; margin: 15% auto; padding: 20px; border-radius: 10px; max-width: 400px; width: 90%; position: relative; }
+      .close-btn { position: absolute; top: 10px; right: 20px; font-size: 28px; font-weight: bold; color: #aaa; cursor: pointer; }
+      
+      /* --- KELUHAN SPECIFIC CSS --- */
+      .complaint-history-list {
+          display: grid;
+          gap: 1.5rem;
+      }
+      .complaint-item {
+          background: var(--light);
+          padding: 1.5rem;
+          border-radius: 10px;
+          border-left: 5px solid var(--primary);
+          box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      }
+      .complaint-item h4 {
+          margin-top: 0;
+          color: var(--dark);
+          font-weight: 600;
+      }
+      .complaint-meta {
+          display: flex;
+          justify-content: space-between;
+          font-size: 0.9em;
+          color: var(--gray);
+          margin-bottom: 0.5rem;
+      }
+      .complaint-status {
+          font-weight: 600;
+          padding: 3px 8px;
+          border-radius: 5px;
+      }
+      /* Status Colors */
+      .status-Baru { background-color: #ffe0b2; color: var(--secondary); border: 1px solid var(--secondary); }
+      .status-Diproses { background-color: var(--primary-light); color: var(--primary); border: 1px solid var(--primary); }
+      .status-Selesai { background-color: #c8e6c9; color: var(--success); border: 1px solid var(--success); }
+
+      .admin-reply {
+          margin-top: 1rem;
+          padding: 1rem;
+          border-left: 3px solid var(--secondary);
+          background-color: #fffaf0;
+          border-radius: 5px;
+          font-style: italic;
+          font-size: 0.9em;
+      }
+      .admin-reply strong {
+        display: block;
+        margin-bottom: 5px;
+        color: var(--secondary);
+      }
+      
+      /* User Info Top Right (Minimalis) */
+      .user-info-top {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        display: none;
+        align-items: center;
+        gap: 10px;
+        background-color: rgba(255, 255, 255, 0.9);
+        padding: 8px 15px;
+        border-radius: 50px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        z-index: 50;
+        cursor: pointer;
+      }
+      .user-name { font-weight: 600; color: var(--primary); }
+      /* --- END INHERITED CSS --- */
+    </style>
+  </head>
+  <body>
+    <!-- User Info Top Right (hidden by default) -->
+    <div class="user-info-top" id="userInfoTop" style="display: none;">
+      <span class="user-name" id="userNameTop"></span>
+      <i class="fas fa-user-circle"></i>
+    </div>
+    
+    <header>
+      <h2>Sejuk Teknik AC</h2>
+      <p>Halaman Keluhan & Saran</p>
+    </header>
+    
+    <nav>
+      <div class="nav-container">
+        <a href="index.html" class="logo">Sejuk Teknik</a>
+        <div class="nav-links">
+          <a href="index.html"><i class="fas fa-home"></i> Beranda</a>
+          <a href="layanan.html"><i class="fas fa-tools"></i> Layanan</a>
+          <!-- Link Aktif -->
+          <a href="keluhan.html" style="color: var(--secondary); font-weight: 600;"><i class="fas fa-comment-dots"></i> Keluhan</a>
+          <a href="rating-ulasan.html"><i class="fas fa-star"></i> Rating</a>
+        </div>
+        <div class="auth-buttons" id="authButtons">
+          <button class="auth-btn login-btn" id="loginBtn">Login</button>
+          <button class="auth-btn signup-btn" id="signupBtn">Sign Up</button>
+        </div>
+      </div>
+    </nav>
+
+    <section class="content">
+      <!-- Form Keluhan -->
+      <div class="card" id="complaintFormCard">
+        <h3><i class="fas fa-edit"></i> Formulir Pengajuan Keluhan</h3>
+        <p id="authMessage" style="color: var(--danger); margin-bottom: 1rem;">
+          ⚠️ Anda harus **Login** untuk mengirim dan melihat riwayat keluhan.
+        </p>
+
+        <form id="complaintForm" style="display: none;">
+          <div class="form-group">
+            <label for="complaintCategory">Kategori Keluhan</label>
+            <select id="complaintCategory" required>
+              <option value="">-- Pilih Kategori --</option>
+              <option value="Servis">Kualitas Servis/Cuci</option>
+              <option value="Teknisi">Sikap/Kinerja Teknisi</option>
+              <option value="Billing">Tagihan/Harga</option>
+              <option value="Sistem">Aplikasi/Sistem Pemesanan</option>
+              <option value="Lainnya">Lainnya</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="complaintTitle">Judul Keluhan Singkat</label>
+            <input type="text" id="complaintTitle" maxlength="100" required placeholder="Contoh: AC masih bocor setelah diservis">
+          </div>
+          <div class="form-group">
+            <label for="complaintDetail">Detail Keluhan (Min 10 karakter)</label>
+            <textarea id="complaintDetail" rows="5" required placeholder="Jelaskan masalah secara rinci..."></textarea>
+          </div>
+          <button type="submit" class="btn" id="submitComplaintBtn">
+            <i class="fas fa-paper-plane"></i> Kirim Keluhan
+          </button>
+        </form>
+      </div>
+
+      <!-- Riwayat Keluhan -->
+      <div class="card">
+        <h3><i class="fas fa-history"></i> Riwayat Keluhan Anda</h3>
+        <div class="complaint-history-list" id="complaintHistory">
+          <p style="text-align: center; color: var(--gray);">Silakan login untuk melihat riwayat keluhan Anda.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Modal Login (Minimalis untuk demo) -->
+    <div id="loginModal" class="auth-modal">
+      <div class="auth-modal-content">
+        <span class="close-btn">&times;</span>
+        <h3>Login</h3>
+        <p>Login logic goes here...</p>
+        <p><a href="#" onclick="alert('Demo: Silakan gunakan auth yang sudah diimplementasikan di index.html')">Login Demo</a></p>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <div class="footer-bottom">
+        <p>© 2020-2025 Sejuk Teknik AC. All Rights Reserved.</p>
+      </div>
+    </footer>
+
+    <script>
+      // === FIREBASE CONFIG & INIT (Diambil dari index.html) ===
+      const firebaseConfig = {
+        apiKey: "AIzaSyDtLHSz7-KU97ALJTQvLRQTG5yj7brcsvc", // Ganti dengan konfigurasi Anda
+        authDomain: "sejuk-teknik.firebaseapp.com",
+        projectId: "sejuk-teknik",
+        storageBucket: "sejuk-teknik.appspot.com",
+        messagingSenderId: "733860478343",
+        appId: "1:733860478343:web:172838a08e702d129ae722",
+        measurementId: "G-EDJ6Y6J7GC",
+      };
+
+      firebase.initializeApp(firebaseConfig);
+      const auth = firebase.auth();
+      const db = firebase.firestore();
+      
+      let loggedInUser = null;
+      let userNameCache = 'Pengguna';
+
+      // --- UTILITY FUNCTIONS ---
+      
+      // FUNGSI: Menggantikan alert() bawaan JavaScript
+      function customAlert(message) {
+        alert(message); // Menggunakan alert bawaan untuk kesederhanaan di halaman ini
+      }
+      
+      // FUNGSI: Mengubah Timestamp ke format string yang mudah dibaca
+      function formatTimestamp(timestamp) {
+          if (!timestamp || !timestamp.toDate) return 'Tanggal tidak diketahui';
+          const date = timestamp.toDate();
+          return date.toLocaleDateString('id-ID', {
+              year: 'numeric', month: 'long', day: 'numeric', 
+              hour: '2-digit', minute: '2-digit'
+          });
+      }
+
+      // --- AUTH UI HANDLER ---
+
+      const updateAuthUI = (user) => {
+        const authButtons = document.getElementById('authButtons');
+        const userInfoTop = document.getElementById('userInfoTop');
+        const authMessage = document.getElementById('authMessage');
+        const complaintForm = document.getElementById('complaintForm');
+        const historyContainer = document.getElementById('complaintHistory');
+        
+        loggedInUser = user;
+
+        if (user) {
+          // LOGGED IN
+          authButtons.innerHTML = `
+            <button class="auth-btn login-btn" id="logoutBtn">Logout</button>
+          `;
+          
+          db.collection("users").doc(user.uid).get().then(doc => {
+              const userData = doc.data() || {};
+              userNameCache = userData.name || user.displayName || user.email.split("@")[0];
+              
+              document.getElementById("userNameTop").textContent = userNameCache;
+              userInfoTop.style.display = "flex";
+              
+              // Tampilkan form & sembunyikan pesan login
+              authMessage.style.display = "none";
+              complaintForm.style.display = "block";
+              
+              // Load keluhan pengguna
+              loadUserComplaints(user.uid);
+              
+          }).catch(e => {
+              console.error("Error loading user data:", e);
+              userNameCache = user.displayName || user.email.split("@")[0];
+              document.getElementById("userNameTop").textContent = userNameCache;
+              userInfoTop.style.display = "flex";
+              
+              authMessage.style.display = "none";
+              complaintForm.style.display = "block";
+              loadUserComplaints(user.uid);
+          });
+          
+          // Event Listener Logout
+          document.getElementById('logoutBtn').addEventListener('click', () => {
+              auth.signOut().then(() => {
+                  customAlert('Anda telah berhasil logout.');
+              }).catch(e => {
+                  customAlert('Gagal logout: ' + e.message);
+              });
+          });
+          
+        } else {
+          // LOGGED OUT
+          authButtons.innerHTML = `
+            <button class="auth-btn login-btn" id="loginBtn">Login</button>
+            <button class="auth-btn signup-btn" id="signupBtn">Sign Up</button>
+          `;
+          userInfoTop.style.display = "none";
+          authMessage.style.display = "block";
+          complaintForm.style.display = "none";
+          historyContainer.innerHTML = '<p style="text-align: center; color: var(--gray);">Silakan login untuk melihat riwayat keluhan Anda.</p>';
+          
+          // Re-attach login/signup handlers (minimalis, hanya untuk demo)
+          document.getElementById('loginBtn').onclick = () => { customAlert('Silakan login di halaman utama.'); };
+          document.getElementById('signupBtn').onclick = () => { customAlert('Silakan daftar di halaman utama.'); };
+        }
+      };
+
+      auth.onAuthStateChanged(updateAuthUI);
+
+      // --- FORM SUBMISSION LOGIC ---
+
+      document.getElementById('complaintForm').addEventListener('submit', submitComplaint);
+
+      function submitComplaint(e) {
+        e.preventDefault();
+
+        if (!loggedInUser) {
+          customAlert("Anda harus login untuk mengirim keluhan.");
+          return;
+        }
+
+        const category = document.getElementById('complaintCategory').value;
+        const title = document.getElementById('complaintTitle').value.trim();
+        const detail = document.getElementById('complaintDetail').value.trim();
+        const submitBtn = document.getElementById('submitComplaintBtn');
+
+        if (!category || title.length < 5 || detail.length < 10) {
+          customAlert("Harap lengkapi semua bidang dengan benar (Judul min 5, Detail min 10 karakter).");
+          return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengirim...';
+
+        const complaintData = {
+          userId: loggedInUser.uid,
+          userName: userNameCache, 
+          category: category,
+          title: title,
+          detail: detail,
+          status: 'Baru', // Status awal
+          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+          adminReply: null,
+        };
+
+        db.collection('complaints').add(complaintData)
+          .then(() => {
+            customAlert("Keluhan Anda berhasil terkirim! Kami akan segera memprosesnya.");
+            document.getElementById('complaintForm').reset();
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Kirim Keluhan';
+            loadUserComplaints(loggedInUser.uid); // Muat ulang riwayat
+          })
+          .catch(error => {
+            customAlert("Gagal mengirim keluhan: " + error.message);
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Kirim Keluhan';
+            console.error("Error submitting complaint:", error);
+          });
+      }
+
+      // --- HISTORY DISPLAY LOGIC ---
+
+      function loadUserComplaints(userId) {
+        const historyContainer = document.getElementById('complaintHistory');
+        historyContainer.innerHTML = '<p style="text-align: center; color: var(--primary);"><i class="fas fa-spinner fa-spin"></i> Memuat riwayat keluhan...</p>';
+
+        db.collection('complaints')
+          .where('userId', '==', userId)
+          .orderBy('timestamp', 'desc')
+          .get()
+          .then(snapshot => {
+            if (snapshot.empty) {
+              historyContainer.innerHTML = '<p style="text-align: center; color: var(--gray);">Belum ada keluhan yang pernah Anda ajukan.</p>';
+              return;
+            }
+
+            historyContainer.innerHTML = '';
+            snapshot.forEach(doc => {
+              const complaint = doc.data();
+              const item = document.createElement('div');
+              item.classList.add('complaint-item');
+              item.style.borderLeftColor = getStatusColor(complaint.status); // Ganti warna border
+
+              const replyHtml = complaint.adminReply ? `
+                <div class="admin-reply">
+                  <strong>Balasan Admin:</strong>
+                  ${complaint.adminReply.text}
+                  <div style="margin-top: 5px; font-size: 0.9em; color: var(--gray); font-style: normal;">
+                      Oleh ${complaint.adminReply.adminName || 'Admin'} pada ${formatTimestamp(complaint.adminReply.timestamp)}
+                  </div>
+                </div>
+              ` : '<p style="font-size: 0.9em; color: var(--gray); margin-top: 10px;">Menunggu balasan dari tim kami...</p>';
+
+              item.innerHTML = `
+                <div class="complaint-meta">
+                  <span>Kategori: <strong>${complaint.category}</strong></span>
+                  <span class="complaint-status status-${complaint.status.replace(/\s/g, '')}">
+                    ${complaint.status}
+                  </span>
+                </div>
+                <h4>${complaint.title}</h4>
+                <p style="font-size: 0.95em; color: var(--dark); margin-bottom: 0.5rem;">${complaint.detail}</p>
+                <div style="font-size: 0.8em; color: var(--gray);">Diajukan pada: ${formatTimestamp(complaint.timestamp)}</div>
+                ${replyHtml}
+              `;
+              historyContainer.appendChild(item);
+            });
+          })
+          .catch(error => {
+            historyContainer.innerHTML = `<p style="text-align: center; color: var(--danger);">Gagal memuat riwayat keluhan: ${error.message}</p>`;
+            console.error("Error loading complaints:", error);
+          });
+      }
+
+      function getStatusColor(status) {
+          switch(status) {
+              case 'Diproses':
+                  return 'var(--primary)';
+              case 'Selesai':
+                  return 'var(--success)';
+              case 'Baru':
+              default:
+                  return 'var(--secondary)';
+          }
+      }
+      
+    </script>
+  </body>
+</html>

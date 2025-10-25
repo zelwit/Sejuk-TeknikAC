@@ -658,6 +658,8 @@
         border-radius: 12px;
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
         position: relative;
+        /* Tambahkan properti untuk transisi yang lebih halus */
+        transition: opacity 0.5s ease-in-out;
       }
       .testimonial::before {
         content: '"';
@@ -2481,6 +2483,11 @@
       // Variable Global untuk melacak status operasional (NEW)
       let isServiceOpenGlobal = false;
       let isUserLoggedInGlobal = false;
+      
+      // ===============================================
+      // VARIABEL BARU UNTUK TESTIMONIALS
+      // ===============================================
+      let allPositiveTestimonials = []; // Menyimpan semua testimoni positif
 
       // ===============================================
       // FUNGSI BARU: GENERIC ALERT MODAL (Menggantikan alert())
@@ -2850,47 +2857,42 @@
         document.getElementById('confirmModal').style.display = 'none';
       }
       
-      // Load Testimoni Positif ke Section
+      // ===============================================
+      // FUNGSI BARU UNTUK ROTASI TESTIMONIALS
+      // ===============================================
+
+      // 1. Mengambil semua Testimoni Positif dan menyimpannya
       function loadTestimonials() {
         const container = document.getElementById("dynamicTestimonials");
         container.innerHTML =
           '<p style="text-align: center; color: var(--gray);">Memuat testimoni terbaru...</p>';
+          
+        allPositiveTestimonials = []; // Reset array
 
-        // Ambil ulasan terbaru
         db.collection("reviews") // Mengambil dari koleksi 'reviews'
-          .orderBy("timestamp", "desc")
-          .limit(50)
+          .orderBy("timestamp", "desc") // Mengambil yang terbaru dulu
+          .limit(50) // Hanya ambil 50 terbaru
           .get()
           .then((snapshot) => {
-            container.innerHTML = "";
-            let count = 0;
-            const maxTestimonials = 6; // Hanya tampilkan 6
-
             snapshot.forEach((doc) => {
               const review = doc.data();
-              const rating = review.rating || 0;
-
               // FILTER: Hanya ambil yang ratingnya 4 atau 5 (positif)
-              if (rating >= 4 && count < maxTestimonials) {
-                const testimonial = document.createElement("div");
-                testimonial.classList.add("testimonial");
-
-                // Tampilkan nama dan rating
-                testimonial.innerHTML = `
-                              <p>${review.reviewText}</p>
-                              <div class="author">— ${
-                                review.reviewerName || "Anonim"
-                              }, ${rating} Bintang</div>
-                          `;
-                container.appendChild(testimonial);
-                count++;
+              if ((review.rating || 0) >= 4) {
+                allPositiveTestimonials.push(review);
               }
             });
+            
+            // Setelah data terambil, tampilkan subset acak pertama kali
+            displayRandomTestimonials(); 
 
-            if (count === 0) {
-              container.innerHTML =
-                '<p style="text-align: center; color: var(--gray);">Belum ada testimoni positif (Rating 4 atau 5) yang tersedia.</p>';
+            if (allPositiveTestimonials.length > 0) {
+                // Atur interval untuk rotasi jika ada testimoni
+                setInterval(displayRandomTestimonials, 8000); // Ganti setiap 8 detik
+            } else {
+                container.innerHTML =
+                  '<p style="text-align: center; color: var(--gray);">Belum ada testimoni positif (Rating 4 atau 5) yang tersedia.</p>';
             }
+
           })
           .catch((error) => {
             console.error("Error loading testimonials:", error);
@@ -2898,6 +2900,54 @@
               '<p style="text-align: center; color: red;">Gagal memuat testimoni.</p>';
           });
       }
+
+      // 2. Menampilkan subset acak dari testimonials yang sudah tersimpan
+      function displayRandomTestimonials() {
+          const container = document.getElementById("dynamicTestimonials");
+          const maxDisplay = 3; // Jumlah testimonial yang ingin ditampilkan (diubah dari 6 ke 3 agar lebih mudah diatur)
+          
+          if (allPositiveTestimonials.length === 0) {
+              return;
+          }
+          
+          // Fungsi untuk mendapatkan subset acak
+          const shuffled = allPositiveTestimonials.sort(() => 0.5 - Math.random());
+          let selected = shuffled.slice(0, maxDisplay);
+
+          // Clear container with fade out effect
+          container.style.opacity = 0;
+          
+          setTimeout(() => {
+              container.innerHTML = ""; // Hapus konten setelah fade out
+
+              selected.forEach((review) => {
+                const testimonial = document.createElement("div");
+                testimonial.classList.add("testimonial");
+
+                // Tampilkan nama dan rating
+                testimonial.innerHTML = `
+                      <p>${review.reviewText}</p>
+                      <div class="author">— ${
+                        review.reviewerName || "Anonim"
+                      }, ${review.rating} Bintang</div>
+                  `;
+                container.appendChild(testimonial);
+              });
+
+              // Fade in new content
+              container.style.opacity = 1;
+              
+              // Jika testimonial yang tersedia kurang dari 3, ubah layout grid
+              if (selected.length < 3) {
+                  container.style.gridTemplateColumns = `repeat(${selected.length}, minmax(300px, 1fr))`;
+              } else {
+                  container.style.gridTemplateColumns = `repeat(auto-fit, minmax(300px, 1fr))`;
+              }
+
+          }, 500); // Tunggu 500ms agar transisi opacity terlihat
+
+      }
+
 
       // Update Rating Header (Menggunakan 'reviews')
       function updateRatingDisplay() {
@@ -2948,9 +2998,9 @@
         document.getElementById("confirmEmail").textContent =
           userData.email || "N/A";
         document.getElementById("confirmAddress").textContent =
-          userData.address || "N/A";
+          userData.address || "Belum diisi";
         document.getElementById("confirmPhone").textContent =
-          userData.phone || "N/A";
+          userData.phone || "Belum diisi";
 
         document.getElementById("confirmationModal").style.display = "flex";
         document.body.style.overflow = "hidden";
@@ -2974,7 +3024,7 @@
       }
       
       // ===============================================
-      // FUNGSI BARU UNTUK SINKRONISASI DENGAN ADMIN PANEL
+      // FUNGSI UNTUK SINKRONISASI DENGAN ADMIN PANEL
       // MODIFIKASI: Menargetkan Fixed Status Bar yang baru
       // ===============================================
       
@@ -3201,11 +3251,11 @@
               logoutBtn.style.marginTop = '10px';
               logoutBtn.onclick = showConfirmModal;
               
-              // Buat tombol Akun Saya
+              // Buat tombol Profil (DIUBAH DARI "Akun Saya")
               const profileLink = document.createElement('a');
               profileLink.href = `profile.html?uid=${user.uid}`;
               profileLink.classList.add('auth-btn', 'signup-btn'); // Use signup style for visibility
-              profileLink.innerHTML = `<i class="fas fa-user-circle"></i> Akun Saya`;
+              profileLink.innerHTML = `<i class="fas fa-user-circle"></i> Profil`; // <--- PERUBAHAN DI SINI
 
               // Tampilkan di Desktop Auth Buttons
               authButtons.appendChild(profileLink);
@@ -3213,8 +3263,15 @@
               authButtons.lastChild.addEventListener('click', showConfirmModal); // Re-attach listener
               
               // Tampilkan di Mobile Auth Buttons
-              authButtonsMobile.appendChild(profileLink.cloneNode(true));
-              authButtonsMobile.appendChild(logoutBtn); // Use original node for listener
+              // Kloning tombol Profil untuk mobile
+              const profileLinkMobile = profileLink.cloneNode(true);
+              // Kloning tombol Logout untuk mobile (dengan listener terpisah)
+              const logoutBtnMobile = logoutBtn.cloneNode(true);
+              logoutBtnMobile.addEventListener('click', showConfirmModal);
+
+              // Tampilkan di Mobile Auth Buttons
+              authButtonsMobile.appendChild(profileLinkMobile);
+              authButtonsMobile.appendChild(logoutBtnMobile);
               
           } else {
               // --- LOGGED OUT STATE ---
@@ -3223,6 +3280,12 @@
                 <button class="auth-btn signup-btn" id="signupBtn">Sign Up</button>
               `;
               // Re-attach listeners for newly created desktop buttons (needed later)
+              
+              // Clone for mobile
+              authButtonsMobile.innerHTML = `
+                <button class="auth-btn login-btn" id="loginBtnMobile">Login</button>
+                <button class="auth-btn signup-btn" id="signupBtnMobile">Sign Up</button>
+              `;
           }
       }
 
@@ -3239,8 +3302,8 @@
             // Re-attach the login/signup listeners if logged out (cloned elements lose listeners)
             if (!auth.currentUser) {
                 // Since the elements are cloned/recreated in handleAuthClone, we need to re-find them
-                const loginBtnMobile = document.querySelector('#authButtonsMobile .login-btn');
-                const signupBtnMobile = document.querySelector('#authButtonsMobile .signup-btn');
+                const loginBtnMobile = document.getElementById('loginBtnMobile');
+                const signupBtnMobile = document.getElementById('signupBtnMobile');
                 
                 if(loginBtnMobile) loginBtnMobile.addEventListener('click', (e) => {
                     e.preventDefault();
@@ -3277,7 +3340,7 @@
 
         // Panggil fungsi sinkronisasi utama
         loadEventPopup();
-        loadTestimonials();
+        loadTestimonials(); // Memuat dan mulai rotasi testimoni
         updateRatingDisplay();
         animateCounters();
 
@@ -3329,10 +3392,13 @@
             userInfoTop.style.display = "none";
 
             // Re-attach listeners for desktop auth buttons
-            document.getElementById("loginBtn").addEventListener("click", () => {
+            const desktopLoginBtn = document.getElementById("loginBtn");
+            const desktopSignupBtn = document.getElementById("signupBtn");
+            
+            if(desktopLoginBtn) desktopLoginBtn.addEventListener("click", () => {
               loginModal.style.display = "block";
             });
-            document.getElementById("signupBtn").addEventListener("click", () => {
+            if(desktopSignupBtn) desktopSignupBtn.addEventListener("click", () => {
               signupModal.style.display = "block";
               goToStep(1);
             });
@@ -3347,14 +3413,14 @@
         const switchToLogin = document.getElementById("switchToLogin");
 
         // Switch between modals
-        switchToSignup.addEventListener("click", (e) => {
+        if(switchToSignup) switchToSignup.addEventListener("click", (e) => {
           e.preventDefault();
           loginModal.style.display = "none";
           signupModal.style.display = "block";
           goToStep(1); // Kembali ke step 1
         });
 
-        switchToLogin.addEventListener("click", (e) => {
+        if(switchToLogin) switchToLogin.addEventListener("click", (e) => {
           e.preventDefault();
           signupModal.style.display = "none";
           loginModal.style.display = "block";
@@ -3409,7 +3475,16 @@
           .addEventListener("click", () => goToStep(1));
         document
           .getElementById("signupStep2Btn")
-          .addEventListener("click", () => goToStep(3));
+          .addEventListener("click", () => {
+              // Cek validasi sederhana di step 2 (diperlukan untuk navigasi multi-step)
+              const address = document.getElementById("signupAddress").value.trim();
+              const phone = document.getElementById("signupPhone").value.trim();
+              if (!address || !phone) {
+                window.alert("Alamat dan Nomor Telepon harus diisi.");
+                return;
+              }
+              goToStep(3);
+          });
         document
           .getElementById("signupBackBtn2")
           .addEventListener("click", () => goToStep(2));

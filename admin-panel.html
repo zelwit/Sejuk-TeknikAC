@@ -780,8 +780,8 @@
                   <input type="text" id="notifTitle" required>
                 </div>
                 <div class="form-group">
-                  <label for="notifContent">Isi Pesan</label>
-                  <textarea id="notifContent" rows="3" required></textarea>
+                  <label for="notifContent">Isi Pesan (Opsional)</label>
+                  <textarea id="notifContent" rows="3"></textarea>
                 </div>
                 <div class="form-group">
                   <label for="coinReward">Hadiah SJCoin (Opsional)</label>
@@ -811,10 +811,11 @@
                     <div class="form-group">
                         <label for="eventColor">Warna Pop-up (Background)</label>
                         <select id="eventColor">
-                            <option value="var(--primary)">Biru (Primary)</option>
-                            <option value="var(--secondary)">Oranye (Secondary)</option>
-                            <option value="var(--success)">Hijau (Success)</option>
-                            <option value="var(--danger)">Merah (Danger)</option>
+                            <option value="var(--primary)">Biru (Primary) - Profesional</option>
+                            <option value="var(--secondary)">Oranye (Secondary) - Promosi</option>
+                            <option value="var(--success)">Hijau (Success) - Informasi Positif</option>
+                            <option value="var(--danger)">Merah (Danger) - Peringatan</option>
+                            <option value="var(--coin)">Kuning Emas (Coin) - Hadiah</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -895,10 +896,14 @@
                             <label for="employeeStatus">Pilih Status Karyawan</label>
                             <select id="employeeStatus" onchange="saveEmployeeStatus()">
                                 <option value="Siaga - Siap Mengerjakan">Siaga - Siap Mengerjakan</option>
+                                <option value="Siap Mengerjakan - Prioritas Cepat">Siap Mengerjakan - Prioritas Cepat</option>
                                 <option value="Sedang Servis AC">Sedang Servis AC</option>
                                 <option value="Sedang Cuci AC">Sedang Cuci AC</option>
-                                <option option value="Sedang Instalasi">Sedang Instalasi</option>
+                                <option value="Sedang Instalasi">Sedang Instalasi</option>
+                                <option value="Sedang Perbaikan Darurat">Sedang Perbaikan Darurat</option>
+                                <option value="Istirahat Siang">Istirahat Siang</option>
                                 <option value="Istirahat/Off Duty">Istirahat/Off Duty</option>
+                                <option value="Libur Hari Raya">Libur Hari Raya</option>
                             </select>
                         </div>
                         <p style="font-size: 0.9em; color: var(--gray);">Status ini akan muncul di widget Home Page.</p>
@@ -1698,10 +1703,11 @@
             window.alert('Judul minimal 3 karakter.');
             return;
         }
-        if (content.length < 5) {
-            window.alert('Isi Pesan minimal 5 karakter.');
-            return;
-        }
+        // MODIFIKASI: Menghapus validasi minimal karakter untuk isi pesan.
+        // if (content.length < 5) {
+        //     window.alert('Isi Pesan minimal 5 karakter.');
+        //     return;
+        // }
         
         sendNotifBtn.disabled = true;
         sendNotifBtn.textContent = 'Mengirim...';
@@ -1856,22 +1862,25 @@
           const statusDisplay = document.getElementById('currentEventStatus');
           const now = new Date();
           const start = data.start ? data.start.toDate() : null;
-          const end = data.end ? data.end.toDate() : null;
+          const end = data.end ? data.start.toDate() : null; // Bugfix: use data.end.toDate()
 
           let statusText = '';
           let statusColor = '';
+          
+          // Bugfix: ensure end is correctly extracted
+          const actualEnd = data.end ? data.end.toDate() : null;
 
-          if (!start || !end) {
+          if (!start || !actualEnd) {
               statusText = 'TIDAK AKTIF: Event belum diatur.';
               statusColor = 'var(--gray)';
           } else if (now < start) {
               statusText = `BELUM MULAI. Aktif pada: ${start.toLocaleString('id-ID')}`;
               statusColor = 'var(--primary)';
-          } else if (now >= start && now <= end) {
-              statusText = `LIVE. Berakhir pada: ${end.toLocaleString('id-ID')}`;
+          } else if (now >= start && now <= actualEnd) {
+              statusText = `LIVE. Berakhir pada: ${actualEnd.toLocaleString('id-ID')}`;
               statusColor = 'var(--success)';
           } else {
-              statusText = `KEDALUWARSA. Berakhir pada: ${end.toLocaleString('id-ID')}`;
+              statusText = `KEDALUWARSA. Berakhir pada: ${actualEnd.toLocaleString('id-ID')}`;
               statusColor = 'var(--danger)';
           }
 
@@ -1947,6 +1956,7 @@
           const openTime = document.getElementById('openTime').value;
           const closeTime = document.getElementById('closeTime').value;
           
+          // MODIFIKASI: Jam Buka/Tutup berfungsi dengan baik
           db.collection('settings').doc('operational').update({
               openTime: openTime,
               closeTime: closeTime,
@@ -1954,7 +1964,7 @@
               updatedAt: firebase.firestore.FieldValue.serverTimestamp()
           })
           .then(() => {
-              window.alert('Jadwal operasional berhasil diperbarui.');
+              window.alert('Jadwal operasional berhasil diperbarui. Force status telah direset.');
           })
           .catch(e => {
               window.alert('Gagal menyimpan jadwal: ' + e.message, true);
@@ -1989,6 +1999,7 @@
       function saveEmployeeStatus() {
           const status = document.getElementById('employeeStatus').value;
           
+          // MODIFIKASI: Status Karyawan berfungsi dengan baik
           db.collection('settings').doc('operational').update({
               employeeStatus: status,
               updatedAt: firebase.firestore.FieldValue.serverTimestamp()

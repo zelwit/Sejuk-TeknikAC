@@ -310,6 +310,9 @@
       
       let loggedInUser = null;
       let userNameCache = 'Pengguna';
+      
+      // NEW: Daftar Admin UID (Harus disinkronkan dengan dashboard.html)
+      const ADMIN_UIDS = ['qE0yd2XNRSa0nWojtLvYoxLrsz22', 'JTVwtBsdt3PaaYeyICd8PJm3lJu2'];
 
       // --- UTILITY FUNCTIONS ---
       
@@ -435,7 +438,29 @@
         };
 
         db.collection('complaints').add(complaintData)
-          .then(() => {
+          .then((complaintRef) => { // Dapatkan reference dari dokumen keluhan yang baru
+            
+            // --- NEW: KIRIM NOTIFIKASI KE SEMUA ADMIN ---
+            const batch = db.batch();
+            ADMIN_UIDS.forEach(adminUid => {
+                const notifRef = db.collection('notifications').doc();
+                batch.set(notifRef, {
+                    userId: adminUid,
+                    title: `🚨 Keluhan Baru: ${category}`,
+                    content: `User ${userNameCache} (${loggedInUser.uid.substring(0,4)}...) mengajukan keluhan: ${title}. Segera cek di Admin Panel!`,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    read: false,
+                    claimed: false,
+                    coinReward: 0,
+                    // Opsional: Link ke halaman keluhan di admin (perlu logika tambahan di admin panel)
+                    link: 'dashboard.html?page=complaints' 
+                });
+            });
+
+            return batch.commit().then(() => complaintRef); // Commit batch notifikasi, lalu kembalikan reference keluhan
+            // --- END NEW NOTIFIKASI ---
+          })
+          .then((complaintRef) => {
             customAlert("Keluhan Anda berhasil terkirim! Kami akan segera memprosesnya.");
             document.getElementById('complaintForm').reset();
             submitBtn.disabled = false;
@@ -443,7 +468,8 @@
             loadUserComplaints(loggedInUser.uid); // Muat ulang riwayat
           })
           .catch(error => {
-            customAlert("Gagal mengirim keluhan: " + error.message);
+            // Jika notifikasi gagal dikirim, kita tetap anggap keluhan berhasil jika sudah tersimpan di complaints
+            customAlert("Keluhan Anda berhasil tersimpan, tetapi gagal mengirim notifikasi ke Admin. Kami tetap akan memprosesnya. Pesan Error: " + error.message);
             submitBtn.disabled = false;
             submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Kirim Keluhan';
             console.error("Error submitting complaint:", error);

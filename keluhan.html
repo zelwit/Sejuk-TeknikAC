@@ -311,6 +311,7 @@
           <!-- Link Aktif -->
           <a href="keluhan.html" style="color: var(--secondary); font-weight: 600;"><i class="fas fa-comment-dots"></i> Keluhan</a>
           <a href="rating-ulasan.html"><i class="fas fa-star"></i> Rating</a>
+          <!-- CATATAN: Link 3D AC Planner, Tentang, Kontak, FAQ, dan Lokasi dihilangkan dari navigasi ini agar sesuai dengan navigasi minimalis di kode Anda. -->
         </div>
         <div class="auth-buttons" id="authButtons">
           <button class="auth-btn login-btn" id="loginBtn">Login</button>
@@ -372,7 +373,7 @@
       </div>
     </div>
 
-    <!-- PENGGANTIAN FOOTER SESUAI PERMINTAAN -->
+    <!-- FOOTER LENGKAP -->
     <footer class="footer">
       <div class="footer-container">
         <div class="footer-about">
@@ -456,7 +457,6 @@
       </div>
     </footer>
 
-
     <script>
       // === FIREBASE CONFIG & INIT (Diambil dari index.html) ===
       const firebaseConfig = {
@@ -488,7 +488,8 @@
       
       // FUNGSI: Mengubah Timestamp ke format string yang mudah dibaca
       function formatTimestamp(timestamp) {
-          if (!timestamp || !timestamp.toDate) return 'Tanggal tidak diketahui';
+          // Tambahkan pengecekan .toDate() yang lebih aman
+          if (!timestamp || typeof timestamp.toDate !== 'function') return 'Tanggal tidak diketahui';
           const date = timestamp.toDate();
           return date.toLocaleDateString('id-ID', {
               year: 'numeric', month: 'long', day: 'numeric', 
@@ -603,7 +604,7 @@
         };
 
         db.collection('complaints').add(complaintData)
-          .then((complaintRef) => { // Dapatkan reference dari dokumen keluhan yang baru
+          .then((complaintRef) => { 
             
             // --- NEW: KIRIM NOTIFIKASI KE SEMUA ADMIN ---
             const batch = db.batch();
@@ -621,8 +622,7 @@
                 });
             });
 
-            return batch.commit().then(() => complaintRef); // Commit batch notifikasi, lalu kembalikan reference keluhan
-            // --- END NEW NOTIFIKASI ---
+            return batch.commit().then(() => complaintRef); 
           })
           .then((complaintRef) => {
             customAlert("Keluhan Anda berhasil terkirim! Kami akan segera memprosesnya.");
@@ -632,23 +632,19 @@
             loadUserComplaints(loggedInUser.uid); // Muat ulang riwayat
           })
           .catch(error => {
-            customAlert("Keluhan Anda berhasil tersimpan, tetapi gagal mengirim notifikasi ke Admin. Kami tetap akan memprosesnya. Pesan Error: " + error.message);
+            customAlert("Keluhan Anda gagal terkirim: " + error.message);
             submitBtn.disabled = false;
             submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Kirim Keluhan';
             console.error("Error submitting complaint:", error);
           });
       }
 
-      // --- HISTORY DISPLAY LOGIC ---
-      
-      // PERBAIKAN UTAMA DI SINI
+      // --- HISTORY DISPLAY LOGIC (VERSI LEBIH AMAN) ---
+
       function loadUserComplaints(userId) {
         const historyContainer = document.getElementById('complaintHistory');
         historyContainer.innerHTML = '<p style="text-align: center; color: var(--primary);"><i class="fas fa-spinner fa-spin"></i> Memuat riwayat keluhan...</p>';
 
-        // Query Firestore: Filter berdasarkan userId dan urutkan berdasarkan timestamp
-        // CATATAN: Firebase memerlukan compound index untuk query ini. 
-        // Jika error, Anda harus membuat index (userId ASC, timestamp DESC) di Firebase Console.
         db.collection('complaints')
           .where('userId', '==', userId)
           .orderBy('timestamp', 'desc')
@@ -664,10 +660,15 @@
               const complaint = doc.data();
               const item = document.createElement('div');
               item.classList.add('complaint-item');
-              item.style.borderLeftColor = getStatusColor(complaint.status); 
+              
+              // Pastikan status default terisi untuk menghindari error status-class
+              const status = complaint.status || 'Baru'; 
+              item.style.borderLeftColor = getStatusColor(status); 
 
               // Pastikan adminReply ada dan memiliki field yang diperlukan
-              const replyHtml = complaint.adminReply && complaint.adminReply.text ? `
+              const hasReply = complaint.adminReply && complaint.adminReply.text;
+              
+              const replyHtml = hasReply ? `
                 <div class="admin-reply">
                   <strong>Balasan Admin:</strong>
                   ${complaint.adminReply.text}
@@ -679,13 +680,13 @@
 
               item.innerHTML = `
                 <div class="complaint-meta">
-                  <span>Kategori: <strong>${complaint.category}</strong></span>
-                  <span class="complaint-status status-${complaint.status.replace(/\s/g, '')}">
-                    ${complaint.status}
+                  <span>Kategori: <strong>${complaint.category || 'N/A'}</strong></span>
+                  <span class="complaint-status status-${status.replace(/\s/g, '')}">
+                    ${status}
                   </span>
                 </div>
-                <h4>${complaint.title}</h4>
-                <p style="font-size: 0.95em; color: var(--dark); margin-bottom: 0.5rem;">${complaint.detail}</p>
+                <h4>${complaint.title || 'Tanpa Judul'}</h4>
+                <p style="font-size: 0.95em; color: var(--dark); margin-bottom: 0.5rem;">${complaint.detail || 'Tidak ada detail'}</p>
                 <div style="font-size: 0.8em; color: var(--gray);">Diajukan pada: ${formatTimestamp(complaint.timestamp || null)}</div>
                 ${replyHtml}
               `;
@@ -694,10 +695,12 @@
           })
           .catch(error => {
             console.error("Error loading complaints:", error);
-            // Tambahkan pesan error yang lebih informatif untuk debugging
+            // Memberi pesan error spesifik jika gagal
             let errorMessage = `Gagal memuat riwayat keluhan.`;
             if (error.code === 'failed-precondition') {
                 errorMessage += ` (Perhatian: Anda mungkin perlu membuat 'Composite Index' di Firebase Console untuk query ini: userId Ascending, timestamp Descending)`;
+            } else if (error.code === 'permission-denied') {
+                errorMessage += ` (Akses Ditolak: Cek Firebase Security Rules Anda)`;
             } else {
                 errorMessage += ` (${error.message})`;
             }

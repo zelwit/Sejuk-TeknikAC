@@ -52,6 +52,11 @@
         text-align: center;
         position: relative;
         overflow: hidden;
+        /* --- MODIFIKASI CSS UNTUK LOGO SEJAJAR H2 --- */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
       }
       header::before {
         content: "";
@@ -63,6 +68,28 @@
         background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path fill="rgba(255,255,255,0.05)" d="M0,0 L100,0 L100,100 L0,100 Z"></path></svg>');
         opacity: 0.1;
       }
+      
+      /* --- NEW CSS: Logo Header Styling --- */
+      .header-title-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 0.5rem;
+      }
+      
+      .header-logo {
+          /* Container untuk link/logo */
+          display: inline-flex;
+          margin-right: 15px;
+          align-items: center; /* Pastikan gambar di tengah vertikal */
+      }
+      
+      .header-logo img {
+          height: 60px; /* Ukuran logo di Header */
+          width: auto;
+          border: none;
+      }
+
       header h2 { /* Ganti dari h1 ke h2 */
         margin: 0;
         font-size: 2.5rem;
@@ -70,6 +97,7 @@
         position: relative;
         display: inline-block;
         animation: freezeEffect 6s infinite; /* Animasi untuk H2 */
+        text-align: left; 
       }
       @keyframes freezeEffect {
         0%,
@@ -101,9 +129,10 @@
       }
       header p {
         font-size: 1.1rem;
-        margin-top: 0.5rem;
+        margin-top: 0;
         opacity: 0.9;
         position: relative;
+        text-align: center;
       }
       .rating-display {
         display: flex;
@@ -1582,6 +1611,16 @@
             left: 10px !important;
             top: 60px !important; 
         }
+
+        .header-logo {
+            margin-right: 10px;
+        }
+        .header-logo img {
+            height: 40px; 
+        }
+        header h2 {
+            font-size: 2rem;
+        }
       }
       
       /* Ensure mobile menu auth buttons are block level */
@@ -1796,10 +1835,19 @@
         <button class="language-btn">🇮🇩</button>
         <button class="language-btn">🇬🇧</button>
       </div>
-      <!-- === PERUBAHAN SEO START: H1 diubah menjadi H2 dan diberi animasi freezeEffect === -->
-      <h2 class="animate-text">Sejuk Teknik AC</h2> 
+      <!-- --- START: Logo and H2 Container --- -->
+      <div class="header-title-container">
+        <!-- === START: Logo Image (Hero Section) === -->
+        <a href="https://ibb.co.com/Jj9mYmvM" class="header-logo" target="_blank">
+          <img src="https://i.ibb.co.com/5hPGQGrf/Adobe-Express-file.png" alt="Adobe-Express-file" border="0">
+        </a>
+        <!-- === END: Logo Image (Hero Section) === -->
+        
+        <!-- === PERUBAHAN SEO START: H1 diubah menjadi H2 dan diberi animasi freezeEffect === -->
+        <h2 class="animate-text">Sejuk Teknik AC</h2> 
+        <!-- === PERUBAHAN SEO END === -->
+      </div>
       <p>Solusi AC dan Kelistrikan Profesional</p>
-      <!-- === PERUBAHAN SEO END === -->
       <div class="rating-display">
         <div class="stars">
           <span class="star" data-rating="1">★</span>

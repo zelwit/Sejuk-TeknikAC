@@ -128,13 +128,6 @@
         cursor: pointer;
       }
       .btn:hover { background-color: transparent; color: var(--primary); box-shadow: none; }
-      .footer { background-color: var(--dark); color: var(--white); padding: 3rem 1rem 0; }
-      .footer-bottom { text-align: center; padding: 1.5rem; background-color: rgba(0, 0, 0, 0.2); margin-top: 2rem; }
-
-      /* Modals (Minimalis) */
-      .auth-modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0, 0, 0, 0.4); }
-      .auth-modal-content { background-color: #fefefe; margin: 15% auto; padding: 20px; border-radius: 10px; max-width: 400px; width: 90%; position: relative; }
-      .close-btn { position: absolute; top: 10px; right: 20px; font-size: 28px; font-weight: bold; color: #aaa; cursor: pointer; }
       
       /* --- KELUHAN SPECIFIC CSS --- */
       .complaint-history-list {
@@ -164,6 +157,7 @@
           font-weight: 600;
           padding: 3px 8px;
           border-radius: 5px;
+          white-space: nowrap;
       }
       /* Status Colors */
       .status-Baru { background-color: #ffe0b2; color: var(--secondary); border: 1px solid var(--secondary); }
@@ -202,6 +196,98 @@
       }
       .user-name { font-weight: 600; color: var(--primary); }
       /* --- END INHERITED CSS --- */
+
+      /* Footer Styles (Diambil dari Index.html) */
+      .footer {
+        background-color: var(--dark);
+        color: var(--white);
+        padding: 3rem 0 0;
+      }
+      .footer-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 1rem;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+      }
+      .footer-about {
+        margin-bottom: 2rem;
+      }
+      .footer-logo {
+        display: flex;
+        align-items: center;
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        color: var(--white);
+      }
+      .footer-logo i {
+        margin-right: 0.5rem;
+        font-size: 1.8rem;
+      }
+      .footer-about p {
+        opacity: 0.8;
+        font-size: 0.9rem;
+      }
+      .footer-links h3 {
+        font-size: 1.2rem;
+        margin-bottom: 1.5rem;
+        position: relative;
+        padding-bottom: 0.5rem;
+      }
+      .footer-links h3::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 50px;
+        height: 2px;
+        background: var(--primary);
+      }
+      .footer-links ul {
+        list-style: none;
+      }
+      .footer-links li {
+        margin-bottom: 0.8rem;
+      }
+      .footer-links a {
+        color: var(--white);
+        opacity: 0.8;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+      }
+      .footer-links a:hover {
+        opacity: 1;
+        padding-left: 5px;
+      }
+      .footer-links a i {
+        margin-right: 0.5rem;
+        width: 20px;
+        text-align: center;
+      }
+      .footer-contact p {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1rem;
+        opacity: 0.8;
+        font-size: 0.9rem;
+      }
+      .footer-contact i {
+        margin-right: 0.8rem;
+        width: 20px;
+        text-align: center;
+      }
+      .footer-bottom {
+        text-align: center;
+        padding: 1.5rem;
+        background-color: rgba(0, 0, 0, 0.2);
+        margin-top: 2rem;
+        font-size: 0.9rem;
+        opacity: 0.8;
+      }
     </style>
   </head>
   <body>
@@ -286,11 +372,90 @@
       </div>
     </div>
 
+    <!-- PENGGANTIAN FOOTER SESUAI PERMINTAAN -->
     <footer class="footer">
+      <div class="footer-container">
+        <div class="footer-about">
+          <div class="footer-logo">
+            <i class="fas fa-snowflake"></i>
+            Sejuk Teknik AC
+          </div>
+          <p>
+            Solusi AC dan kelistrikan profesional sejak 2020. Memberikan
+            pelayanan terbaik dengan teknisi berpengalaman dan harga terjangkau.
+          </p>
+        </div>
+        <div class="footer-links">
+          <h3>Menu</h3>
+          <ul>
+            <li>
+              <a href="index.html"><i class="fas fa-home"></i> Beranda</a>
+            </li>
+            <li>
+              <a href="layanan.html"><i class="fas fa-tools"></i> Layanan</a>
+            </li>
+            <li>
+              <a href="AC-Placement-Planner.html"
+                ><i class="fas fa-cube"></i> 3D AC Planner</a
+              >
+            </li>
+            <li>
+              <a href="tentang.html"
+                ><i class="fas fa-info-circle"></i> Tentang</a
+              >
+            </li>
+            <li>
+              <a href="https://wa.me/6285817818216"
+                ><i class="fas fa-envelope"></i> Kontak</a
+              >
+            </li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h3>Layanan</h3>
+          <ul>
+            <li>
+              <a href="#"
+                ><i class="fas fa-air-conditioner"></i> Instalasi AC</a
+              >
+            </li>
+            <li>
+              <a href="cuci-ac.html"><i class="fas fa-broom"></i> Cuci AC</a>
+            </li>
+            <li>
+              <a href="cuci-ac.html"><i class="fas fa-tools"></i> Service AC</a>
+            </li>
+            <li>
+              <a href="panel-distribusi.html"
+                ><i class="fas fa-bolt"></i> Instalasi Listrik</a
+              >
+            </li>
+            <li>
+              <a href="sewa-ac.html"
+                ><i class="fas fa-snowflake"></i> Sewa AC</a
+              >
+            </li>
+          </ul>
+        </div>
+        <div class="footer-contact">
+          <h3>Kontak Kami</h3>
+          <p><i class="fab fa-whatsapp"></i> WhatsApp: 085817818216</p>
+          <p>
+            <i class="fas fa-envelope"></i> Email:
+            jayatehnikmandiri234@gmail.com
+          </p>
+          <p><i class="fas fa-clock"></i> Buka: 09:00 - 07:00 WIB</p>
+          <p>
+            <i class="fas fa-map-marker-alt"></i> Jl. Raya Perjuangan No.25
+            RT.16 RW.07, Tugu Selatan Koja
+          </p>
+        </div>
+      </div>
       <div class="footer-bottom">
         <p>© 2020-2025 Sejuk Teknik AC. All Rights Reserved.</p>
       </div>
     </footer>
+
 
     <script>
       // === FIREBASE CONFIG & INIT (Diambil dari index.html) ===
@@ -452,7 +617,6 @@
                     read: false,
                     claimed: false,
                     coinReward: 0,
-                    // Opsional: Link ke halaman keluhan di admin (perlu logika tambahan di admin panel)
                     link: 'dashboard.html?page=complaints' 
                 });
             });
@@ -468,7 +632,6 @@
             loadUserComplaints(loggedInUser.uid); // Muat ulang riwayat
           })
           .catch(error => {
-            // Jika notifikasi gagal dikirim, kita tetap anggap keluhan berhasil jika sudah tersimpan di complaints
             customAlert("Keluhan Anda berhasil tersimpan, tetapi gagal mengirim notifikasi ke Admin. Kami tetap akan memprosesnya. Pesan Error: " + error.message);
             submitBtn.disabled = false;
             submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Kirim Keluhan';
@@ -477,11 +640,15 @@
       }
 
       // --- HISTORY DISPLAY LOGIC ---
-
+      
+      // PERBAIKAN UTAMA DI SINI
       function loadUserComplaints(userId) {
         const historyContainer = document.getElementById('complaintHistory');
         historyContainer.innerHTML = '<p style="text-align: center; color: var(--primary);"><i class="fas fa-spinner fa-spin"></i> Memuat riwayat keluhan...</p>';
 
+        // Query Firestore: Filter berdasarkan userId dan urutkan berdasarkan timestamp
+        // CATATAN: Firebase memerlukan compound index untuk query ini. 
+        // Jika error, Anda harus membuat index (userId ASC, timestamp DESC) di Firebase Console.
         db.collection('complaints')
           .where('userId', '==', userId)
           .orderBy('timestamp', 'desc')
@@ -497,14 +664,15 @@
               const complaint = doc.data();
               const item = document.createElement('div');
               item.classList.add('complaint-item');
-              item.style.borderLeftColor = getStatusColor(complaint.status); // Ganti warna border
+              item.style.borderLeftColor = getStatusColor(complaint.status); 
 
-              const replyHtml = complaint.adminReply ? `
+              // Pastikan adminReply ada dan memiliki field yang diperlukan
+              const replyHtml = complaint.adminReply && complaint.adminReply.text ? `
                 <div class="admin-reply">
                   <strong>Balasan Admin:</strong>
                   ${complaint.adminReply.text}
                   <div style="margin-top: 5px; font-size: 0.9em; color: var(--gray); font-style: normal;">
-                      Oleh ${complaint.adminReply.adminName || 'Admin'} pada ${formatTimestamp(complaint.adminReply.timestamp)}
+                      Oleh ${complaint.adminReply.adminName || 'Admin'} pada ${formatTimestamp(complaint.adminReply.timestamp || null)}
                   </div>
                 </div>
               ` : '<p style="font-size: 0.9em; color: var(--gray); margin-top: 10px;">Menunggu balasan dari tim kami...</p>';
@@ -518,15 +686,22 @@
                 </div>
                 <h4>${complaint.title}</h4>
                 <p style="font-size: 0.95em; color: var(--dark); margin-bottom: 0.5rem;">${complaint.detail}</p>
-                <div style="font-size: 0.8em; color: var(--gray);">Diajukan pada: ${formatTimestamp(complaint.timestamp)}</div>
+                <div style="font-size: 0.8em; color: var(--gray);">Diajukan pada: ${formatTimestamp(complaint.timestamp || null)}</div>
                 ${replyHtml}
               `;
               historyContainer.appendChild(item);
             });
           })
           .catch(error => {
-            historyContainer.innerHTML = `<p style="text-align: center; color: var(--danger);">Gagal memuat riwayat keluhan: ${error.message}</p>`;
             console.error("Error loading complaints:", error);
+            // Tambahkan pesan error yang lebih informatif untuk debugging
+            let errorMessage = `Gagal memuat riwayat keluhan.`;
+            if (error.code === 'failed-precondition') {
+                errorMessage += ` (Perhatian: Anda mungkin perlu membuat 'Composite Index' di Firebase Console untuk query ini: userId Ascending, timestamp Descending)`;
+            } else {
+                errorMessage += ` (${error.message})`;
+            }
+            historyContainer.innerHTML = `<p style="text-align: center; color: var(--danger);">${errorMessage}</p>`;
           });
       }
 
